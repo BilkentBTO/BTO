@@ -26,11 +26,11 @@ Bilkent Tanıtım Ofisi (BTO) is a website for uses in guidance. It helps the us
 ### Private Section
 
 - **Guides and Other Superior Users**:
-  - Apply to be a guide for upcoming tours and exhibitions.
-  - Log working hours and access communication panels for daily advisor contact.
+  - Register as a guide for the upcoming exhibitions and tours.
+  - Taking the data of the working hours and making the contact easier between the daily advisor by using communication panels.
 
 - **Advisors and Other Superior Users**:
-  - View and manage tour approvals, conflicts, and automatic accept/reject decisions.
+  - An algorithm will be created to automatically flag a tour as approved or rejected, which will be determined later on.
 
 - **Coordinator Features**:
-  - Data analysis, guide management, and exhibition application approvals.
+  - Analysing the data, managing the guides, and approving the exhibitions.
