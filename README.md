@@ -2,21 +2,23 @@
 
 ## Overview
 
-BTO is a guide application designed to manage campus tours, exhibitions, and communication efficiently. The application facilitates both public users (e.g., students, teachers) and private users (e.g., guides, coordinators) to interact and manage tour-related activities.
+Bilkent Tanıtım Ofisi (BTO) is a website for uses in guidance. It helps the user and the customer as it makes accessing the guide tools easier. These guide tools are mainly campus tours, exhibitions and communications between the guide and the student. This app creates two user types. One of them is public which is for students and teachers. The other one is for private usage which is for the guides and coordinators in Bilkent. This website provides an interaction and a connection between the public and private users.
+ 
 
 ## Features
 
 ### Public Section
 
 - **Campus Tour Registration**: 
-  - Allows institutions and individuals to register for campus tours.
-  - Forms will collect details such as the name of the educational institution, city, preferred visit date, time, number of participants, and contact information.
+  - Provides a register system for institutions and individuals for the campus tour.
+  - There will be a form that will collect the data of the individuals and the institutions by taking their educational place, city, preferred visit date, preferred visit time, number of participants and the contact info that will be used for arranging the guide times.
 
 - **Transportation and Expectations**:
-  - Information on transportation methods to the campus and what visitors can expect during the tour.
+  - Providing the required transportation info for coming to the campus and showing what visitors should expect during the tour.
 
 - **General Communication**:
-  - Provides general contact methods (phone and email).
+  - Makes the communication easier between users as it provides the phone and email
+ 
 
 - **Exhibition Invitations**:
   - Allows exhibitions to invite the university.
