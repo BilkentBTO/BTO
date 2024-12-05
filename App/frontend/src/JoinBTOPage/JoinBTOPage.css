@@ -1,0 +1,11 @@
+.joinBTOPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures header and contact section stay in place */
+    height: 100vh; /* Full height of the viewport */
+    width: 100%; /* Full width */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}

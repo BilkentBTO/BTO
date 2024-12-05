@@ -1,0 +1,56 @@
+.header {
+    background-color: rgb(30, 30, 100);
+    padding: 20px;
+    max-height: 120px;
+}
+
+.container {
+    max-height: 120px;
+    display: flex; /* Enable Flexbox for horizontal layout */
+    justify-content: space-between; /* Space between the left and right sections */
+    align-items: center; /* Vertically center both sections */
+    margin-left: 0;
+
+}
+
+.title {
+    display: flex;
+    align-items: center; /* Vertically center the text within this container */
+    justify-content: center; /* Horizontally center (useful for block-like elements) */
+    margin-right: 10%;
+    margin-left: auto;
+    font-family: 'Arial', sans-serif;
+    height: 100%; /* Make it take full height of the header */
+    padding: 0 20px; /* Optional padding for better spacing */
+}
+
+.headerText {
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: large;
+    font: Arial;
+    font-family: sans-serif;
+    padding-left: 100px;
+    padding-right: 20px;
+}
+
+.headerText .logo {
+    width: 100px;
+    height: auto;
+}
+
+.headerText h1 {
+    margin: 0;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.headerText h2 {
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: normal;
+}

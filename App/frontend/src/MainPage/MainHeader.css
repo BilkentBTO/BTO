@@ -1,0 +1,72 @@
+.mainHeader {
+    background-color: rgb(30, 30, 100);
+    padding: 20px;
+    margin-bottom: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(30, 30, 100);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.textSection {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-grow: 1;
+    font: Arial;
+    font-family: sans-serif;
+    padding-left: 100px;
+    padding-right: 20px;
+}
+
+.textSection .logo {
+    width: 100px;
+    height: auto;
+}
+
+.textSection h1 {
+    margin: 0;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.textSection h2 {
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.buttonSection {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    font: Arial;
+    font-family: sans-serif;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 100px;
+    margin-left: 100px;
+}
+
+button {
+    cursor: pointer;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgb(30, 30, 100);
+    color: white;
+    font-weight: bold;
+    font-size: larger;
+}
+
+button:hover {
+    background-color: rgb(21, 21, 70);
+}

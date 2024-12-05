@@ -1,0 +1,40 @@
+/* Global styles for form input elements */
+.form-input-global {
+    display: flex;
+    align-items: center; /* Vertically align items in the center */
+    justify-content: center;
+    margin-left: 10%;
+    margin-top: 10px;
+    width: 400px;
+    height: auto;
+    background-color: rgb(67, 90, 82);
+    border: 10px;
+    border-radius: 5px;
+    gap: 5px;
+}
+
+.form-input-global .box {
+
+    padding: 10px; /* Add padding around the box */
+    border: 2px solid black; /* Optional border for the box */
+    border-radius: 5px; /* Optional rounded corners */
+    background-color: rgb(30, 35, 100); /* Background color for the box */
+}
+
+.form-input-global p {
+    color: white;
+    margin: 0; /* Remove default margin for precise alignment */
+    font-size: 1rem; /* Ensure consistent font size (optional) */
+    line-height: 1.5; /* Improve readability if needed */
+}
+
+.form-input-global input {
+    min-width: 200px;
+    width: 200px;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}

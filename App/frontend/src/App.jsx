@@ -1,54 +1,29 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import MainPage from "./MainPage/MainPage";
+import LoginPage from "./LoginPage/LoginPage";
+import RegChoicePage from "./RegChoicePage/RegChoicePage";
+import RegCodePage from "./RegCodePage/RegCodePage";
+import JoinBTOPage from "./JoinBTOPage/JoinBTOPage";
+import InviteBilkentPage from "./InviteBilkentPage/InviteBilkentPage";
+import IndividualRegistrationPage from "./IndividualRegistrationPage/IndividualRegistrationPage";
+import SchoolRegistrationPage from "./SchoolRegistrationPage/SchoolRegistrationPage";
 
 function App() {
-    const [forecasts, setForecasts] = useState();
-
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
-
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
-    return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
-    
-    async function populateWeatherData() {
-        const response = await fetch('/api/WeatherForecast');
-        if (response.ok) {
-            const data = await response.json();
-            setForecasts(data);
-        }
-        else{
-          console.log("Err");
-        }
-    }
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/regChoice" element={<RegChoicePage />} />
+      <Route path="/regCode" element={<RegCodePage />} />
+      <Route path="/joinBTO" element={<JoinBTOPage />} />
+      <Route path="/inviteBilkent" element={<InviteBilkentPage />} />
+      <Route
+        path="/individualRegistration"
+        element={<IndividualRegistrationPage />}
+      />
+      <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
+    </Routes>
+  );
 }
-
 export default App;

@@ -1,0 +1,14 @@
+.schoolRegistrationPage {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Full width */
+    height: 120px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.innerSchoolRegPage{
+    display: flex;
+    flex-direction:column;
+
+
+}
