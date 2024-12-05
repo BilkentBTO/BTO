@@ -8,6 +8,7 @@ import JoinBTOPage from "./JoinBTOPage/JoinBTOPage";
 import InviteBilkentPage from "./InviteBilkentPage/InviteBilkentPage";
 import IndividualRegistrationPage from "./IndividualRegistrationPage/IndividualRegistrationPage";
 import SchoolRegistrationPage from "./SchoolRegistrationPage/SchoolRegistrationPage";
+import ViewRegistrationPage from "./ViewRegistrationPage/ViewRegistrationPage";
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
         element={<IndividualRegistrationPage />}
       />
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
+      <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
     </Routes>
   );
 }
+//Route yourRegistration inputs are temporary
 export default App;

@@ -1,62 +1,97 @@
 .regCodePage{
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .inputSection {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center everything horizontally */
-    justify-content: center; /* Center everything vertically */
-    gap: 20px; /* Add space between the elements */
-    padding: 20px; /* Optional padding for spacing around content */
-    margin-top: 10%;
-    border-radius: 10px; /* Optional rounded corners */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center everything horizontally */
+  justify-content: center; /* Center everything vertically */
+  gap: 20px; /* Add space between the elements */
+  padding: 20px; /* Optional padding for spacing around content */
+  margin-top: 10%;
+  border-radius: 10px; /* Optional rounded corners */
 }
-  
-  .inputTitle {
-    font-family: 'Arial', sans-serif;
-    font-size: 20px; /* Size of the title */
-    color: black; /* Title color */
-    margin-bottom: 10px; /* Add spacing below the title */
-    font-weight: bold; /* Make the title bold */
-    text-align: center;
-  }
-  
-  .inputField {
-    width: 300px; /* Set a fixed width for the input field */
-    padding: 10px 15px; /* Add padding for better appearance */
-    border-radius: 8px; /* Rounded corners */
-    border: 1px solid #ccc; /* Light border */
-    font-size: 16px; /* Font size for the text */
-    text-align: center; /* Center the placeholder and input text */
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for a modern look */
-    background-color: #f5f5f5; /* Light gray background */
-  }
-  
-  .inputField:focus {
-    outline: none; /* Remove default focus outline */
-    border: 1px solid #003366; /* Add a custom border color on focus */
-    box-shadow: 0px 4px 8px rgba(0, 51, 102, 0.2); /* Add a subtle focus shadow */
-  }
-  
-  .inputButton {
-    background-color: #003366; /* Button background color */
-    color: white; /* Text color */
-    padding: 10px 20px; /* Padding inside the button */
-    font-size: 16px; /* Font size */
-    font-weight: bold; /* Bold text */
-    border: none; /* Remove border */
-    border-radius: 8px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth transition */
-  }
-  
-  .inputButton:hover {
-    background-color: #002244; /* Darker color on hover */
-  }
+
+.inputTitle {
+  font-family: 'Arial', sans-serif;
+  font-size: 20px; /* Size of the title */
+  color: black; /* Title color */
+  margin-bottom: 10px; /* Add spacing below the title */
+  font-weight: bold; /* Make the title bold */
+  text-align: center;
+}
+
+.inputField {
+  width: 300px; /* Set a fixed width for the input field */
+  padding: 10px 15px; /* Add padding for better appearance */
+  border-radius: 8px; /* Rounded corners */
+  border: 1px solid #ccc; /* Light border */
+  font-size: 16px; /* Font size for the text */
+  text-align: center; /* Center the placeholder and input text */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for a modern look */
+  background-color: #f5f5f5; /* Light gray background */
+}
+
+.inputField:focus {
+  outline: none; /* Remove default focus outline */
+  border: 1px solid #003366; /* Add a custom border color on focus */
+  box-shadow: 0px 4px 8px rgba(0, 51, 102, 0.2); /* Add a subtle focus shadow */
+}
+
+.inputButton {
+  background-color: #003366; /* Button background color */
+  color: white; /* Text color */
+  padding: 10px 20px; /* Padding inside the button */
+  font-size: 16px; /* Font size */
+  font-weight: bold; /* Bold text */
+  border: none; /* Remove border */
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.inputButton:hover {
+  background-color: #002244; /* Darker color on hover */
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 20px;
+  display: block;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  text-align: center;
+}
+
+.popup-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-button:hover {
+  background-color: #d32f2f;
+}
