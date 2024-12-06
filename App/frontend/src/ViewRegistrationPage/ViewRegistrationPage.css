@@ -44,7 +44,7 @@
   /* Styling for the button section */
   .viewButtonSection {
     text-align: center; /* Center-aligns the buttons */
-    margin-bottom: 20px; /* Adds space below the buttons */
+    margin-top: 5%;
     display: flex; /* Enables flex layout for side-by-side buttons */
     justify-content: center; /* Centers the buttons horizontally */
     gap: 15px; /* Adds spacing between the buttons */
