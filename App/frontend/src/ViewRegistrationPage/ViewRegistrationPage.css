@@ -15,8 +15,8 @@
   /* Styling for the registration info section */
   .viewRegistrationInfo {
     flex-grow: 1; /* Ensures this section grows to fill available space */
-    margin-top: 20px;
-    margin-bottom: 20px; /* Adds space below the info section for the button area */
+    margin-top: 0;
+    margin-bottom: 100px; /* Adds space below the info section for the button area */
     padding: 60px;
     background-color: rgb(245, 245, 245); /* Card-like background for better visibility */
     border-radius: 10px; /* Rounded corners */

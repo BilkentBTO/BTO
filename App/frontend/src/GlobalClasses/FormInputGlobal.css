@@ -7,14 +7,13 @@
     margin-top: 10px;
     width: 400px;
     height: auto;
-    background-color: rgb(67, 90, 82);
+    background-color: rgba(30, 35, 100, 0.364);
     border: 10px;
     border-radius: 5px;
     gap: 5px;
 }
 
 .form-input-global .box {
-
     padding: 10px; /* Add padding around the box */
     border: 2px solid black; /* Optional border for the box */
     border-radius: 5px; /* Optional rounded corners */
