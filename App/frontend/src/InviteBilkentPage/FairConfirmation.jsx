@@ -1,9 +1,9 @@
 import React from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./SchoolRegistrationPage.css";
+import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
 
-function SchoolRegistrationConfirmation() {
+function FairConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ function SchoolRegistrationConfirmation() {
   console.log("FORM RECIEVED: ", formData);
   const handleEdit = () => {
     // Navigate back to the registration page with the current formData
-    navigate("/schoolRegistration", { state: { formData } });
+    navigate("/inviteBilkent", { state: { formData } });
   };
 
   // Function to handle the "Confirm" button click
@@ -21,7 +21,7 @@ function SchoolRegistrationConfirmation() {
     console.log("Registration Confirmed:", formData);
 
     // Navigate to a success page or show a success message
-    navigate("/successSchoolRegistration", { state: { formData } });
+    navigate("/successInvite", { state: { formData } });
   };
 
   return (
@@ -44,30 +44,6 @@ function SchoolRegistrationConfirmation() {
               </div>
               <div className="info">
                 <p>{formData.school}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Visit Date:</p>
-              </div>
-              <div className="info">
-                <p>{formData.visitDate}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Visit Time:</p>
-              </div>
-              <div className="info">
-                <p>{formData.visitTime}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Visitor Count:</p>
-              </div>
-              <div className="info">
-                <p>{formData.visitorCount}</p>
               </div>
             </div>
             <div className="infoLogNote">
@@ -122,4 +98,4 @@ function SchoolRegistrationConfirmation() {
     </div>
   );
 }
-export default SchoolRegistrationConfirmation;
+export default FairConfirmation;
