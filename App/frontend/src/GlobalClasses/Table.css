@@ -1,0 +1,27 @@
+/* Optional: Add consistent styles for the scrollable container */
+.table-container {
+    max-height: 400px; /* Set the max height of the container */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    overflow-x: auto;  /* Enable horizontal scrolling */
+    border: 1px solid black; /* Optional: Add border around container */
+    padding: 8px;      /* Optional: Add padding around the container */
+  }
+  
+  /* Existing table styles remain unchanged */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  
