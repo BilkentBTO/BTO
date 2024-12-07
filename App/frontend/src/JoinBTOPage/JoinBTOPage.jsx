@@ -1,5 +1,6 @@
 import "./JoinBTOPage.css";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
+import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 
 function JoinBTOPage() {
   return (

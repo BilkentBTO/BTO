@@ -9,6 +9,120 @@
 .innerSchoolRegPage{
     display: flex;
     flex-direction:column;
-
-
 }
+
+.submitButton {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 16px;
+  }
+  
+  .submitButton:hover {
+    background-color: #45a049;
+  }
+
+  .innerSchoolConfirmation{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction:column;
+    height: 100vh;
+  }
+
+  .schoolRegForm{
+    align-items: center;
+    margin-left: 10%;
+  }
+  .infoLog .box{
+    display: flex; /* Use Flexbox for alignment */
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    width: 200px;
+    max-height: fit-content;
+    padding: 10px; /* Add padding around the box */
+    border: 2px solid black; /* Optional border for the box */
+    border-radius: 5px; /* Optional rounded corners */
+    background-color: rgb(30, 35, 100); /* Background color for the box */
+  }
+
+  .info{
+    max-width: 200px;
+    overflow-wrap: break-word; /* Break long words if necessary */
+    overflow: hidden;         /* Prevent text overflow */
+    text-overflow: ellipsis;
+    height: auto;
+    display: flex; /* Use Flexbox for alignment */
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    width: 200px;
+    word-wrap: break-word;
+    word-break: break-word;
+    padding: 10px; /* Add padding around the box */
+    border: 2px solid black; /* Optional border for the box */
+    border-radius: 5px; /* Optional rounded corners */
+    background-color: rgba(30, 35, 100, 0.213); /* Background color for the box */
+  }
+
+  .info p{
+    font-family: 'Arial', sans-serif;
+    color: black;
+    margin: 0; /* Remove default margin for precise alignment */
+    font-size: 1rem; /* Ensure consistent font size (optional) */
+    line-height: 1; /* Set line-height to avoid extra spacing */
+  }
+
+  .box p{
+    font-family: 'Arial', sans-serif;
+    color: white;
+    margin: 0; /* Remove default margin for precise alignment */
+    font-size: 1rem; /* Ensure consistent font size (optional) */
+    line-height: 1; /* Set line-height to avoid extra spacing */
+  }
+
+  .infoLogNote{
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    width: 400px;
+    padding: 10px;
+    height: auto;
+  }
+  .buttonLayout{
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .buttonLayout button{
+    width: 200px;
+    min-width: 200px;
+  }
+  .infoLogNote .box{
+    max-height: fit-content;
+    display: flex; /* Use Flexbox for alignment */
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    width: 200px;
+    padding: 10px; /* Add padding around the box */
+    border: 2px solid black; /* Optional border for the box */
+    border-radius: 5px; /* Optional rounded corners */
+    background-color: rgb(30, 35, 100); /* Background color for the box */
+  }
+
+  .infoLog{
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 400px;
+    padding: 10px;
+    height: auto;
+  }
+
+  .topInner{
+    display: flex;
+    flex-direction: row;
+  }

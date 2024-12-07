@@ -9,7 +9,9 @@ import InviteBilkentPage from "./InviteBilkentPage/InviteBilkentPage";
 import IndividualRegistrationPage from "./IndividualRegistrationPage/IndividualRegistrationPage";
 import SchoolRegistrationPage from "./SchoolRegistrationPage/SchoolRegistrationPage";
 import ViewRegistrationPage from "./ViewRegistrationPage/ViewRegistrationPage";
-
+import SchoolRegistrationContinuePage from "./SchoolRegistrationPage/SchoolRegistrationContinuePage";
+import SchoolRegistrationConfirmation from "./SchoolRegistrationPage/SchoolRegistrationConfirmation";
+import SuccessSchoolReg from "./SchoolRegistrationPage/SuccessSchoolReg";
 function App() {
   return (
     <Routes>
@@ -20,9 +22,18 @@ function App() {
       <Route path="/joinBTO" element={<JoinBTOPage />} />
       <Route path="/inviteBilkent" element={<InviteBilkentPage />} />
       <Route
+        path="/continueSchoolReg"
+        element={<SchoolRegistrationContinuePage />}
+      />
+      <Route
+        path="/schoolConfirmation"
+        element={<SchoolRegistrationConfirmation />}
+      />
+      <Route
         path="/individualRegistration"
         element={<IndividualRegistrationPage />}
       />
+      <Route path="/successSchoolRegistration" element={<SuccessSchoolReg />} />
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
     </Routes>

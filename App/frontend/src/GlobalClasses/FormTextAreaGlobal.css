@@ -1,27 +1,32 @@
-/* Global styles for form input elements */
-.form-input-global {
+/* Container for label and textarea */
+.form-textarea-container {
     display: flex;
-    align-items: center; /* Vertically align items in the center */
     justify-content: center;
+    margin-left: 10%;
+    margin-top: 10px;
     width: 450px;
     height: auto;
     border: 10px;
     border-radius: 5px;
     gap: 5px;
-}
+    padding: 10px;
 
-.form-input-global .box {
+  }
+  
+  /* Label styling */
+.form-textarea-container .box {
     display: flex; /* Use Flexbox for alignment */
-    align-items: center; /* Vertically center the content */
+    align-items: center;
     justify-content: center; /* Horizontally center the content */
-    width: 200px;
+    width: 189px;
+    height: 18px;
+    max-height: 18px;
     padding: 10px; /* Add padding around the box */
     border: 2px solid black; /* Optional border for the box */
     border-radius: 5px; /* Optional rounded corners */
     background-color: rgb(30, 35, 100); /* Background color for the box */
 }
-
-.form-input-global p {
+.form-textarea-container p{
     font-family: 'Arial', sans-serif;
     color: white;
     margin: 0; /* Remove default margin for precise alignment */
@@ -29,13 +34,15 @@
     line-height: 1; /* Set line-height to avoid extra spacing */
 }
 
-.form-input-global input {
-    min-width: 200px;
+
+  .form-textarea {
     width: 200px;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
+    min-height: 40px;
+    padding: 10px;
+    font-size: 14px;
     border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+    border: 1px solid #ccc;
+    resize: none; /* Prevent manual resizing */
+    overflow: hidden; /* Remove scrollbars */
+    font-family: Arial, sans-serif;
+  }
