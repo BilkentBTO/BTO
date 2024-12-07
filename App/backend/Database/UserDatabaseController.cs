@@ -31,8 +31,13 @@ namespace backend.Database
             return await _context.Users.SingleOrDefaultAsync(c => c.id == id);
         }
 
-        public async Task<User> InsertUserAsync(User user)
+        public async Task<User?> InsertUserAsync(User user)
         {
+            bool userExists = await _context.Users.AnyAsync(u => u.id == user.id);
+            if(userExists){
+              return null;
+            }
+
             _context.Add(user);
             try
             {
@@ -48,6 +53,11 @@ namespace backend.Database
 
         public async Task<bool> UpdateUserAsync(User user)
         {
+            bool userExists = await _context.Users.AnyAsync(u => u.id == user.id);
+            if(!userExists){
+              return false;
+            }
+
             _context.Users.Attach(user);
             _context.Entry(user).State = EntityState.Modified;
             try
@@ -63,6 +73,11 @@ namespace backend.Database
 
         public async Task<bool> DeleteUserAsync(int id)
         {
+            bool userExists = await _context.Users.AnyAsync(u => u.id == id);
+            if(!userExists){
+              return false;
+            }
+
             var user = await _context.Users.SingleOrDefaultAsync(c => c.id == id);
 
             _ = _context.Remove(user);
