@@ -42,8 +42,10 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
-    volumes:
-      - pg_data:/var/lib/postgresql/data
+    #This part makes the database persistent
+    #Remove for production
+    #volumes:
+    #  - pg_data:/var/lib/postgresql/data
     networks:
       - BTO
 

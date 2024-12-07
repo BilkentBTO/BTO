@@ -16,7 +16,7 @@ namespace backend.Server.Controllers
         [HttpGet()]
         [ProducesResponseType(typeof(List<User>), 200)]
         [ProducesResponseType(typeof(List<User>), 404)]
-        public async Task<ActionResult> Users()
+        public async Task<ActionResult> GetAllUsers()
         {
             var customers = await _controller.GetUsersAsync();
             if (customers == null) {
@@ -28,7 +28,7 @@ namespace backend.Server.Controllers
         [HttpGet("{id}", Name = "GetUsersRoute")]
         [ProducesResponseType(typeof(User), 200)]
         [ProducesResponseType(typeof(User), 404)]
-        public async Task<ActionResult> Users(int id)
+        public async Task<ActionResult> GetUserByID(int id)
         {
             var customer = await _controller.GetUserAsync(id);
             if (customer == null) {
@@ -40,7 +40,7 @@ namespace backend.Server.Controllers
         [HttpPost()]
         [ProducesResponseType(typeof(User), 201)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<ActionResult> PostCustomer([FromBody]User user)
+        public async Task<ActionResult> CreateUser([FromBody]User user)
         {
           if (!ModelState.IsValid) {
             return BadRequest(ModelState);
@@ -56,10 +56,10 @@ namespace backend.Server.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(bool), 400)]
-        public async Task<ActionResult> PutCustomer(int id, [FromBody]User user)
+        public async Task<ActionResult> UpdateUser(int id, [FromBody]User user)
         {
           if (!ModelState.IsValid) {
-            return BadRequest(this.ModelState);
+            return BadRequest(ModelState);
           }
 
           var status = await _controller.UpdateUserAsync(user);
@@ -72,7 +72,7 @@ namespace backend.Server.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(bool), 404)]
-        public async Task<ActionResult> DeleteCustomer(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
           var status = await _controller.DeleteUserAsync(id);
           if (!status) {
