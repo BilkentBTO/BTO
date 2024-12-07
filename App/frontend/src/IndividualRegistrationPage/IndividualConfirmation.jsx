@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
@@ -6,10 +6,12 @@ import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
 function IndividualConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
 
   // Initialize formData with all fields
   const formData = location.state?.formData || {};
-  console.log("FORM RECIEVED: ", formData);
+  console.log("FORM RECEIVED: ", formData);
+
   const handleEdit = () => {
     // Navigate back to the registration page with the current formData
     navigate("/individualRegistration", { state: { formData } });
@@ -24,12 +26,23 @@ function IndividualConfirmation() {
     navigate("/successIndividualRegistration", { state: { formData } });
   };
 
+  // Function to open the confirmation popup
+  const handleConfirmClick = () => {
+    setShowPopup(true); // Show the popup
+  };
+
+  // Function to close the popup
+  const closePopup = () => {
+    setShowPopup(false); // Hide the popup
+  };
+
   return (
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"Confirmation Page"}></HeaderGlobal>
       <div className="innerSchoolConfirmation">
         <div className="topInner">
           <div className="leftInner">
+            {/* Individual Info */}
             <div className="infoLog">
               <div className="box">
                 <p>Name:</p>
@@ -80,12 +93,31 @@ function IndividualConfirmation() {
             </div>
             <div className="buttonLayout">
               <button onClick={handleEdit}>Edit</button>
-              <button onClick={confirmReg}>Confirm</button>
+              <button onClick={handleConfirmClick}>Confirm</button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Confirmation Popup */}
+      {showPopup && (
+        <div className="popupOverlay">
+          <div className="popupContent">
+            <h2>Confirm Registration</h2>
+            <p>Are you sure you want to confirm this registration?</p>
+            <div className="popupActions">
+              <button onClick={confirmReg} className="confirmButton">
+                Yes, Confirm
+              </button>
+              <button onClick={closePopup} className="cancelButton">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 export default IndividualConfirmation;
