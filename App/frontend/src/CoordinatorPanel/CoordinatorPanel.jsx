@@ -1,6 +1,6 @@
 import MainRegButton from "../MainPage/MainRegButton";
 import "./CoordinatorPanel.css";
-import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
+import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 
 function CoordinatorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
@@ -14,8 +14,38 @@ function CoordinatorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
   return (
     <div className="coordinatorPanel">
-      <HeaderGlobal name={"COORDINATOR PANEL"} />
-      <div className="buttonCoordinatorPanelSection"></div>
+      <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
+      <div className="buttonCoordinatorPanelSection">
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton name="List All Users" link="/listAllUsers" />
+        </div>
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton
+            name="Assign Guide to Fairs"
+            link="/assignGuideToFairs"
+          />
+        </div>
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton
+            name="Manage Fair Requests"
+            link="/manageFairRequests"
+          />
+        </div>
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton name="Add Candidate Guide" link="/addCandidateGuide" />
+        </div>
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton name="Add Guide" link="/addGuide" />
+        </div>
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton name="Add Advisor" link="/addAdvisor" />
+        </div>
+        <div className="buttonCoordinatorPanel">
+          <MainRegButton name="Manage Surveys" link="/manageSurveys" />
+        </div>
+        {/* Add an empty cell for the unused space */}
+        <div className="emptyCell"></div>
+      </div>
       <div className="contactSection">
         <p className="contactInfo"></p>
       </div>

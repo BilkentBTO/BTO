@@ -1,0 +1,29 @@
+.buttonCoordinatorPanelSection {
+    margin: 0 auto; /* Centers the section horizontally */
+    margin-top: 40px;
+    display: grid; /* Use a grid layout */
+    grid-template-columns: repeat(2, 1fr); /* Creates two columns */
+    grid-gap: 2vw; /* Adds spacing between buttons */
+    justify-content: center; /* Ensures the grid is centered horizontally */
+    align-items: center; /* Ensures the grid is centered vertically */
+    width: 60%; /* Adjusts the width of the button container */
+     /* Allows the section to grow to fill the available space */
+}
+
+.buttonCoordinatorPanel {
+    background-color: rgb(100, 100, 200); /* Light background color for the panel */
+    border-radius: 5px; /* Rounded corners for the panel */
+    padding: 10px; /* Adds spacing inside the panel */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.lastCoordinatorItem {
+    background-color: rgb(0, 30, 120); /* Background color for the last item */
+    color: white; /* White text color */
+    border-radius: 5px; /* Rounded corners for the last guide item */
+    padding: 15px; /* Adds padding inside the item */
+    text-align: center; /* Centers the text inside the item */
+    font-size: 1.1rem; /* Adjusts font size for readability */
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow for emphasis */
+}
