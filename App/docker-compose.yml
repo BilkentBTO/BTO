@@ -7,6 +7,8 @@ services:
       - "5173:5173" 
     networks:
       - BTO
+    depends_on:
+      - backend
     develop:
       watch:
         - action: sync+restart
@@ -23,6 +25,8 @@ services:
       - "8080:8080"  
     networks:
       - BTO
+    depends_on:
+      - postgres
     develop:
       watch:
         - action: sync+restart
