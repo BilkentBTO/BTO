@@ -2,14 +2,12 @@
 .form-textarea-container {
     display: flex;
     justify-content: center;
-    margin-left: 10%;
-    margin-top: 10px;
     width: 450px;
     height: auto;
     border: 10px;
     border-radius: 5px;
     gap: 5px;
-    padding: 10px;
+
 
   }
   
@@ -18,8 +16,8 @@
     display: flex; /* Use Flexbox for alignment */
     align-items: center;
     justify-content: center; /* Horizontally center the content */
-    width: 189px;
-    height: 18px;
+    width: 200px;
+    height: auto;
     max-height: 18px;
     padding: 10px; /* Add padding around the box */
     border: 2px solid black; /* Optional border for the box */
@@ -37,12 +35,15 @@
 
   .form-textarea {
     width: 200px;
-    min-height: 40px;
+    min-height: 60px;
+    max-height: 60px;
+    scroll-behavior: smooth;
     padding: 10px;
     font-size: 14px;
     border-radius: 5px;
     border: 1px solid #ccc;
     resize: none; /* Prevent manual resizing */
-    overflow: hidden; /* Remove scrollbars */
+    overflow: auto; /* Remove scrollbars */
     font-family: Arial, sans-serif;
+
   }

@@ -12,15 +12,15 @@
 }
 
 .submitButton {
-    background-color: #4caf50;
-    color: white;
+    background-color:  rgb(30, 35, 100);
+    color: white; 
     padding: 10px 20px;
     border: none;
     font-size: 16px;
   }
   
   .submitButton:hover {
-    background-color: #45a049;
+    background-color: rgb(21, 21, 70);
   }
 
   .innerSchoolConfirmation{
@@ -32,8 +32,11 @@
   }
 
   .schoolRegForm{
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     align-items: center;
-    margin-left: 10%;
   }
   .infoLog .box{
     display: flex; /* Use Flexbox for alignment */
