@@ -64,13 +64,13 @@ function ViewRegistrationPage() {
         <p className="viewNotes">
           <span className="viewLabel">Notes to Consider:</span> {notes || "N/A"}
         </p>
-      </div>
-      <div className="viewButtonSection">
-        <ButtonHeaderGlobal
-          name={"Cancel Registration"}
-          link="/"
-        ></ButtonHeaderGlobal>
-        <ButtonHeaderGlobal name={"Back"} link="/"></ButtonHeaderGlobal>
+        <div className="viewButtonSection">
+          <ButtonHeaderGlobal
+            name={"Cancel Registration"}
+            link="/"
+          ></ButtonHeaderGlobal>
+          <ButtonHeaderGlobal name={"Back"} link="/"></ButtonHeaderGlobal>
+        </div>
       </div>
       <div className="contactSection">
         <p className="contactInfo"></p>
