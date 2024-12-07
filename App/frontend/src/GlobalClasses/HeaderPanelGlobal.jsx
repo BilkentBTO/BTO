@@ -1,8 +1,16 @@
 import bilkentLogo from "../assets/bilkent_logo.png";
 import profileImage from "../assets/profile_image.png";
+import { useNavigate } from "react-router-dom";
+
 import "./HeaderPanelGlobal.css";
 
 function HeaderPanelGlobal({ name }) {
+  const navigate = useNavigate();
+  const handleProfileClick = () => {
+    console.log("Profile button clicked!");
+    navigate("/"); // Navigate to the root page
+  };
+
   return (
     <header className="header">
       <div className="container">
@@ -16,7 +24,7 @@ function HeaderPanelGlobal({ name }) {
         <div className="title">
           <h1>{name}</h1>
         </div>
-        <button className="profileButton">
+        <button className="profileButton" onClick={handleProfileClick}>
           <img src={profileImage} alt="Profile Image" className="profile" />
         </button>
       </div>
