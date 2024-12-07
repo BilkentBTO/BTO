@@ -1,6 +1,6 @@
 .buttonCoordinatorPanelSection {
     margin: 0 auto; /* Centers the section horizontally */
-    margin-top: 40px;
+    margin-top: 20px;
     display: grid; /* Use a grid layout */
     grid-template-columns: repeat(2, 1fr); /* Creates two columns */
     grid-gap: 2vw; /* Adds spacing between buttons */

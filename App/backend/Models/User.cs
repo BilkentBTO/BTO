@@ -8,16 +8,17 @@ namespace backend.Models
         Guide = 3,
         CandidateGuide = 4
     }
-    public class User
+    public class User(int id, string name, UserType userType)
     {
-        public int id { get; set; }
-        public required string Name { get; set; }
-        public int WorkHours { get; set; }
-        public UserType UserType{ get; set; }
-
+        public int id { get; set; } = id;
+        public string Name { get; set; } = name;
+        public int WorkHours { get; set; } = 0;
+        public UserType UserType { get; set; } = userType;
     }
 
     public class Guide : User{
-        
+        public Guide(int id, string name, UserType userType) : base(id, name, userType)
+        {
+        }
     }
 }
