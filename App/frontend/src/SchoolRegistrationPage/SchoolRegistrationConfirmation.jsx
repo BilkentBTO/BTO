@@ -12,6 +12,7 @@ function SchoolRegistrationConfirmation() {
   console.log("FORM RECIEVED: ", formData);
   const handleEdit = () => {
     // Navigate back to the registration page with the current formData
+    console.log("Mal Aq", formData);
     navigate("/schoolRegistration", { state: { formData } });
   };
 

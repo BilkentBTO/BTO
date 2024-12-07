@@ -2,9 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import "./FormInputGlobal.css";
 import "./FormDropDownGlobal.css";
 
-const SearchableDropdown = ({ array, question, onChange }) => {
+const SearchableDropdown = ({
+  array = [],
+  question = "Default Question",
+  onChange = () => {},
+  initialValue = "", // New parameter for initial selection
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState(
+    initialValue || (array.length > 0 ? array[0] : "")
+  ); // Use initialValue or first array element
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -21,6 +28,11 @@ const SearchableDropdown = ({ array, question, onChange }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    console.log(initialValue);
+    setSelectedValue(initialValue); // Update selected value when initialValue changes
+  }, [initialValue]);
 
   return (
     <div className="dropdown-wrapper" ref={dropdownRef}>
@@ -73,10 +85,20 @@ const SearchableDropdown = ({ array, question, onChange }) => {
   );
 };
 
-function FormDropDownGlobal({ arr, question, onChange = () => {} }) {
+function FormDropDownGlobal({
+  arr = [],
+  question = "Default Question",
+  onChange = () => {},
+  initialValue = "", // Pass initialValue to SearchableDropdown
+}) {
   return (
     <div>
-      <SearchableDropdown array={arr} question={question} onChange={onChange} />
+      <SearchableDropdown
+        array={arr}
+        question={question}
+        onChange={onChange}
+        initialValue={initialValue}
+      />
     </div>
   );
 }
