@@ -52,7 +52,7 @@ function SchoolRegistrationContinuePage() {
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"SCHOOL REGISTRATION FORM"} />
       <div className="innerSchoolRegPage">
-        <div>
+        <div className="schoolRegForm">
           {/* Supervisor Name */}
           <FormInputGlobal
             question={"Supervisor Name*"}

@@ -5,7 +5,6 @@
     justify-content: center;
     width: 450px;
     height: auto;
-    border: 10px;
     border-radius: 5px;
     gap: 5px;
 }
@@ -15,6 +14,7 @@
     align-items: center; /* Vertically center the content */
     justify-content: center; /* Horizontally center the content */
     width: 200px;
+    height: auto;
     padding: 10px; /* Add padding around the box */
     border: 2px solid black; /* Optional border for the box */
     border-radius: 5px; /* Optional rounded corners */
@@ -31,9 +31,9 @@
 
 .form-input-global input {
     min-width: 200px;
+    height: auto;
     width: 200px;
-    padding: 12px 15px;
-    margin: 10px 0;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
