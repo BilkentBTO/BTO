@@ -19,9 +19,9 @@ function LoginPage() {
       return;
     } else {
       // TEMPORARY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      navigate("/guidePanel");
+      // navigate("/guidePanel");
       // navigate("/advisorPanel");
-      // navigate("/coordinatorPanel");
+      navigate("/coordinatorPanel");
       // navigate("/adminPanel");
       // TEMPORARY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
