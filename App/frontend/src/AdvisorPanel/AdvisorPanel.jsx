@@ -21,16 +21,16 @@ function AdvisorPanel() {
           <p className="lastAdvisorItem">{lastAdvisorItem2}</p>
         </div>
         <div className="buttonAdvisorPanel">
-          <MainRegButton name="Access to Guide Panel" link="/guidePanel" />
+          <MainRegButton
+            name="Evaluate Tour Requests"
+            link="/evaluateTourRequests"
+          />
         </div>
         <div className="buttonAdvisorPanel">
           <MainRegButton name="Access to Message Panel" link="/messagePanel" />
         </div>
         <div className="buttonAdvisorPanelTour">
-          <MainRegButton
-            name="Evaluate Tour Requests"
-            link="/evaluateTourRequests"
-          />
+          <MainRegButton name="Access to Guide Panel" link="/guidePanel" />
         </div>
         <div className="buttonAdvisorPanel">
           <MainRegButton name="Tours Responsible" link="/toursResponsible" />
