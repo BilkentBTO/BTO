@@ -17,9 +17,14 @@ function LoginPage() {
       setPopupMessage("Error: Invalid username or password entered.");
       setIsPopupVisible(true);
       return;
+    } else {
+      // TEMPORARY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      navigate("/guidePanel");
+      // navigate("/advisorPanel");
+      // navigate("/coordinatorPanel");
+      // navigate("/adminPanel");
+      // TEMPORARY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
-    console.log("Username:", username);
-    console.log("Password:", password);
   };
 
   const closePopup = () => {

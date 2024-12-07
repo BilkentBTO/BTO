@@ -9,6 +9,10 @@ import InviteBilkentPage from "./InviteBilkentPage/InviteBilkentPage";
 import IndividualRegistrationPage from "./IndividualRegistrationPage/IndividualRegistrationPage";
 import SchoolRegistrationPage from "./SchoolRegistrationPage/SchoolRegistrationPage";
 import ViewRegistrationPage from "./ViewRegistrationPage/ViewRegistrationPage";
+import GuidePanel from "./GuidePanel/GuidePanel";
+import AdvisorPanel from "./AdvisorPanel/AdvisorPanel";
+import AdminPanel from "./AdminPanel/AdminPanel";
+import CoordinatorPanel from "./CoordinatorPanel/CoordinatorPanel";
 
 function App() {
   return (
@@ -25,6 +29,10 @@ function App() {
       />
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
+      <Route path="/guidePanel" element={<GuidePanel />} />
+      <Route path="/advisorPanel" element={<AdvisorPanel />} />
+      <Route path="/coordinatorPanel" element={<CoordinatorPanel />} />
+      <Route path="/adminPanel" element={<AdminPanel />} />
     </Routes>
   );
 }
