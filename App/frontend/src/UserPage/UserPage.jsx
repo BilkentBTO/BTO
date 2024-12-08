@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useStat, useEffect } from "react";
 import profileImage from "../assets/profile_image.png";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import "./UserPage.css";
@@ -19,7 +19,9 @@ function UserPage({ username }) {
   const handleCancel = () => {
     setIsEditing(false); // Exit edit mode without saving
   };
-
+  useEffect(() => {
+    document.title = "View Profile - BTO"; // Set the tab title
+  }, []);
   return (
     <div>
       <HeaderPanelGlobal name={"Profile Page"} />

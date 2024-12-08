@@ -3,6 +3,7 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { useState } from "react";
 
 function JoinBTOPage() {
@@ -10,6 +11,9 @@ function JoinBTOPage() {
   const years = ["1. Year", "2. Year", "3. Year", "4. Year"];
   const navigate = useNavigate();
   const location = useLocation();
+  useEffect(() => {
+    document.title = "Join BTO - BTO"; // Set the tab title
+  }, []);
 
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {

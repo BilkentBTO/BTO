@@ -3,7 +3,7 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function SchoolRegistrationPage() {
   const cities = ["Ankara", "İstanbul", "İzmir", "Bursa"];
@@ -30,6 +30,9 @@ function SchoolRegistrationPage() {
     );
   });
 
+  useEffect(() => {
+    document.title = "School Tour Registration - BTO"; // Set the tab title
+  }, []);
   // Generic handler for form state updates
   const handleChange = (key, value) => {
     setFormData((prev) => ({

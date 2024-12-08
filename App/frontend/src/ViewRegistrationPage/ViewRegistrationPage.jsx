@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import "./ViewRegistrationPage.css";
@@ -20,6 +21,10 @@ function ViewRegistrationPage() {
     supervisorMail,
     notes,
   } = registrationData;
+
+  useEffect(() => {
+    document.title = "View Tour Registration - BTO"; // Set the tab title
+  }, []);
 
   return (
     <div className="viewRegistrationPage">
