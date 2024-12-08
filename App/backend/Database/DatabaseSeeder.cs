@@ -20,6 +20,7 @@ namespace backend.Database
             await _credentialDbSeeder.SeedAsync(serviceProvider);
         }
     }
+
     public class UserDbSeeder
     {
         readonly ILogger _logger;
@@ -31,16 +32,22 @@ namespace backend.Database
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
         {
-            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (
+                var serviceScope = serviceProvider
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope()
+            )
             {
                 var userDb = serviceScope.ServiceProvider.GetService<UserDbContext>();
-                if(userDb == null){
+                if (userDb == null)
+                {
                     return;
                 }
                 if (await userDb.Database.EnsureCreatedAsync())
                 {
-                    if (!await userDb.Users.AnyAsync()) {
-                      await InsertUsersSampleData(userDb);
+                    if (!await userDb.Users.AnyAsync())
+                    {
+                        await InsertUsersSampleData(userDb);
                     }
                 }
             }
@@ -55,14 +62,15 @@ namespace backend.Database
                 await db.SaveChangesAsync();
             }
             catch (Exception exp)
-            {                
+            {
                 _logger.LogError($"Error in {nameof(UserDbSeeder)}: " + exp.Message);
-                throw; 
+                throw;
             }
         }
 
-        private List<User> GetUsers() {
-            var users = new List<User> 
+        private List<User> GetUsers()
+        {
+            var users = new List<User>
             {
                 new User(1, "Ege", UserType.Guide),
                 new User(2, "Bora", UserType.Admin),
@@ -83,16 +91,22 @@ namespace backend.Database
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
         {
-            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (
+                var serviceScope = serviceProvider
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope()
+            )
             {
                 var credentialDb = serviceScope.ServiceProvider.GetService<CredentialDbContext>();
-                if(credentialDb == null){
+                if (credentialDb == null)
+                {
                     return;
                 }
                 if (await credentialDb.Database.EnsureCreatedAsync())
                 {
-                    if (!await credentialDb.Credentials.AnyAsync()) {
-                      await InsertCredentialsSampleData(credentialDb);
+                    if (!await credentialDb.Credentials.AnyAsync())
+                    {
+                        await InsertCredentialsSampleData(credentialDb);
                     }
                 }
             }
@@ -107,17 +121,18 @@ namespace backend.Database
                 await db.SaveChangesAsync();
             }
             catch (Exception exp)
-            {                
+            {
                 _logger.LogError($"Error in {nameof(CredentialDbSeeder)}: " + exp.Message);
-                throw; 
+                throw;
             }
         }
 
-        private List<Credential> GetCredentials() {
-            var creds = new List<Credential> 
+        private List<Credential> GetCredentials()
+        {
+            var creds = new List<Credential>
             {
                 new Credential("canga", "can123", UserType.Admin),
-                new Credential("borabora", "bora123", UserType.Guide),
+                new Credential("bora", "bora123", UserType.Guide),
             };
 
             return creds;
