@@ -24,6 +24,7 @@ import FairConfirmation from "./InviteBilkentPage/FairConfirmation";
 import SuccessInvite from "./InviteBilkentPage/SuccessInvite";
 import SuccessJoin from "./JoinBTOPage/SuccessJoin";
 import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
+import UserPage from "./UserPage/UserPage";
 function App() {
   return (
     <Routes>
@@ -33,6 +34,8 @@ function App() {
       <Route path="/regCode" element={<RegCodePage />} />
       <Route path="/joinBTO" element={<JoinBTOPage />} />
       <Route path="/inviteBilkent" element={<InviteBilkentPage />} />
+      <Route path="/userPage" element={<UserPage />} />
+
       <Route
         path="/continueSchoolReg"
         element={<SchoolRegistrationContinuePage />}

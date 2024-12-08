@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import bilkentLogo from "../assets/bilkent_logo.png";
+import { useEffect } from "react";
 import LoginTextEdit from "./LoginTextEdit";
 import { useNavigate } from "react-router-dom";
 import returnButton from "../assets/return.png";
@@ -49,6 +50,9 @@ function LoginPage() {
   const goBack = () => {
     navigate("/");
   };
+  useEffect(() => {
+    document.title = "Login Page - BTO"; // Set the tab title
+  }, []);
 
   return (
     <div className="loginPage">

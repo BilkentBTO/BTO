@@ -1,8 +1,14 @@
 import MainHeader from "./MainHeader";
 import MainRegButton from "./MainRegButton";
+import React from "react";
+import { useEffect } from "react";
 import "./MainPage.css";
 
 function MainPage() {
+  useEffect(() => {
+    document.title = "Main Page - BTO"; // Set the tab title
+  }, []);
+
   return (
     <div className="mainPage">
       <MainHeader />

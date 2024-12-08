@@ -1,8 +1,13 @@
 import MainRegButton from "../MainPage/MainRegButton";
 import "./RegChoicePage.css";
+import { useEffect } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 
 function RegChoicePage() {
+  useEffect(() => {
+    document.title = "Registration Selection - BTO"; // Set the tab title
+  }, []);
+
   return (
     <div className="regChoicePage">
       <HeaderGlobal name={"REGISTRATION FORM"} />

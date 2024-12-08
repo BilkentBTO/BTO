@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import "./RegCode.css";
 
 function RegCodePage() {
@@ -39,6 +40,9 @@ function RegCodePage() {
       },
     });
   };
+  useEffect(() => {
+    document.title = "View Registration Code - BTO"; // Set the tab title
+  }, []);
 
   const closePopup = () => {
     setIsPopupVisible(false); // Hide the pop-up

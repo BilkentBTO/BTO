@@ -3,6 +3,7 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { useState } from "react";
 import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
 
@@ -12,6 +13,9 @@ function InviteBilkentPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    document.title = "Invite Bilkent - BTO"; // Set the tab title
+  }, []);
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
     return (

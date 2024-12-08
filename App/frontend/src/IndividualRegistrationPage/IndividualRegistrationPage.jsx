@@ -4,6 +4,7 @@ import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { useState } from "react";
 
 function IndividualRegistrationPage() {
@@ -53,6 +54,9 @@ function IndividualRegistrationPage() {
     console.log("Form Data:", formData);
     navigate("/individualConfirmation", { state: { formData } });
   };
+  useEffect(() => {
+    document.title = "Individual Tour Registration - BTO"; // Set the tab title
+  }, []);
 
   return (
     <div className="schoolRegistrationPage">
