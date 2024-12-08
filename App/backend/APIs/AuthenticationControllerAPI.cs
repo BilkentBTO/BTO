@@ -57,7 +57,7 @@ namespace backend.Server.Controllers
 
             var token = await GenerateJwtToken(request.Username);
 
-            return Ok(new { token });
+            return Ok(token);
         }
 
         [HttpPost("register")]
