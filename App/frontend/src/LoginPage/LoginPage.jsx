@@ -3,6 +3,7 @@ import bilkentLogo from "../assets/bilkent_logo.png";
 import { useEffect } from "react";
 import LoginTextEdit from "./LoginTextEdit";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import returnButton from "../assets/return.png";
 import "./LoginPage.css";
 
@@ -31,10 +32,29 @@ function LoginPage() {
         throw new Error(`Login failed: ${response.statusText}`);
       }
 
-      const result = await response.text();
-      console.log("Result: ", result);
+      const token = await response.text();
 
-      navigate("/coordinatorPanel");
+      const decodedToken = jwtDecode(token);
+
+      console.log("Result: ", token);
+
+      localStorage.setItem("jwt", token);
+
+      const role =
+        decodedToken[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
+      if (role === "Coordinator") {
+        navigate("/coordinatorPanel");
+      } else if (role === "Admin") {
+        navigate("/adminPanel");
+      } else if (role === "Guide") {
+        navigate("/guidePanel");
+      } else if (role === "Advisor") {
+        navigate("/advisorPanel");
+      } else {
+        throw new Error("Unauthorized role");
+      }
     } catch (error) {
       setPopupMessage(`Error: ${error.message}`);
       setIsPopupVisible(true);
