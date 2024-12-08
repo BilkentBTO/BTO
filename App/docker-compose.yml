@@ -26,7 +26,8 @@ services:
     networks:
       - BTO
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     develop:
       watch:
         - action: sync+restart
@@ -46,6 +47,11 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     #This part makes the database persistent
     #Remove for production
     #volumes:

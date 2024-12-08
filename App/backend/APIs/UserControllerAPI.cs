@@ -15,7 +15,7 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(List<User>), 200)]
         [ProducesResponseType(typeof(List<User>), 404)]
         public async Task<ActionResult> GetAllUsers()
@@ -28,6 +28,7 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet("{id}", Name = "GetUsersRoute")]
+        [Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(User), 200)]
         [ProducesResponseType(typeof(User), 404)]
         public async Task<ActionResult> GetUserByID(int id)
