@@ -22,3 +22,7 @@
     border-radius: 4px;
     background-color: rgba(30, 35, 100, 0.213);
 }
+.logoutButton{
+    margin-top: 10px;
+    background-color: red;
+}

@@ -1,10 +1,12 @@
-import React, { useStat, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import profileImage from "../assets/profile_image.png";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import "./UserPage.css";
 
 function UserPage({ username }) {
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("email@example.com"); // Only email is customizable
 
   const handleEdit = () => {
@@ -14,6 +16,12 @@ function UserPage({ username }) {
   const handleSave = () => {
     setIsEditing(false); // Exit edit mode
     console.log("Updated Email:", email); // Save the new email (can be sent to a server)
+  };
+
+  const handleLogout = () => {
+    console.log("Logout");
+    localStorage.removeItem("jwt");
+    navigate("/");
   };
 
   const handleCancel = () => {
@@ -80,6 +88,9 @@ function UserPage({ username }) {
         ) : (
           <button onClick={handleEdit}>Change Email</button>
         )}
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </div>
   );

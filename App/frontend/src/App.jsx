@@ -26,6 +26,7 @@ import SuccessJoin from "./JoinBTOPage/SuccessJoin";
 import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import UserPage from "./UserPage/UserPage";
+
 function App() {
   return (
     <Routes>
@@ -63,7 +64,6 @@ function App() {
         element={<SuccessIndividualRegistration />}
       />
       <Route path="/successJoin" element={<SuccessJoin />} />
-
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
       <Route
