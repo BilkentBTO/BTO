@@ -12,23 +12,34 @@ function LoginPage() {
   const [popupMessage, setPopupMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (username !== "admin" || password != "1234") {
-      setPopupMessage("Error: Invalid username or password entered.");
-      setIsPopupVisible(true);
-      return;
-    } else {
-      // TEMPORARY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      // navigate("/guidePanel");
-      // navigate("/advisorPanel");
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("/api/Credential/login", {
+        method: "POST",
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      console.log(response.ok);
+      if (!response.ok) {
+        throw new Error(`Login failed: ${response.statusText}`);
+      }
+
+      const result = await response.text();
+      console.log(result);
+
       navigate("/coordinatorPanel");
-      // navigate("/adminPanel");
-      // TEMPORARY !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    } catch (error) {
+      setPopupMessage(`Error: ${error.message}`);
+      setIsPopupVisible(true);
     }
   };
 
   const closePopup = () => {
-    setIsPopupVisible(false); // Hide the pop-up
+    setIsPopupVisible(false);
   };
 
   const forgotPassword = () => {

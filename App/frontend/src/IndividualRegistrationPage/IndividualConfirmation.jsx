@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./SchoolRegistrationPage.css";
+import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
 
-function SchoolRegistrationConfirmation() {
+function IndividualConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
@@ -14,7 +14,7 @@ function SchoolRegistrationConfirmation() {
 
   const handleEdit = () => {
     // Navigate back to the registration page with the current formData
-    navigate("/schoolRegistration", { state: { formData } });
+    navigate("/individualRegistration", { state: { formData } });
   };
 
   // Function to handle the "Confirm" button click
@@ -23,7 +23,7 @@ function SchoolRegistrationConfirmation() {
     console.log("Registration Confirmed:", formData);
 
     // Navigate to a success page or show a success message
-    navigate("/successSchoolRegistration", { state: { formData } });
+    navigate("/successIndividualRegistration", { state: { formData } });
   };
 
   // Function to open the confirmation popup
@@ -42,21 +42,21 @@ function SchoolRegistrationConfirmation() {
       <div className="innerSchoolConfirmation">
         <div className="topInner">
           <div className="leftInner">
-            {/* Left Side Info */}
+            {/* Individual Info */}
             <div className="infoLog">
               <div className="box">
-                <p>City:</p>
+                <p>Name:</p>
               </div>
               <div className="info">
-                <p>{formData.city}</p>
+                <p>{formData.name}</p>
               </div>
             </div>
             <div className="infoLog">
               <div className="box">
-                <p>School:</p>
+                <p>Surname:</p>
               </div>
               <div className="info">
-                <p>{formData.school}</p>
+                <p>{formData.surname}</p>
               </div>
             </div>
             <div className="infoLog">
@@ -77,10 +77,10 @@ function SchoolRegistrationConfirmation() {
             </div>
             <div className="infoLog">
               <div className="box">
-                <p>Visitor Count:</p>
+                <p>Preferred Major:</p>
               </div>
               <div className="info">
-                <p>{formData.visitorCount}</p>
+                <p>{formData.major}</p>
               </div>
             </div>
             <div className="infoLogNote">
@@ -89,41 +89,6 @@ function SchoolRegistrationConfirmation() {
               </div>
               <div className="info">
                 <p>{formData.notes}</p>
-              </div>
-            </div>
-          </div>
-          <div className="rightInner">
-            {/* Right Side Info */}
-            <div className="infoLog">
-              <div className="box">
-                <p>Supervisor Name:</p>
-              </div>
-              <div className="info">
-                <p>{formData.supervisorName}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Supervisor Duty:</p>
-              </div>
-              <div className="info">
-                <p>{formData.supervisorDuty}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Supervisor Phone:</p>
-              </div>
-              <div className="info">
-                <p>{formData.supervisorPhone}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Supervisor Email:</p>
-              </div>
-              <div className="info">
-                <p>{formData.supervisorEmail}</p>
               </div>
             </div>
             <div className="buttonLayout">
@@ -155,4 +120,4 @@ function SchoolRegistrationConfirmation() {
   );
 }
 
-export default SchoolRegistrationConfirmation;
+export default IndividualConfirmation;

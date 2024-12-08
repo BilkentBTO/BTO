@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./SchoolRegistrationPage.css";
+import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
 
-function SchoolRegistrationConfirmation() {
+function FairConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
@@ -14,7 +14,7 @@ function SchoolRegistrationConfirmation() {
 
   const handleEdit = () => {
     // Navigate back to the registration page with the current formData
-    navigate("/schoolRegistration", { state: { formData } });
+    navigate("/inviteBilkent", { state: { formData } });
   };
 
   // Function to handle the "Confirm" button click
@@ -23,7 +23,7 @@ function SchoolRegistrationConfirmation() {
     console.log("Registration Confirmed:", formData);
 
     // Navigate to a success page or show a success message
-    navigate("/successSchoolRegistration", { state: { formData } });
+    navigate("/successInvite", { state: { formData } });
   };
 
   // Function to open the confirmation popup
@@ -42,7 +42,7 @@ function SchoolRegistrationConfirmation() {
       <div className="innerSchoolConfirmation">
         <div className="topInner">
           <div className="leftInner">
-            {/* Left Side Info */}
+            {/* Left Section */}
             <div className="infoLog">
               <div className="box">
                 <p>City:</p>
@@ -59,30 +59,6 @@ function SchoolRegistrationConfirmation() {
                 <p>{formData.school}</p>
               </div>
             </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Visit Date:</p>
-              </div>
-              <div className="info">
-                <p>{formData.visitDate}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Visit Time:</p>
-              </div>
-              <div className="info">
-                <p>{formData.visitTime}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Visitor Count:</p>
-              </div>
-              <div className="info">
-                <p>{formData.visitorCount}</p>
-              </div>
-            </div>
             <div className="infoLogNote">
               <div className="box">
                 <p>Notes:</p>
@@ -93,7 +69,7 @@ function SchoolRegistrationConfirmation() {
             </div>
           </div>
           <div className="rightInner">
-            {/* Right Side Info */}
+            {/* Right Section */}
             <div className="infoLog">
               <div className="box">
                 <p>Supervisor Name:</p>
@@ -155,4 +131,4 @@ function SchoolRegistrationConfirmation() {
   );
 }
 
-export default SchoolRegistrationConfirmation;
+export default FairConfirmation;

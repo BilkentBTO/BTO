@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import { useLocation, useNavigate } from "react-router-dom";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
@@ -8,33 +8,34 @@ function SchoolRegistrationContinuePage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Initialize formData with all fields
-  const initialFormData = location.state || {};
+  // Extract initial form data from location.state or provide defaults
+  const initialFormData = location?.state?.formData || {
+    city: "",
+    school: "",
+    visitDate: "",
+    visitTime: "",
+    visitorCount: "",
+    supervisorName: "",
+    supervisorDuty: "",
+    supervisorPhone: "",
+    supervisorEmail: "",
+    notes: "",
+  };
 
-  const [formData, setFormData] = React.useState({
-    city: initialFormData?.city || "",
-    school: initialFormData?.school || "",
-    visitDate: initialFormData?.visitDate || "",
-    visitTime: initialFormData?.visitTime || "",
-    visitorCount: initialFormData?.visitorCount || "",
-    supervisorName: initialFormData?.supervisorName || "",
-    supervisorDuty: initialFormData?.supervisorDuty || "",
-    supervisorPhone: initialFormData?.supervisorPhone || "",
-    supervisorEmail: initialFormData?.supervisorEmail || "",
-    notes: initialFormData?.notes || "",
-  });
-  console.log("initial", initialFormData);
+  // Initialize formData state
+  const [formData, setFormData] = useState(initialFormData);
 
-  // Handle input changes
+  // Generic handler for updating form state
   const handleChange = (key, value) => {
     setFormData((prev) => ({
-      ...prev, // Retain all previous fields
-      [key]: value, // Update only the specific key
+      ...prev,
+      [key]: value,
     }));
   };
 
   // Handle form submission
   const handleSubmit = () => {
+    // Validate required fields
     if (
       !formData.supervisorName ||
       !formData.supervisorDuty ||
@@ -44,55 +45,62 @@ function SchoolRegistrationContinuePage() {
       alert("Please fill in all the required fields.");
       return;
     }
-    console.log("Final Form Data:", formData); // Debugging log
-    navigate("/schoolConfirmation", { state: { formData } }); // Pass updated formData to next page
+
+    // Debugging log
+    console.log("Final Form Data:", formData);
+
+    // Navigate to confirmation page with updated formData
+    navigate("/schoolConfirmation", { state: { formData } });
   };
 
   return (
     <div className="schoolRegistrationPage">
-      <HeaderGlobal name={"SCHOOL REGISTRATION FORM"} />
+      <HeaderGlobal name="SCHOOL REGISTRATION FORM" />
       <div className="innerSchoolRegPage">
         <div className="schoolRegForm">
           {/* Supervisor Name */}
           <FormInputGlobal
-            question={"Supervisor Name*"}
+            question="Supervisor Name*"
             type="text"
-            value={formData.supervisorName || ""}
-            onChange={(e) => handleChange("supervisorName", e.target.value)}
+            value={formData.supervisorName}
+            onChange={(value) => handleChange("supervisorName", value)}
           />
 
           {/* Supervisor Duty */}
           <FormInputGlobal
             question="Supervisor Duty*"
             type="text"
-            value={formData.supervisorDuty || ""}
-            onChange={(e) => handleChange("supervisorDuty", e.target.value)}
+            value={formData.supervisorDuty}
+            onChange={(value) => handleChange("supervisorDuty", value)}
           />
 
           {/* Supervisor Phone */}
           <FormInputGlobal
             question="Supervisor Cell Phone*"
             type="tel"
-            value={formData.supervisorPhone || ""}
-            onChange={(e) => handleChange("supervisorPhone", e.target.value)}
+            value={formData.supervisorPhone}
+            onChange={(value) => handleChange("supervisorPhone", value)}
           />
 
           {/* Supervisor Email */}
           <FormInputGlobal
             question="Supervisor E-Mail*"
             type="email"
-            value={formData.supervisorEmail || ""}
-            onChange={(e) => handleChange("supervisorEmail", e.target.value)}
+            value={formData.supervisorEmail}
+            onChange={(value) => handleChange("supervisorEmail", value)}
           />
 
           {/* Notes */}
           <FormTextAreaGlobal
-            value={formData.notes || ""}
+            question="Notes"
+            value={formData.notes}
             onChange={(value) => handleChange("notes", value)}
           />
 
           {/* Submit Button */}
-          <button onClick={handleSubmit}>Submit</button>
+          <button onClick={handleSubmit} className="submitButton">
+            Submit
+          </button>
         </div>
       </div>
     </div>
