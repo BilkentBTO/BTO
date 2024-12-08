@@ -18,6 +18,12 @@ import CoordinatorPanel from "./CoordinatorPanel/CoordinatorPanel";
 import SchoolRegistrationContinuePage from "./SchoolRegistrationPage/SchoolRegistrationContinuePage";
 import SchoolRegistrationConfirmation from "./SchoolRegistrationPage/SchoolRegistrationConfirmation";
 import SuccessSchoolReg from "./SchoolRegistrationPage/SuccessSchoolReg";
+import IndividualConfirmation from "./IndividualRegistrationPage/IndividualConfirmation";
+import SuccessIndividualRegistration from "./IndividualRegistrationPage/SuccessIndividualRegistration";
+import FairConfirmation from "./InviteBilkentPage/FairConfirmation";
+import SuccessInvite from "./InviteBilkentPage/SuccessInvite";
+import SuccessJoin from "./JoinBTOPage/SuccessJoin";
+import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 function App() {
   return (
     <Routes>
@@ -40,6 +46,20 @@ function App() {
         element={<IndividualRegistrationPage />}
       />
       <Route path="/successSchoolRegistration" element={<SuccessSchoolReg />} />
+      <Route path="/successInvite" element={<SuccessInvite />} />
+      <Route path="/joinConfirmation" element={<JoinConfirmation />} />
+
+      <Route
+        path="/individualConfirmation"
+        element={<IndividualConfirmation />}
+      />
+      <Route path="/fairConfirmation" element={<FairConfirmation />} />
+      <Route
+        path="/successIndividualRegistration"
+        element={<SuccessIndividualRegistration />}
+      />
+      <Route path="/successJoin" element={<SuccessJoin />} />
+
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
       <Route path="/guidePanel" element={<GuidePanel />} />
