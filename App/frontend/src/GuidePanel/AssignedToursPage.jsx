@@ -2,6 +2,7 @@ import React from "react";
 import Table from "../GlobalClasses/Table";
 import "./AssignedToursPage.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
+import TableWithButtons from "../GlobalClasses/TableWithButtons";
 
 function AssignedToursPage() {
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -65,7 +66,7 @@ function AssignedToursPage() {
       <HeaderPanelGlobal name={"GUIDE PANEL"} />
       <div>
         <h1 className="assignedToursHeading">Assigned Tours</h1>
-        <Table headers={headers} data={data} />
+        <TableWithButtons headers={headers} data={data} />
       </div>
       <div className="contactSection">
         <p className="contactInfo"></p>
