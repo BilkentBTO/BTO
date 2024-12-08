@@ -24,13 +24,15 @@ function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
 
-      console.log(response.ok);
+      console.log("Response: ", response.json);
+      console.log(response);
+
       if (!response.ok) {
         throw new Error(`Login failed: ${response.statusText}`);
       }
 
       const result = await response.text();
-      console.log(result);
+      console.log("Result: ", result);
 
       navigate("/coordinatorPanel");
     } catch (error) {
