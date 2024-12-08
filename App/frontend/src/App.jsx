@@ -24,6 +24,7 @@ import FairConfirmation from "./InviteBilkentPage/FairConfirmation";
 import SuccessInvite from "./InviteBilkentPage/SuccessInvite";
 import SuccessJoin from "./JoinBTOPage/SuccessJoin";
 import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
+import RoleProtectedRoute from "./RoleProtectedRoute";
 import UserPage from "./UserPage/UserPage";
 function App() {
   return (
@@ -65,10 +66,18 @@ function App() {
 
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
+      <Route
+        path="/adminPanel"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+            <AdminPanel />
+          </RoleProtectedRoute>
+        }
+      />
+
       <Route path="/guidePanel" element={<GuidePanel />} />
       <Route path="/advisorPanel" element={<AdvisorPanel />} />
       <Route path="/coordinatorPanel" element={<CoordinatorPanel />} />
-      <Route path="/adminPanel" element={<AdminPanel />} />
       <Route path="/assignedFairs" element={<AssignedFairsPage />} />
       <Route path="/assignedTours" element={<AssignedToursPage />} />
     </Routes>
