@@ -69,15 +69,40 @@ function App() {
       <Route
         path="/adminPanel"
         element={
-          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+          <RoleProtectedRoute allowedRoles={["Admin"]}>
             <AdminPanel />
           </RoleProtectedRoute>
         }
       />
 
-      <Route path="/guidePanel" element={<GuidePanel />} />
-      <Route path="/advisorPanel" element={<AdvisorPanel />} />
-      <Route path="/coordinatorPanel" element={<CoordinatorPanel />} />
+      <Route
+        path="/guidePanel"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <GuidePanel />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/advisorPanel"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Advisor"]}
+          >
+            <AdvisorPanel />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/coordinatorPanel"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+            <CoordinatorPanel />
+          </RoleProtectedRoute>
+        }
+      />
       <Route path="/assignedFairs" element={<AssignedFairsPage />} />
       <Route path="/assignedTours" element={<AssignedToursPage />} />
     </Routes>
