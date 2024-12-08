@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Database;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Server.Controllers
 {
@@ -9,12 +14,22 @@ namespace backend.Server.Controllers
     public class CredentialController : ControllerBase
     {
         private readonly CredentialDatabaseController _controller;
+        private readonly IConfiguration _configuration;
 
-        public CredentialController(CredentialDatabaseController controller) {
+        public CredentialController(CredentialDatabaseController controller, IConfiguration configuration) {
             _controller = controller;
+            _configuration = configuration;
         }
 
+        [HttpGet("debugclaims")]
+        //TODO:Delete, Only for debugging purposes
+        public IActionResult DebugClaims()
+        {
+            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+            return Ok(claims);
+        }
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(typeof(List<Credential>), 200)]
         [ProducesResponseType(typeof(List<Credential>), 404)]
         public async Task<ActionResult> GetAllCredentials()
@@ -40,12 +55,13 @@ namespace backend.Server.Controllers
                 return BadRequest("Invalid username or password");
             }
 
-            // For demonstration, we just return a success message.
-            // In a real app, you'd return a JWT token or session info.
-            return Ok("Login successful");
+            var token = await GenerateJwtToken(request.Username);
+
+            return Ok(token);
         }
 
         [HttpPost("register")]
+        [Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(string), 201)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<ActionResult> Register([FromBody] RegisterRequest request)
@@ -54,12 +70,11 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool created = await _controller.Register(request.Username, request.Password);
+            bool created = await _controller.Register(request.Username, request.Password, request.userType);
             if (!created) {
                 return BadRequest("Username already exists");
             }
 
-            // Normally you'd return a location header or a token.
             return Created("", "User registered successfully");
         }
 
@@ -79,9 +94,39 @@ namespace backend.Server.Controllers
 
             return Ok(true);
         }
+
+        private async Task<string> GenerateJwtToken(string username)
+        {
+            var jwtSettings = _configuration.GetSection("Jwt");
+            var secretKey = jwtSettings.GetValue<string>("Key");
+            var issuer = jwtSettings.GetValue<string>("Issuer");
+            var audience = jwtSettings.GetValue<string>("Audience");
+            var expiresInMinutes = jwtSettings.GetValue<int>("ExpiresInMinutes");
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            UserType userRole = await _controller.GetUserRoleByUserName(username); 
+ 
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, userRole.ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(expiresInMinutes),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 
-    // DTOs for request bodies
     public class LoginRequest
     {
         public string Username { get; set; } = string.Empty;
@@ -92,6 +137,7 @@ namespace backend.Server.Controllers
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public UserType userType { get; set; } = UserType.Invalid;
     }
 
     public class ChangePasswordRequest

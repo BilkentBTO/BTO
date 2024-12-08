@@ -6,15 +6,17 @@ namespace backend.Models
     {
         public string? Username { get; private set; }
         public string? Password { get; private set; }
+        public UserType UserType { get; set; } = UserType.CandidateGuide; //Defaults to Candidate
 
         private static int WorkFactor = 12;
         
         public Credential() {}
 
-        public Credential(string username, string plainPassword)
+        public Credential(string username, string plainPassword, UserType userType = UserType.Invalid)
         {
             Username = username;
             Password = BCrypt.Net.BCrypt.HashPassword(plainPassword, workFactor: WorkFactor);
+            UserType = userType;
         }
         public bool VerifyLogin(string plainPassword){
             return BCrypt.Net.BCrypt.Verify(plainPassword, this.Password);

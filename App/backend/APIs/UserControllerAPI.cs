@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Database;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Server.Controllers
 {
@@ -14,6 +15,7 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet()]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(List<User>), 200)]
         [ProducesResponseType(typeof(List<User>), 404)]
         public async Task<ActionResult> GetAllUsers()

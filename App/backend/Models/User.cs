@@ -6,7 +6,8 @@ namespace backend.Models
         Coordinator = 1,
         Advisor = 2,
         Guide = 3,
-        CandidateGuide = 4
+        CandidateGuide = 4,
+        Invalid = 5
     }
     public class User(int id, string name, UserType userType)
     {

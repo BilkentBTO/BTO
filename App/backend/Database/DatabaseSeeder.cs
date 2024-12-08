@@ -116,8 +116,8 @@ namespace backend.Database
         private List<Credential> GetCredentials() {
             var creds = new List<Credential> 
             {
-                new Credential("canga", "can123"),
-                new Credential("borabora", "bora123"),
+                new Credential("canga", "can123", UserType.Admin),
+                new Credential("borabora", "bora123", UserType.Guide),
             };
 
             return creds;

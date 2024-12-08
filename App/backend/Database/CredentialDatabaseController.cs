@@ -26,6 +26,13 @@ namespace backend.Database
             return await _context.Credentials.OrderBy(c => c.Username).ToListAsync();
         }
 
+        public async Task<UserType> GetUserRoleByUserName(string username){
+            var user = await _context.Credentials.SingleOrDefaultAsync(c => c.Username == username);
+            if(user == null){
+                return UserType.Invalid;
+            }
+            return user.UserType;
+        }
         public async Task<bool> Login(string username, string plainPassword)
         {
             var creds =  await _context.Credentials.SingleOrDefaultAsync(c => c.Username == username);
@@ -38,14 +45,14 @@ namespace backend.Database
             return false;
         }
 
-        public async Task<bool> Register(string username, string plainPassword)
+        public async Task<bool> Register(string username, string plainPassword, UserType userType)
         {
             bool userExists = await _context.Credentials.AnyAsync(c => c.Username == username);
             if(userExists){
               return false;
             }
 
-            var newCreds = new Credential(username, plainPassword);
+            var newCreds = new Credential(username, plainPassword, userType);
 
             _context.Add(newCreds);
 
