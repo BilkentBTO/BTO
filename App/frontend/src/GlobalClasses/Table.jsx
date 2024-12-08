@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Table.css";
 
 const Table = ({ headers, data }) => {
   const [searchTerm, setSearchTerm] = useState("");

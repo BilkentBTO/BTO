@@ -13,6 +13,7 @@ import GuidePanel from "./GuidePanel/GuidePanel";
 import AdvisorPanel from "./AdvisorPanel/AdvisorPanel";
 import AdminPanel from "./AdminPanel/AdminPanel";
 import AssignedFairsPage from "./GuidePanel/AssignedFairsPage";
+import AssignedToursPage from "./GuidePanel/AssignedToursPage";
 import CoordinatorPanel from "./CoordinatorPanel/CoordinatorPanel";
 import SchoolRegistrationContinuePage from "./SchoolRegistrationPage/SchoolRegistrationContinuePage";
 import SchoolRegistrationConfirmation from "./SchoolRegistrationPage/SchoolRegistrationConfirmation";
@@ -46,6 +47,7 @@ function App() {
       <Route path="/coordinatorPanel" element={<CoordinatorPanel />} />
       <Route path="/adminPanel" element={<AdminPanel />} />
       <Route path="/assignedFairs" element={<AssignedFairsPage />} />
+      <Route path="/assignedTours" element={<AssignedToursPage />} />
     </Routes>
   );
 }

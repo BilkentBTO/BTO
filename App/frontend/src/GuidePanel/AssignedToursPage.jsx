@@ -1,16 +1,17 @@
 import React from "react";
 import Table from "../GlobalClasses/Table";
-import "./AssignedFairsPage.css";
+import "./AssignedToursPage.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 
-function AssignedFairs() {
+function AssignedToursPage() {
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = [
-    "Fair ID",
+    "Tour ID",
     "School",
     "City",
     "Date",
     "Time",
+    "Nunmber of Visitors",
     "Supervisor",
     "Supervisor Duty",
     "Supervisor Phone Number",
@@ -24,6 +25,7 @@ function AssignedFairs() {
       "Ankara",
       "30.03.2025",
       "18.00",
+      "25",
       "Ege Ertem",
       "Pricipal",
       "123124",
@@ -36,6 +38,7 @@ function AssignedFairs() {
       "Ankara",
       "30.03.2025",
       "11.00",
+      "11",
       "Can Kütükoğlu",
       "Pricipal",
       "123124",
@@ -48,6 +51,7 @@ function AssignedFairs() {
       "Ankara",
       "30.03.2025",
       "17.00",
+      "56",
       "Bora Akoğuz",
       "Pricipal",
       "123124",
@@ -57,10 +61,10 @@ function AssignedFairs() {
   ];
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return (
-    <div className="assignedFairsPage">
+    <div className="assignedToursPage">
       <HeaderPanelGlobal name={"GUIDE PANEL"} />
       <div>
-        <h1 className="assignedFairsHeading">Assigned Fairs</h1>
+        <h1 className="assignedToursHeading">Assigned Tours</h1>
         <Table headers={headers} data={data} />
       </div>
       <div className="contactSection">
@@ -69,4 +73,4 @@ function AssignedFairs() {
     </div>
   );
 }
-export default AssignedFairs;
+export default AssignedToursPage;
