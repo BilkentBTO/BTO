@@ -26,6 +26,7 @@ import SuccessJoin from "./JoinBTOPage/SuccessJoin";
 import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import UserPage from "./UserPage/UserPage";
+import ManageTour from "./GuidePanel/ManageTour";
 
 function App() {
   return (
@@ -103,6 +104,7 @@ function App() {
           </RoleProtectedRoute>
         }
       />
+      <Route path="/manageTour" element={<ManageTour />} />
       <Route path="/assignedFairs" element={<AssignedFairsPage />} />
       <Route path="/assignedTours" element={<AssignedToursPage />} />
     </Routes>
