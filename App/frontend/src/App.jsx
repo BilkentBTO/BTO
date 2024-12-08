@@ -21,6 +21,8 @@ import IndividualConfirmation from "./IndividualRegistrationPage/IndividualConfi
 import SuccessIndividualRegistration from "./IndividualRegistrationPage/SuccessIndividualRegistration";
 import FairConfirmation from "./InviteBilkentPage/FairConfirmation";
 import SuccessInvite from "./InviteBilkentPage/SuccessInvite";
+import SuccessJoin from "./JoinBTOPage/SuccessJoin";
+import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 function App() {
   return (
     <Routes>
@@ -44,6 +46,7 @@ function App() {
       />
       <Route path="/successSchoolRegistration" element={<SuccessSchoolReg />} />
       <Route path="/successInvite" element={<SuccessInvite />} />
+      <Route path="/joinConfirmation" element={<JoinConfirmation />} />
 
       <Route
         path="/individualConfirmation"
@@ -54,6 +57,7 @@ function App() {
         path="/successIndividualRegistration"
         element={<SuccessIndividualRegistration />}
       />
+      <Route path="/successJoin" element={<SuccessJoin />} />
 
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
