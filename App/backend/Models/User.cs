@@ -7,8 +7,9 @@ namespace backend.Models
         Advisor = 2,
         Guide = 3,
         CandidateGuide = 4,
-        Invalid = 5
+        Invalid = 5,
     }
+
     public class User(int id, string name, UserType userType)
     {
         public int id { get; set; } = id;
@@ -17,9 +18,9 @@ namespace backend.Models
         public UserType UserType { get; set; } = userType;
     }
 
-    public class Guide : User{
-        public Guide(int id, string name, UserType userType) : base(id, name, userType)
-        {
-        }
+    public class Guide : User
+    {
+        public Guide(int id, string name, UserType userType)
+            : base(id, name, userType) { }
     }
 }

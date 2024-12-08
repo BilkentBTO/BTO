@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using backend.Models;
-using backend.Database;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using backend.Database;
+using backend.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Server.Controllers
 {
@@ -16,7 +16,11 @@ namespace backend.Server.Controllers
         private readonly CredentialDatabaseController _controller;
         private readonly IConfiguration _configuration;
 
-        public CredentialController(CredentialDatabaseController controller, IConfiguration configuration) {
+        public CredentialController(
+            CredentialDatabaseController controller,
+            IConfiguration configuration
+        )
+        {
             _controller = controller;
             _configuration = configuration;
         }
@@ -28,6 +32,7 @@ namespace backend.Server.Controllers
             var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
             return Ok(claims);
         }
+
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(typeof(List<Credential>), 200)]
@@ -35,7 +40,8 @@ namespace backend.Server.Controllers
         public async Task<ActionResult> GetAllCredentials()
         {
             var creds = await _controller.GetAllCredentials();
-            if (creds == null || creds.Count == 0) {
+            if (creds == null || creds.Count == 0)
+            {
                 return NotFound();
             }
             return Ok(creds);
@@ -46,12 +52,14 @@ namespace backend.Server.Controllers
         [ProducesResponseType(typeof(string), 400)]
         public async Task<ActionResult> Login([FromBody] LoginRequest request)
         {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
             bool success = await _controller.Login(request.Username, request.Password);
-            if (!success) {
+            if (!success)
+            {
                 return BadRequest("Invalid username or password");
             }
 
@@ -66,12 +74,18 @@ namespace backend.Server.Controllers
         [ProducesResponseType(typeof(string), 400)]
         public async Task<ActionResult> Register([FromBody] RegisterRequest request)
         {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
-            bool created = await _controller.Register(request.Username, request.Password, request.userType);
-            if (!created) {
+            bool created = await _controller.Register(
+                request.Username,
+                request.Password,
+                request.userType
+            );
+            if (!created)
+            {
                 return BadRequest("Username already exists");
             }
 
@@ -83,12 +97,18 @@ namespace backend.Server.Controllers
         [ProducesResponseType(typeof(string), 400)]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
-            bool changed = await _controller.ChangePassword(request.Username, request.OldPassword, request.NewPassword);
-            if (!changed) {
+            bool changed = await _controller.ChangePassword(
+                request.Username,
+                request.OldPassword,
+                request.NewPassword
+            );
+            if (!changed)
+            {
                 return BadRequest("Unable to change password. Check old password and username.");
             }
 
@@ -106,13 +126,13 @@ namespace backend.Server.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            UserType userRole = await _controller.GetUserRoleByUserName(username); 
- 
+            UserType userRole = await _controller.GetUserRoleByUserName(username);
+
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, userRole.ToString())
+                new Claim(ClaimTypes.Role, userRole.ToString()),
             };
 
             var token = new JwtSecurityToken(
