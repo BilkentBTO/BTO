@@ -8,7 +8,7 @@ function HeaderPanelGlobal({ name }) {
   const navigate = useNavigate();
   const handleProfileClick = () => {
     console.log("Profile button clicked!");
-    navigate("/"); // Navigate to the root page
+    navigate("/userPage"); // Navigate to the root page
   };
 
   return (
