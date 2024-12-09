@@ -115,8 +115,16 @@ function App() {
           </RoleProtectedRoute>
         }
       />
-
-      <Route path="/manageTour" element={<ManageTour />} />
+      <Route
+        path="/guidePanel/assignedTours/manageTour"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <ManageTour />
+          </RoleProtectedRoute>
+        }
+      />
       <Route
         path="/guidePanel/assignedTours"
         element={

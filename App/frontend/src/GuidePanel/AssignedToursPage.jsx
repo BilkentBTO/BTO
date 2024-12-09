@@ -63,7 +63,7 @@ function AssignedToursPage() {
     ],
   ];
   const handleRowClick = (rowData) => {
-    navigate("/manageTour", { state: { rowData } }); // Pass rowData via state
+    navigate("/guidePanel/assignedTours/manageTour", { state: { rowData } }); // Pass rowData via state
   };
 
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
