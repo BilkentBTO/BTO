@@ -2,6 +2,7 @@ import MainRegButton from "../MainPage/MainRegButton";
 import "./GuidePanel.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 function GuidePanel() {
   // Temporary values
@@ -15,27 +16,27 @@ function GuidePanel() {
   // Button click handlers
   const handleAvailableToursClick = () => {
     console.log("Available Tours button clicked");
-    navigate("/availableTours");
+    navigate("/guidePanel/availableTours");
     // Add logic here (e.g., navigate to a specific page)
   };
 
   const handleAssignedFairsClick = () => {
     console.log("Assigned Fairs button clicked");
-    navigate("/assignedFairs");
+    navigate("/guidePanel/assignedFairs");
 
     // Add logic here
   };
 
   const handleAssignedToursClick = () => {
     console.log("Assigned Tours button clicked");
-    navigate("/assignedTours");
+    navigate("/guidePanel/assignedTours");
 
     // Add logic here
   };
 
   const handleEditAvailableHoursClick = () => {
     console.log("Edit Available Hours button clicked");
-    navigate("/editAvailableTours");
+    navigate("/guidePanel/editAvailableTours");
 
     // Add logic here
   };
@@ -69,6 +70,7 @@ function GuidePanel() {
       <div className="contactSection">
         <p className="contactInfo"></p>
       </div>
+      <Outlet />
     </div>
   );
 }

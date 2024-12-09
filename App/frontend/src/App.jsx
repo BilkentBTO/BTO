@@ -67,6 +67,7 @@ function App() {
       <Route path="/successJoin" element={<SuccessJoin />} />
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
+
       <Route
         path="/adminPanel"
         element={
@@ -104,9 +105,28 @@ function App() {
           </RoleProtectedRoute>
         }
       />
+      <Route
+        path="/guidePanel/assignedFairs"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <AssignedFairsPage />
+          </RoleProtectedRoute>
+        }
+      />
+
       <Route path="/manageTour" element={<ManageTour />} />
-      <Route path="/assignedFairs" element={<AssignedFairsPage />} />
-      <Route path="/assignedTours" element={<AssignedToursPage />} />
+      <Route
+        path="/guidePanel/assignedTours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <AssignedToursPage />
+          </RoleProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
