@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import "./Table.css";
 
-const TableWithButtons = ({ headers, data, onButtonClick }) => {
+const TableWithButtons = ({
+  headers,
+  data,
+  onButtonClick,
+  buttonStyle, // Default button styles
+  buttonName, // Default button name
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(data);
 
@@ -97,14 +103,15 @@ const TableWithButtons = ({ headers, data, onButtonClick }) => {
                     border: "none",
                     borderRadius: "4px",
                     cursor: "pointer",
+                    ...buttonStyle, // Merge custom button styles
                   }}
                 >
-                  Manage
+                  {buttonName} {/* Use custom button name */}
                 </button>
               </td>
             </tr>
           ))}
-          {/* Handle case where no data matches */}
+
           {filteredData.length === 0 && (
             <tr>
               <td

@@ -26,6 +26,11 @@ import SuccessJoin from "./JoinBTOPage/SuccessJoin";
 import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import UserPage from "./UserPage/UserPage";
+import ManageTour from "./GuidePanel/ManageTour";
+import AvailableToursPage from "./GuidePanel/AvailableToursPage";
+import EditAvailableHoursPage from "./GuidePanel/EditAvailableHoursPage";
+import ToursResponsibleByGuides from "./AdvisorPanel/ToursResponsibleByGuides";
+
 function App() {
   return (
     <Routes>
@@ -63,9 +68,9 @@ function App() {
         element={<SuccessIndividualRegistration />}
       />
       <Route path="/successJoin" element={<SuccessJoin />} />
-
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
       <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
+
       <Route
         path="/adminPanel"
         element={
@@ -103,8 +108,66 @@ function App() {
           </RoleProtectedRoute>
         }
       />
-      <Route path="/assignedFairs" element={<AssignedFairsPage />} />
-      <Route path="/assignedTours" element={<AssignedToursPage />} />
+      <Route
+        path="/guidePanel/assignedFairs"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <AssignedFairsPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/assignedTours/manageTour"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <ManageTour />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/assignedTours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <AssignedToursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/availableTours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <AvailableToursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/editAvailableHours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <EditAvailableHoursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/advisorPanel/toursResponsibleByGuides"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Advisor"]}
+          >
+            <ToursResponsibleByGuides />
+          </RoleProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

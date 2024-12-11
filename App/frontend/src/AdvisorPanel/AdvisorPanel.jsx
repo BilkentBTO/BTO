@@ -1,6 +1,8 @@
 import MainRegButton from "../MainPage/MainRegButton";
 import "./AdvisorPanel.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
+import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 function AdvisorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
@@ -8,32 +10,54 @@ function AdvisorPanel() {
   const lastAdvisorItem2 = "Item2";
   const lastAdvisorItem3 = "Item3";
   //TEMPORARY VALUES !!!!!!!!!!!!!!
+  const navigate = useNavigate();
+
+  const handleToursAndGuidesClick = () => {
+    console.log("Tours and Guides button clicked");
+    navigate("/advisorPanel/toursResponsibleByGuides");
+  };
+
+  const handleGuideRequestsClick = () => {};
+
+  const handleEvaluateTourRequestsClick = () => {};
+
+  const handleAccessMessagePanelClick = () => {};
+
+  const handleAccessGuidePanelClick = () => {};
+
+  const handleResponsibleToursClick = () => {};
+
   return (
     <div className="advisorPanel">
       <HeaderPanelGlobal name={"ADVISOR PANEL"} />
       <div className="buttonAdvisorPanelSection">
         <div className="buttonAdvisorPanel">
-          <MainRegButton name="Tours and Guides" link="/toursAndGuides" />
+          <button onClick={handleToursAndGuidesClick}>Tours and Guides</button>
           <p className="lastAdvisorItem">{lastAdvisorItem1}</p>
         </div>
         <div className="buttonAdvisorPanel">
-          <MainRegButton name="Guide Requests" link="/guideRequests" />
+          <button onClick={handleGuideRequestsClick}>Guide Requests</button>
           <p className="lastAdvisorItem">{lastAdvisorItem2}</p>
         </div>
         <div className="buttonAdvisorPanel">
-          <MainRegButton
-            name="Evaluate Tour Requests"
-            link="/evaluateTourRequests"
-          />
+          <button onClick={handleEvaluateTourRequestsClick}>
+            Evaluate Tour Requests
+          </button>
         </div>
         <div className="buttonAdvisorPanel">
-          <MainRegButton name="Access to Message Panel" link="/messagePanel" />
+          <button onClick={handleAccessMessagePanelClick}>
+            Access Message Panel
+          </button>
         </div>
         <div className="buttonAdvisorPanelTour">
-          <MainRegButton name="Access to Guide Panel" link="/guidePanel" />
+          <button onClick={handleAccessGuidePanelClick}>
+            Access Guide Panel
+          </button>
         </div>
         <div className="buttonAdvisorPanel">
-          <MainRegButton name="Tours Responsible" link="/toursResponsible" />
+          <button onClick={handleResponsibleToursClick}>
+            Responsible Tours
+          </button>
           <p className="lastAdvisorItem">{lastAdvisorItem3}</p>
         </div>
       </div>

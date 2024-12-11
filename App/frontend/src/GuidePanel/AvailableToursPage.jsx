@@ -1,10 +1,9 @@
 import React from "react";
-import "./AssignedToursPage.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import { useNavigate } from "react-router-dom";
 
-function AssignedToursPage() {
+function AvailableToursPage() {
   const navigate = useNavigate();
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = [
@@ -62,26 +61,25 @@ function AssignedToursPage() {
     ],
   ];
   const handleRowClick = (rowData) => {
-    navigate("/guidePanel/assignedTours/manageTour", { state: { rowData } }); // Pass rowData via state
+    //navigate("/guidePanel/assignedTours/manageTour", { state: { rowData } }); // Pass rowData via state
   };
 
   const buttonStyle = {
     padding: "5px 10px",
-    backgroundColor: "#4caf50",
+    backgroundColor: "blue",
     color: "white",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
   };
 
-  const buttonName = "Manage";
+  const buttonName = "Apply";
 
-  // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return (
-    <div className="assignedToursPage">
+    <div className="availableToursPage">
       <HeaderPanelGlobal name={"GUIDE PANEL"} />
       <div>
-        <h1 className="assignedToursHeading">Assigned Tours</h1>
+        <h1 className="availableToursHeading">Available Tours</h1>
         <TableWithButtons
           headers={headers}
           data={data}
@@ -96,4 +94,5 @@ function AssignedToursPage() {
     </div>
   );
 }
-export default AssignedToursPage;
+
+export default AvailableToursPage;

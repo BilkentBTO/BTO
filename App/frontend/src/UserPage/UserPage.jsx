@@ -1,10 +1,14 @@
-import React, { useStat, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import profileImage from "../assets/profile_image.png";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import "./UserPage.css";
 
 function UserPage({ username }) {
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("email@example.com"); // Only email is customizable
 
   const handleEdit = () => {
@@ -16,9 +20,38 @@ function UserPage({ username }) {
     console.log("Updated Email:", email); // Save the new email (can be sent to a server)
   };
 
+  const handleLogout = () => {
+    console.log("Logout");
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
+
   const handleCancel = () => {
     setIsEditing(false); // Exit edit mode without saving
   };
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // Decode the token
+        const nameClaim =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+          ]; // Extract the name claim
+        setName(nameClaim || "Unknown"); // Set the name or a default value
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    } else {
+      console.log("No token found");
+      navigate("/login"); // Redirect to login if no token is found
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    document.title = "View Profile - BTO"; // Set the tab title
+  }, []);
+
   useEffect(() => {
     document.title = "View Profile - BTO"; // Set the tab title
   }, []);
@@ -32,7 +65,7 @@ function UserPage({ username }) {
             <p>Name:</p>
           </div>
           <div className="info">
-            <p>Kerem</p>
+            <p>{name}</p>
           </div>
         </div>
         <div className="infoLog">
@@ -48,7 +81,7 @@ function UserPage({ username }) {
             <p>Username:</p>
           </div>
           <div className="info">
-            <p>kcindaruk</p>
+            <p>{name}</p>
           </div>
         </div>
         <div className="infoLog">
@@ -80,6 +113,9 @@ function UserPage({ username }) {
         ) : (
           <button onClick={handleEdit}>Change Email</button>
         )}
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </div>
   );
