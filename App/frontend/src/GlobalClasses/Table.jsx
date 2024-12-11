@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Table.css";
 
 const Table = ({ headers, data }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(data);
 
-  // Handle search input change
-  const handleSearch = (event) => {
-    const term = event.target.value.toLowerCase();
-    setSearchTerm(term);
-
-    // Filter data based on search term
+  // Update filteredData whenever data or searchTerm changes
+  useEffect(() => {
     const filtered = data.filter((row) =>
-      row.some(
-        (cell) => cell.toString().toLowerCase().includes(term) // Check if cell includes the search term
+      row.some((cell) =>
+        cell.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-
     setFilteredData(filtered);
+  }, [data, searchTerm]);
+
+  // Handle search input change
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
   };
 
   return (
