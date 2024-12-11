@@ -36,7 +36,7 @@ function GuidePanel() {
 
   const handleEditAvailableHoursClick = () => {
     console.log("Edit Available Hours button clicked");
-    navigate("/guidePanel/editAvailableTours");
+    navigate("/guidePanel/editAvailableHours");
 
     // Add logic here
   };

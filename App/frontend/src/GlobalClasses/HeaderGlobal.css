@@ -54,3 +54,17 @@
     font-size: 20px;
     font-weight: normal;
 }
+
+.bilkentButton {
+    display: flex; /* Ensures content inside the button is aligned */
+    justify-content: center; /* Centers the profile image horizontally */
+    align-items: center; /* Centers the profile image vertically */
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none; /* Removes button border */
+    background: none; /* Removes background styling */
+    cursor: pointer; /* Adds a pointer cursor */
+    padding: 0; /* Removes extra padding */
+    
+}

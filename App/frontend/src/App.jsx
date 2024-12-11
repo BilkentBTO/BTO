@@ -27,6 +27,8 @@ import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import UserPage from "./UserPage/UserPage";
 import ManageTour from "./GuidePanel/ManageTour";
+import AvailableToursPage from "./GuidePanel/AvailableToursPage";
+import EditAvailableHoursPage from "./GuidePanel/EditAvailableHoursPage";
 
 function App() {
   return (
@@ -132,6 +134,26 @@ function App() {
             allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <AssignedToursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/availableTours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <AvailableToursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/editAvailableHours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <EditAvailableHoursPage />
           </RoleProtectedRoute>
         }
       />

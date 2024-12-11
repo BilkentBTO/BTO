@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
 import Table from "../GlobalClasses/Table"; // Import the Table component
+import { useNavigate } from "react-router-dom";
 
 const ManageTour = () => {
   const location = useLocation();
@@ -26,6 +27,8 @@ const ManageTour = () => {
     "Notes",
   ];
 
+  const navigate = useNavigate();
+
   // Convert the rowData into an array of arrays for the table
   const [data, setData] = useState([Object.values(rowData)]);
   const [notes, setNotes] = useState(rowData.Notes || ""); // Track the updated notes
@@ -41,6 +44,13 @@ const ManageTour = () => {
     updatedData[0][headers.indexOf("Notes")] = notes; // Update the "Notes" value
     setData(updatedData); // Update the table data
     console.log("Updated Notes:", notes);
+  };
+
+  const handleCancel = () => {
+    /*
+      DELETE THE CANCELLED TOUR FROM THE LIST!!!!!!!!!!!!!!!!!!!!!
+    */
+    navigate("/guidePanel/assignedTours");
   };
 
   return (
@@ -67,6 +77,20 @@ const ManageTour = () => {
           }}
         >
           Submit
+        </button>
+        <button
+          onClick={handleCancel}
+          style={{
+            marginTop: "10px",
+            padding: "10px 20px",
+            backgroundColor: "red",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Cancel
         </button>
       </div>
     </div>
