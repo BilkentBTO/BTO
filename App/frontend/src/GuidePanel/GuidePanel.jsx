@@ -1,4 +1,3 @@
-import MainRegButton from "../MainPage/MainRegButton";
 import "./GuidePanel.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import { useNavigate } from "react-router-dom";
