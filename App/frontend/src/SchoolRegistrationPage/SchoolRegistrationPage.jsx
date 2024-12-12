@@ -29,7 +29,10 @@ function SchoolRegistrationPage() {
       }
     );
   });
-
+  const today = new Date().toISOString().split("T")[0];
+  const dateFilter = {
+    min: today, // Disable past dates
+  };
   useEffect(() => {
     document.title = "School Tour Registration - BTO"; // Set the tab title
   }, []);
@@ -87,6 +90,7 @@ function SchoolRegistrationPage() {
             type="date"
             value={formData.visitDate}
             onChange={(value) => handleChange("visitDate", value)}
+            dateFilter={dateFilter}
           />
 
           {/* Preferred Time Dropdown */}
