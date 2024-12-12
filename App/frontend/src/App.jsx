@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MainPage from "./MainPage/MainPage";
 import LoginPage from "./LoginPage/LoginPage";
+import ForgotPasswordPage from "./LoginPage/ForgotPasswordPage";
 import RegChoicePage from "./RegChoicePage/RegChoicePage";
 import RegCodePage from "./RegCodePage/RegCodePage";
 import JoinBTOPage from "./JoinBTOPage/JoinBTOPage";
@@ -36,6 +37,7 @@ function App() {
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
       <Route path="/regChoice" element={<RegChoicePage />} />
       <Route path="/regCode" element={<RegCodePage />} />
       <Route path="/joinBTO" element={<JoinBTOPage />} />
