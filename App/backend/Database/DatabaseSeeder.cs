@@ -5,29 +5,29 @@ namespace backend.Database
 {
     public class Seeder
     {
-        private readonly UserDbSeeder _userDbSeeder;
+        private readonly SystemDbSeeder _systemDbSeeder;
         private readonly CredentialDbSeeder _credentialDbSeeder;
 
-        public Seeder(UserDbSeeder userDbSeeder, CredentialDbSeeder credentialDbSeeder)
+        public Seeder(SystemDbSeeder userDbSeeder, CredentialDbSeeder credentialDbSeeder)
         {
-            _userDbSeeder = userDbSeeder;
+            _systemDbSeeder = userDbSeeder;
             _credentialDbSeeder = credentialDbSeeder;
         }
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
         {
-            await _userDbSeeder.SeedAsync(serviceProvider);
+            await _systemDbSeeder.SeedAsync(serviceProvider);
             await _credentialDbSeeder.SeedAsync(serviceProvider);
         }
     }
 
-    public class UserDbSeeder
+    public class SystemDbSeeder
     {
         readonly ILogger _logger;
 
-        public UserDbSeeder(ILoggerFactory loggerFactory)
+        public SystemDbSeeder(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger("UserDbSeederLogger");
+            _logger = loggerFactory.CreateLogger("SystemDbSeederLogger");
         }
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
@@ -38,7 +38,7 @@ namespace backend.Database
                     .CreateScope()
             )
             {
-                var userDb = serviceScope.ServiceProvider.GetService<UserDbContext>();
+                var userDb = serviceScope.ServiceProvider.GetService<SystemDbContext>();
                 if (userDb == null)
                 {
                     return;
@@ -53,7 +53,7 @@ namespace backend.Database
             }
         }
 
-        public async Task InsertUsersSampleData(UserDbContext db)
+        public async Task InsertUsersSampleData(SystemDbContext db)
         {
             var users = GetUsers();
             db.Users.AddRange(users);
@@ -63,7 +63,7 @@ namespace backend.Database
             }
             catch (Exception exp)
             {
-                _logger.LogError($"Error in {nameof(UserDbSeeder)}: " + exp.Message);
+                _logger.LogError($"Error in {nameof(SystemDbSeeder)}: " + exp.Message);
                 throw;
             }
         }

@@ -1,24 +1,26 @@
 using System;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.Logging;
-using backend.Models;
 using backend.Database;
+using backend.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Database
 {
     public class CredentialDatabaseController
     {
-
         private readonly CredentialDbContext _context;
         private readonly ILogger _logger;
 
-        public CredentialDatabaseController(CredentialDbContext context, ILoggerFactory loggerFactory) {
-          _context = context;
-          _logger = loggerFactory.CreateLogger("CredentialController");
+        public CredentialDatabaseController(
+            CredentialDbContext context,
+            ILoggerFactory loggerFactory
+        )
+        {
+            _context = context;
+            _logger = loggerFactory.CreateLogger("CredentialController");
         }
 
         public async Task<List<Credential>> GetAllCredentials()
@@ -26,20 +28,27 @@ namespace backend.Database
             return await _context.Credentials.OrderBy(c => c.Username).ToListAsync();
         }
 
-        public async Task<UserType> GetUserRoleByUserName(string username){
+        public async Task<UserType> GetUserRoleByUserName(string username)
+        {
             var user = await _context.Credentials.SingleOrDefaultAsync(c => c.Username == username);
-            if(user == null){
+            if (user == null)
+            {
                 return UserType.Invalid;
             }
             return user.UserType;
         }
+
         public async Task<bool> Login(string username, string plainPassword)
         {
-            var creds =  await _context.Credentials.SingleOrDefaultAsync(c => c.Username == username);
-            if(creds == null){
+            var creds = await _context.Credentials.SingleOrDefaultAsync(c =>
+                c.Username == username
+            );
+            if (creds == null)
+            {
                 return false;
             }
-            if(creds.VerifyLogin(plainPassword)){
+            if (creds.VerifyLogin(plainPassword))
+            {
                 return true;
             }
             return false;
@@ -48,8 +57,9 @@ namespace backend.Database
         public async Task<bool> Register(string username, string plainPassword, UserType userType)
         {
             bool userExists = await _context.Credentials.AnyAsync(c => c.Username == username);
-            if(userExists){
-              return false;
+            if (userExists)
+            {
+                return false;
             }
 
             var newCreds = new Credential(username, plainPassword, userType);
@@ -58,25 +68,33 @@ namespace backend.Database
 
             try
             {
-              await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (System.Exception exp)
             {
-               _logger.LogError($"Error in {nameof(Register)}: " + exp.Message);
+                _logger.LogError($"Error in {nameof(Register)}: " + exp.Message);
             }
 
             return true;
         }
 
-        public async Task<bool> ChangePassword(string username, string oldPlainPassword, string plainPassword)
+        public async Task<bool> ChangePassword(
+            string username,
+            string oldPlainPassword,
+            string plainPassword
+        )
         {
             bool userExists = await _context.Credentials.AnyAsync(c => c.Username == username);
-            if(!userExists){
-              return false;
+            if (!userExists)
+            {
+                return false;
             }
-            var creds =  await _context.Credentials.SingleOrDefaultAsync(c => c.Username == username);
+            var creds = await _context.Credentials.SingleOrDefaultAsync(c =>
+                c.Username == username
+            );
 
-            if(creds == null){
+            if (creds == null)
+            {
                 return false;
             }
 
@@ -86,11 +104,11 @@ namespace backend.Database
             _context.Entry(creds).State = EntityState.Modified;
             try
             {
-              return (await _context.SaveChangesAsync() > 0 ? true : false);
+                return (await _context.SaveChangesAsync() > 0 ? true : false);
             }
             catch (Exception exp)
             {
-               _logger.LogError($"Error in {nameof(ChangePassword)}: " + exp.Message);
+                _logger.LogError($"Error in {nameof(ChangePassword)}: " + exp.Message);
             }
             return false;
         }

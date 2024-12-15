@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "IBy/ufHXDVc=",
+  "dgSpecHash": "lBNOCXEDrDw=",
   "success": true,
   "projectFilePath": "/Users/boraakoguz/Development/BTO/App/backend/backend.csproj",
   "expectedPackageFiles": [
     "/Users/boraakoguz/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
+    "/Users/boraakoguz/.nuget/packages/csvhelper/33.0.1/csvhelper.33.0.1.nupkg.sha512",
     "/Users/boraakoguz/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/boraakoguz/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.0/microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",
     "/Users/boraakoguz/.nuget/packages/microsoft.aspnetcore.openapi/8.0.8/microsoft.aspnetcore.openapi.8.0.8.nupkg.sha512",
