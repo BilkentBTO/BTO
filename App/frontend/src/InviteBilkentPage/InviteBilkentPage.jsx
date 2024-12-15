@@ -2,20 +2,31 @@ import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { useState } from "react";
 import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function InviteBilkentPage() {
-  const cities = ["Ankara", "İstanbul", "İzmir", "Bursa"];
-  const schools = ["TED", "Nesibe", "Jale Tezer"];
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Dynamic dropdown states
+  const [cities, setCities] = useState([]);
+  const [schools, setSchools] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const [schoolQuery, setSchoolQuery] = useState("");
+  const [typingTimeout, setTypingTimeout] = useState(null);
+
   useEffect(() => {
-    document.title = "Invite Bilkent - BTO"; // Set the tab title
+    document.title = "Invite Bilkent - BTO";
+
+    // Fetch cities dynamically on component mount
+    fetch("/api/Schools/cities")
+      .then((response) => response.json())
+      .then((data) => setCities(data))
+      .catch((error) => console.error("Error fetching cities:", error));
   }, []);
+
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
     return (
@@ -31,6 +42,43 @@ function InviteBilkentPage() {
     );
   });
 
+  // Fetch Schools Dynamically as User Types
+  const fetchSchoolSuggestions = (query, city) => {
+    if (!query || !city) {
+      setSchools([]);
+      return;
+    }
+
+    fetch(`/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(query)}&cityName=${encodeURIComponent(city)}`)
+      .then((response) => response.json())
+      .then((data) => setSchools(data))
+      .catch((error) => console.error("Error fetching school suggestions:", error));
+  };
+
+  // Handle City Selection
+  const handleCityChange = (value) => {
+    setSelectedCity(value);
+    setFormData((prev) => ({ ...prev, city: value }));
+    setSchools([]); // Reset school suggestions on city change
+    setSchoolQuery("");
+  };
+
+  // Handle School Query Input with Debouncing
+  const handleSchoolQueryChange = (value) => {
+    setSchoolQuery(value);
+    setFormData((prev) => ({ ...prev, school: value }));
+
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      fetchSchoolSuggestions(value, selectedCity);
+    }, 300); // 300ms debounce
+
+    setTypingTimeout(timeout);
+  };
+
   // Generic handler for form state updates
   const handleChange = (key, value) => {
     setFormData((prev) => ({
@@ -41,7 +89,6 @@ function InviteBilkentPage() {
 
   // Handle form submission
   const handleSubmit = () => {
-    // Validate required fields
     if (
       !formData.city ||
       !formData.school ||
@@ -54,8 +101,6 @@ function InviteBilkentPage() {
       return;
     }
 
-    // Log and navigate with form data
-    console.log("Form Data:", formData);
     navigate("/fairConfirmation", { state: { formData } });
   };
 
@@ -68,7 +113,7 @@ function InviteBilkentPage() {
           <FormDropDownGlobal
             arr={cities}
             question="City*"
-            onChange={(value) => handleChange("city", value)}
+            onChange={handleCityChange}
             initialValue={formData.city}
           />
 
@@ -78,9 +123,10 @@ function InviteBilkentPage() {
             question="School Name*"
             onChange={(value) => handleChange("school", value)}
             initialValue={formData.school}
+            onInput={(e) => handleSchoolQueryChange(e.target.value)}
           />
 
-          {/* Preferred Time Dropdown */}
+          {/* Supervisor Information */}
           <FormInputGlobal
             question="Supervisor Name*"
             type="text"
@@ -117,7 +163,6 @@ function InviteBilkentPage() {
             Submit
           </button>
         </div>
-
         <div className="contactSection">
           <p className="contactInfo"></p>
         </div>
