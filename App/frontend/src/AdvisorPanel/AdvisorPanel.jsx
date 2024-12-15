@@ -22,7 +22,10 @@ function AdvisorPanel() {
     navigate("/advisorPanel/guideRequests");
   };
 
-  const handleEvaluateTourRequestsClick = () => {};
+  const handleEvaluateTourRequestsClick = () => {
+    console.log("Evaluate Tour Requests button clicked");
+    navigate("/advisorPanel/evaluateTourRequests");
+  };
 
   const handleAccessMessagePanelClick = () => {};
 
