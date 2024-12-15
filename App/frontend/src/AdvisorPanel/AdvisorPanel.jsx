@@ -1,8 +1,6 @@
-import MainRegButton from "../MainPage/MainRegButton";
 import "./AdvisorPanel.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import { useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
 
 function AdvisorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
