@@ -35,7 +35,7 @@ namespace backend.Database
             var suggestions = _context
                 .Schools.Where(s =>
                     s.CityName.ToLower() == cityName.ToLower()
-                    && EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
+                    && s.SchoolName.ToLower().Contains(query.ToLower())
                 )
                 .Select(s => s.SchoolName)
                 .Distinct()
