@@ -14,7 +14,8 @@ function CoordinatorPanel() {
   };
 
   const handleListAllUsersClick = () => {
-    // Implement Later
+    console.log("List All Users button clicked");
+    navigate("/coordinatorPanel/listAllUsers");
   };
 
   const handleAddUserClick = () => {
