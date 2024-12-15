@@ -10,9 +10,9 @@ function GuideRequests() {
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = ["Guide Username", "Tour", "Status"];
   const data = [
-    ["cankutukoglu", "Tour 14"],
-    ["borabora", "Tour 56"],
-    ["egeertem", "Tour 98"],
+    ["cankutukoglu", "Tour 14", "Decision Waiting"],
+    ["borabora", "Tour 56", "Decision Waiting"],
+    ["egeertem", "Tour 98", "Decision Waiting"],
   ];
 
   const buttonStyle = {
@@ -26,9 +26,31 @@ function GuideRequests() {
 
   const buttonName = "Decide";
 
-  const handleRowClick = (rowData) => {};
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
-  // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  const handleRowClick = (rowData) => {
+    setSelectedRow(rowData);
+    setPopupVisible(true);
+  };
+
+  const closePopup = () => {
+    setPopupVisible(false);
+    setSelectedRow(null);
+  };
+
+  const approve = () => {
+    // Approve
+  };
+
+  const deny = () => {
+    // Deny
+  };
+
+  const proposeDate = () => {
+    // Propose Date
+  };
+
   return (
     <div className="guideRequests">
       <HeaderPanelGlobal name={"ADVISOR PANEL"} />
@@ -42,6 +64,49 @@ function GuideRequests() {
           buttonName={buttonName}
         />
       </div>
+      {popupVisible && selectedRow && (
+        <div className="requestPopupOverlay">
+          <div className="requestPopupContent">
+            <h2>Decision for Guide Request</h2>
+            <p>
+              <strong>Guide:</strong> {selectedRow[0]}
+            </p>
+            <p>
+              <strong>Tour:</strong> {selectedRow[1]}
+            </p>
+            <div className="requestPopupButtons">
+              <button
+                className="requestPopupButton"
+                onClick={approve}
+                style={{ margin: "5px" }}
+              >
+                Approve
+              </button>
+              <button
+                className="requestPopupButton"
+                onClick={deny}
+                style={{ margin: "5px" }}
+              >
+                Deny
+              </button>
+              <button
+                className="requestPopupButton"
+                onClick={proposeDate}
+                style={{ margin: "5px" }}
+              >
+                Propose Another Day
+              </button>
+              <button
+                className="requestPopupButton"
+                onClick={closePopup}
+                style={{ margin: "5px" }}
+              >
+                Return
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="contactSection">
         <p className="contactInfo"></p>
       </div>
