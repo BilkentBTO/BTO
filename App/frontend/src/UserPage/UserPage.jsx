@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import profileImage from "../assets/profile_image.png";
-import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
+import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import "./UserPage.css";
 
 function UserPage({ username }) {
@@ -57,7 +57,7 @@ function UserPage({ username }) {
   }, []);
   return (
     <div>
-      <HeaderPanelGlobal name={"Profile Page"} />
+      <HeaderGlobal name={"Profile Page"} />
       <div className="profileSection">
         <img src={profileImage} alt="Profile" />
         <div className="infoLog">

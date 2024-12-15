@@ -29,7 +29,10 @@ function AdvisorPanel() {
 
   const handleAccessMessagePanelClick = () => {};
 
-  const handleAccessGuidePanelClick = () => {};
+  const handleAccessGuidePanelClick = () => {
+    console.log("Guide Panel button clicked");
+    navigate("/guidePanel");
+  };
 
   const handleResponsibleToursClick = () => {
     console.log("Responsible Tours button clicked");
