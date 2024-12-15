@@ -23,4 +23,22 @@ namespace backend.Models
         public Guide(int id, string name, UserType userType)
             : base(id, name, userType) { }
     }
+
+    public class Advisor : User
+    {
+        public Advisor(int id, string name, UserType userType)
+            : base(id, name, userType) { }
+    }
+
+    public class Coordinator : User
+    {
+        public Coordinator(int id, string name, UserType userType)
+            : base(id, name, userType) { }
+    }
+
+    public class Admin : User
+    {
+        public Admin(int id, string name, UserType userType)
+            : base(id, name, userType) { }
+    }
 }

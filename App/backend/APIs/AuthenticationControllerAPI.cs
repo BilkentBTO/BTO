@@ -25,14 +25,6 @@ namespace backend.Server.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("debugclaims")]
-        //TODO:Delete, Only for debugging purposes
-        public IActionResult DebugClaims()
-        {
-            var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
-            return Ok(claims);
-        }
-
         [HttpGet]
         [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(typeof(List<Credential>), 200)]
