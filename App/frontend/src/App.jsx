@@ -32,6 +32,7 @@ import AvailableToursPage from "./GuidePanel/AvailableToursPage";
 import EditAvailableHoursPage from "./GuidePanel/EditAvailableHoursPage";
 import ToursResponsibleByGuides from "./AdvisorPanel/ToursResponsibleByGuides";
 import GuideRequests from "./AdvisorPanel/GuideRequests";
+import ResponsibleTours from "./AdvisorPanel/ResponsibleTours";
 
 function App() {
   return (
@@ -178,6 +179,16 @@ function App() {
             allowedRoles={["Admin", "Coordinator", "Advisor"]}
           >
             <GuideRequests />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/advisorPanel/responsibleTours"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Advisor"]}
+          >
+            <ResponsibleTours />
           </RoleProtectedRoute>
         }
       />
