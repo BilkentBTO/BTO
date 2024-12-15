@@ -6,18 +6,19 @@ const SearchableDropdown = ({
   array = [],
   question = "Default Question",
   onChange = () => {},
-  initialValue = "", // New parameter for initial selection
+  onInput = () => {}, // New prop to handle typing
+  initialValue = "",
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedValue, setSelectedValue] = useState(
     initialValue || (array.length > 0 ? array[0] : "")
-  ); // Use initialValue or first array element
+  );
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const filteredOptions = array.filter((option) =>
-    option.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredOptions = array
+    .filter((option) => option.toLowerCase().includes(searchQuery.toLowerCase()))
+    .slice(0, 10); 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -30,8 +31,7 @@ const SearchableDropdown = ({
   }, []);
 
   useEffect(() => {
-    console.log(initialValue);
-    setSelectedValue(initialValue); // Update selected value when initialValue changes
+    setSelectedValue(initialValue); // Update when initialValue changes
   }, [initialValue]);
 
   return (
@@ -55,7 +55,10 @@ const SearchableDropdown = ({
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  onInput(e); // Trigger the onInput callback
+                }}
                 placeholder="Search..."
                 className="dropdown-search"
               />
@@ -67,7 +70,7 @@ const SearchableDropdown = ({
                       onClick={() => {
                         setSelectedValue(option);
                         setIsOpen(false);
-                        onChange(option); // Pass the selected option to the parent component
+                        onChange(option); // Pass the selected option
                       }}
                     >
                       {option}
@@ -89,7 +92,8 @@ function FormDropDownGlobal({
   arr = [],
   question = "Default Question",
   onChange = () => {},
-  initialValue = "", // Pass initialValue to SearchableDropdown
+  onInput = () => {}, // Pass onInput to SearchableDropdown
+  initialValue = "",
 }) {
   return (
     <div>
@@ -97,6 +101,7 @@ function FormDropDownGlobal({
         array={arr}
         question={question}
         onChange={onChange}
+        onInput={onInput} // Forward the onInput event
         initialValue={initialValue}
       />
     </div>

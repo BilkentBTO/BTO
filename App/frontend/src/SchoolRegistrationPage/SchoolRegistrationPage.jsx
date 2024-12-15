@@ -6,13 +6,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function SchoolRegistrationPage() {
-  const cities = ["Ankara", "İstanbul", "İzmir", "Bursa"];
-  const schools = ["TED", "Nesibe", "Jale Tezer"];
-  const visitTimes = ["09.00", "11.00", "13.00", "16.00"];
+  const [cities, setCities] = useState([]); // Dynamic cities list
+  const [schools, setSchools] = useState([]); // Dynamic school list
+  const [selectedCity, setSelectedCity] = useState(""); // Selected city
+  const [schoolQuery, setSchoolQuery] = useState(""); // Current school search query
+  const [typingTimeout, setTypingTimeout] = useState(null); // Timeout for debouncing
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Initialize formData with location state or default values
+  // Initialize formData
   const [formData, setFormData] = useState(() => {
     return (
       location?.state?.formData || {
@@ -29,13 +31,69 @@ function SchoolRegistrationPage() {
       }
     );
   });
+
   const today = new Date().toISOString().split("T")[0];
   const dateFilter = {
     min: today, // Disable past dates
   };
+
+  // Fetch Cities on Component Mount
   useEffect(() => {
-    document.title = "School Tour Registration - BTO"; // Set the tab title
+    document.title = "School Tour Registration - BTO";
+
+    fetch("/api/Schools/cities")
+      .then((response) => response.json())
+      .then((data) => setCities(data))
+      .catch((error) => console.error("Error fetching cities:", error));
   }, []);
+
+  // Fetch Schools Dynamically as User Types
+  const fetchSchoolSuggestions = (query, city) => {
+    if (!query || !city) {
+      console.log("Missing query or city:", { query, city });
+      setSchools([]); // Clear suggestions if input or city is missing
+      return;
+    }
+  
+    fetch(`/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(query)}&cityName=${encodeURIComponent(city)}`)
+      .then((response) => {
+        console.log("API Response Status:", response.status);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("API Response Data:", data);
+        setSchools(data); // Update school suggestions
+      })
+      .catch((error) => {
+        console.error("Error fetching school suggestions:", error);
+      });
+  };
+
+  // Handle change in the city dropdown
+  const handleCityChange = (value) => {
+    setSelectedCity(value);
+    handleChange("city", value);
+    setSchools([]); // Reset schools when city changes
+    setSchoolQuery(""); // Reset query as well
+  };
+
+  // Handle query input with debouncing
+  const handleSchoolQueryChange = (value) => {
+    setSchoolQuery(value);
+    handleChange("school", value);
+
+    // Debounce API call
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      fetchSchoolSuggestions(value, selectedCity);
+    }, 300); // 300ms delay for debounce
+
+    setTypingTimeout(timeout);
+  };
+
   // Generic handler for form state updates
   const handleChange = (key, value) => {
     setFormData((prev) => ({
@@ -44,9 +102,7 @@ function SchoolRegistrationPage() {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = () => {
-    // Validate required fields
     if (
       !formData.city ||
       !formData.school ||
@@ -58,8 +114,6 @@ function SchoolRegistrationPage() {
       return;
     }
 
-    // Log and navigate with form data
-    console.log("Form Data:", formData);
     navigate("/continueSchoolReg", { state: { formData } });
   };
 
@@ -72,7 +126,7 @@ function SchoolRegistrationPage() {
           <FormDropDownGlobal
             arr={cities}
             question="City*"
-            onChange={(value) => handleChange("city", value)}
+            onChange={handleCityChange}
             initialValue={formData.city}
           />
 
@@ -82,6 +136,9 @@ function SchoolRegistrationPage() {
             question="School Name*"
             onChange={(value) => handleChange("school", value)}
             initialValue={formData.school}
+            onInput={(e) => {
+              handleSchoolQueryChange(e.target.value);
+            }}
           />
 
           {/* Visit Date Input */}
@@ -95,7 +152,7 @@ function SchoolRegistrationPage() {
 
           {/* Preferred Time Dropdown */}
           <FormDropDownGlobal
-            arr={visitTimes}
+            arr={["09.00", "11.00", "13.00", "16.00"]}
             question="Preferred Time of Visit*"
             onChange={(value) => handleChange("visitTime", value)}
             initialValue={formData.visitTime}
@@ -113,10 +170,6 @@ function SchoolRegistrationPage() {
           <button onClick={handleSubmit} className="submitButton">
             Continue
           </button>
-        </div>
-
-        <div className="contactSection">
-          <p className="contactInfo"></p>
         </div>
       </div>
     </div>
