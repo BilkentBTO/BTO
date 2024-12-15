@@ -17,7 +17,10 @@ function AdvisorPanel() {
     navigate("/advisorPanel/toursResponsibleByGuides");
   };
 
-  const handleGuideRequestsClick = () => {};
+  const handleGuideRequestsClick = () => {
+    console.log("Guide Requests button clicked");
+    navigate("/advisorPanel/guideRequests");
+  };
 
   const handleEvaluateTourRequestsClick = () => {};
 
