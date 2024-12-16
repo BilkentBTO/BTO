@@ -3,13 +3,6 @@ using System.Linq;
 
 namespace backend.Models
 {
-    public enum School : uint // TEMPORARY
-    {
-        School1,
-        School2, 
-        School3
-    }
-    
     public class Survey { } // TEMPORARY
 
 
@@ -41,6 +34,7 @@ namespace backend.Models
         private readonly List<Comment> Comments = [];
 
 
+        public int Priority => RegistirationInfo.School.GetPriority();
         public void ChangeTime(DateTime time) => Time = time;
 
         public bool HasGuide() => AssignedGuide != null;
