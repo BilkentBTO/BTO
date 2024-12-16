@@ -10,7 +10,8 @@ function CoordinatorPanel() {
   };
 
   const handleAssignGuideToFairsClick = () => {
-    // Implement Later
+    console.log("Assign Guide To Fairs button clicked");
+    navigate("/coordinatorPanel/assignGuideToFairs");
   };
 
   const handleListAllUsersClick = () => {
@@ -19,7 +20,8 @@ function CoordinatorPanel() {
   };
 
   const handleAddUserClick = () => {
-    // Implement Later
+    console.log("Add User button clicked");
+    navigate("/coordinatorPanel/addUser");
   };
 
   const handleManageSurveysClick = () => {
