@@ -14,6 +14,55 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
+        public async Task<bool> AddRegistration(RegistrationRequest request)
+        {
+            try
+            {
+                var school = await _context.Schools.FirstOrDefaultAsync(s =>
+                    s.SchoolName == request.SchoolName
+                );
+
+                if (school == null)
+                {
+                    Console.WriteLine("Error: School not found.");
+                    return false;
+                }
+
+                var registration = new Registration
+                {
+                    CityName = request.CityName,
+                    SchoolName = request.SchoolName,
+                    DateOfVisit = request.DateOfVisit,
+                    PrefferedVisitTime = request.PrefferedVisitTime,
+                    NumberOfVisitors = request.NumberOfVisitors,
+                    SuperVisorName = request.SuperVisorName,
+                    SuperVisorDuty = request.SuperVisorDuty,
+                    SuperVisorPhoneNumber = request.SuperVisorPhoneNumber,
+                    SuperVisorMailAddress = request.SuperVisorMailAddress,
+                    Notes = request.Notes,
+                };
+
+                registration.GenerateCode();
+                registration.FillSchool(school);
+
+                _context.Registrations.Add(registration);
+
+                var result = await _context.SaveChangesAsync();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding registration: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<Registration?> GetRegistration(string Code)
+        {
+            return await _context.Registrations.SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
         public List<string> GetAllCityNames()
         {
             List<string> cityNames = new List<string>();
@@ -24,18 +73,21 @@ namespace backend.Database
             return cityNames;
         }
 
-        public List<string> GetSchoolSuggestionsWithFilter(string query, string cityName)
+        public async Task<List<string?>> GetSchoolSuggestionsWithFilterAsync(
+            string query,
+            string cityName
+        )
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-                return new List<string>();
+                return new List<string?>();
             }
 
             var cityCode = CityData.Cities.FirstOrDefault(c =>
                 c.name.Equals(cityName, StringComparison.OrdinalIgnoreCase)
             );
 
-            var suggestions = _context
+            return await _context
                 .Schools.Where(s =>
                     s.CityCode == cityCode.cityCode
                     && s.SchoolName.ToLower().Contains(query.ToLower())
@@ -43,28 +95,29 @@ namespace backend.Database
                 .Select(s => s.SchoolName)
                 .Distinct()
                 .Take(10)
-                .ToList();
-
-            return suggestions;
+                .ToListAsync();
         }
 
-        public List<string?> GetSchoolSuggestions(string query)
+        public async Task<List<string?>> GetSchoolSuggestionsAsync(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
             {
                 return new List<string?>();
             }
 
-            var suggestions = _context
+            return await _context
                 .Schools.Where(s =>
                     EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
                 )
                 .Select(s => s.SchoolName)
                 .Distinct()
                 .Take(10)
-                .ToList();
+                .ToListAsync();
+        }
 
-            return suggestions;
+        public async Task<School> GetSchoolByName(string name)
+        {
+            return await _context.Schools.SingleOrDefaultAsync(s => s.SchoolName == name);
         }
 
         public async Task<List<User>> GetUsersAsync()

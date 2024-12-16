@@ -14,19 +14,19 @@ public class SchoolsController : ControllerBase
     }
 
     [HttpGet("autocomplete")]
-    public IActionResult Autocomplete([FromQuery] string query)
+    public async Task<IActionResult> Autocomplete([FromQuery] string query)
     {
-        var suggestions = _controller.GetSchoolSuggestions(query);
+        var suggestions = await _controller.GetSchoolSuggestionsAsync(query);
         return Ok(suggestions);
     }
 
     [HttpGet("autocompleteWithFilter")]
-    public IActionResult AutocompleteWithFilter(
+    public async Task<IActionResult> AutocompleteWithFilter(
         [FromQuery] string query,
         [FromQuery] string cityName
     )
     {
-        var suggestions = _controller.GetSchoolSuggestionsWithFilter(query, cityName);
+        var suggestions = await _controller.GetSchoolSuggestionsWithFilterAsync(query, cityName);
         return Ok(suggestions);
     }
 

@@ -7,14 +7,16 @@ namespace backend.Models
     {
         private const byte MAX_TOURS_PER_BLOCK = 3;
         private const int PRIORITY_BIAS = 100;
-
+        public int? Id { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
         public int MaxStudentCount { get; private set; }
         private readonly SortedList<Tour, int> ScheduledTours = new(MAX_TOURS_PER_BLOCK);
         private readonly SortedList<Tour, int> AlternativeTours = [];
 
         public void AddTour(Tour tour)
         {
-            if(ScheduledTours.Count == MaxStudentCount)
+            if (ScheduledTours.Count == MaxStudentCount)
             {
                 int leastPriorityScheduled = ScheduledTours.GetValueAtIndex(0);
                 if (leastPriorityScheduled + PRIORITY_BIAS < tour.Priority)
@@ -34,9 +36,13 @@ namespace backend.Models
                 // MAIL tour ACCEPTED
             }
         }
+
         public void AcceptAlternativeTour(Tour scheduledTour, Tour acceptedTour)
         {
-            if(ScheduledTours.ContainsKey(scheduledTour) && AlternativeTours.ContainsKey(acceptedTour))
+            if (
+                ScheduledTours.ContainsKey(scheduledTour)
+                && AlternativeTours.ContainsKey(acceptedTour)
+            )
             {
                 AlternativeTours.Remove(acceptedTour);
                 ScheduledTours.Remove(scheduledTour);
@@ -46,15 +52,15 @@ namespace backend.Models
                 // MAIL scheduledTour CANCELLED acceptedTour ACCEPTED
             }
         }
+
         public void RemoveTour(Tour tour)
         {
             if (!ScheduledTours.Remove(tour))
                 AlternativeTours.Remove(tour);
         }
 
-
-
         public Tour[] GetScheduledTours() => ScheduledTours.Keys.ToArray();
+
         public Tour[] GetAlternativeTours() => AlternativeTours.Keys.ToArray();
     }
 }

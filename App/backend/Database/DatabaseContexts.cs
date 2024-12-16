@@ -10,6 +10,7 @@ namespace backend.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<School> Schools { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
@@ -18,7 +19,13 @@ namespace backend.Database
         {
             modelBuilder.Entity<User>().HasKey(u => u.id);
 
-            modelBuilder.Entity<School>().HasKey(c => c.SchoolName);
+            modelBuilder.Entity<School>().HasKey(s => s.SchoolName);
+
+            modelBuilder.Entity<Registration>().HasKey(r => r.Code);
+
+            modelBuilder.Entity<Registration>().HasIndex(r => r.Code).IsUnique();
+
+            modelBuilder.Entity<TimeBlock>().HasKey(t => t.Id);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);

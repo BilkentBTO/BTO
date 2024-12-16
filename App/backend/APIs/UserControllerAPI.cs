@@ -9,7 +9,7 @@ namespace backend.Server.Controllers
     [Route("/api/[controller]")]
     public class UserController : ControllerBase
     {
-        SystemDatabaseController _controller;
+        private readonly SystemDatabaseController _controller;
 
         public UserController(SystemDatabaseController controller)
         {

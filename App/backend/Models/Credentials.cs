@@ -6,7 +6,7 @@ namespace backend.Models
     {
         public string? Username { get; private set; }
         public string? Password { get; private set; }
-        public UserType UserType { get; set; } = UserType.CandidateGuide; //Defaults to Candidate
+        public UserType UserType { get; set; } = UserType.Invalid; //Defaults to Invalid
 
         private static int WorkFactor = 12;
 

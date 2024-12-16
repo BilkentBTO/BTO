@@ -11,7 +11,7 @@ function SuccessSchoolReg() {
     navigate("/"); // Redirect to the homepage
   }, [location, navigate]);
 
-  return null; // Render nothing
+  return null; 
 }
 
 export default SuccessSchoolReg;
