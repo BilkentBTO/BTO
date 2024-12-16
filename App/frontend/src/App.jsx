@@ -35,6 +35,7 @@ import GuideRequests from "./AdvisorPanel/GuideRequests";
 import ResponsibleTours from "./AdvisorPanel/ResponsibleTours";
 import EvaluateTourRequests from "./AdvisorPanel/EvaluateTourRequests";
 import ListAllUsers from "./CoordinatorPanel/ListAllUsers";
+import ListCoordinatorsPage from "./AdminPanel/ListCoordinatorsPage";
 
 function App() {
   return (
@@ -209,6 +210,14 @@ function App() {
         element={
           <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
             <ListAllUsers />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/adminPanel/listCoordinators"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin"]}>
+            <ListCoordinatorsPage />
           </RoleProtectedRoute>
         }
       />
