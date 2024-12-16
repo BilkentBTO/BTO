@@ -43,7 +43,7 @@ namespace backend.Models
         public string? CityName { get; set; }
         public string? SchoolName { get; set; }
         public DateTime DateOfVisit { get; set; }
-        public TimeBlock? PrefferedVisitTime { get; set; }
+        public TimeBlock? PreferredVisitTime { get; set; }
         public int NumberOfVisitors { get; set; }
         public string? SuperVisorName { get; set; }
         public string? SuperVisorDuty { get; set; }

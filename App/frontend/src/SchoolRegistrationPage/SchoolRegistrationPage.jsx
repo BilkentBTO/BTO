@@ -118,10 +118,8 @@ function SchoolRegistrationPage() {
       alert("Please fill in all the required fields.");
       return;
     }
-
     navigate("/continueSchoolReg", { state: { formData } });
   };
-
   return (
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"SCHOOL REGISTRATION FORM"} />
@@ -157,7 +155,7 @@ function SchoolRegistrationPage() {
 
           {/* Preferred Time Dropdown */}
           <FormDropDownGlobal
-            arr={["09.00", "11.00", "13.00", "16.00"]}
+            arr={["09:00", "11:00", "13:00", "16:00"]}
             question="Preferred Time of Visit*"
             onChange={(value) => handleChange("visitTime", value)}
             initialValue={formData.visitTime}
