@@ -69,10 +69,8 @@ function SuccessSchoolReg() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const result = await response.json();
-        console.log("Registration successful:", result);
-
+        //HAVE A NICE PAGE FOR THIS. 
+        console.log(await response.text());
         // Navigate to the desired location after successful registration
         navigate("/");
       } catch (error) {

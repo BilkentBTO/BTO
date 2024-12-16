@@ -34,7 +34,7 @@ namespace backend.Server.Controllers
             {
                 return BadRequest(result);
             }
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("GetAllRegistrations")]
@@ -45,6 +45,18 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _controller.GetAllRegistrations();
+            return Ok(result);
+        }
+
+        [HttpGet("GetRegistration")]
+        public async Task<ActionResult> GetRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetRegistration(Code);
             return Ok(result);
         }
     }
