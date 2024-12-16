@@ -1,19 +1,47 @@
 .buttonAdminPanelSection {
-    gap: 20px;
-    margin: 0 auto; /* Centers the section horizontally */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates a 2x2 grid */
+    gap: 20px; /* Sets the gap between grid items */
+    margin: 0 auto; /* Centers the grid horizontally */
     margin-top: 70px;
-    display:flex;
-    flex-direction: column;
-    justify-content: center; /* Ensures the grid is centered horizontally */
-    align-items: center; /* Ensures the grid is centered vertically */
-    width: 60%; /* Adjusts the width of the button container */
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    height: 60%;
+    padding: 20px; /* Adds padding around the entire section */
+    border-radius: 10px; /* Rounds the edges of the grid container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+
+}
+
+.adminPanel{
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.buttonAdminPanelSection button{
+    width: 80%;
+    height: auto;
 }
 
 .buttonAdminPanel {
     background-color: rgb(100, 100, 200); /* Light background color for the panel */
-    border-radius: 5px; /* Rounded corners for the panel */
-    padding: 10px; /* Adds spacing inside the panel */
+    border-radius: 5px; /* Rounded corners for each panel */
+    width: auto;
+    height: auto;
+    padding: 20px; /* Adds spacing inside each panel */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center; /* Centers the text inside each panel */
+    font-family: Arial, Helvetica, sans-serif; /* Font for buttons */
+    color: white; /* White text for contrast */
+    font-size: 1.2rem; /* Font size for readability */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effects */
+}
+
+.buttonAdminPanel:hover {
+    transform: translateY(-5px); /* Lifts the button slightly */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Adds a stronger shadow */
 }
 
 .lastAdminItem {
