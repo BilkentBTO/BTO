@@ -54,8 +54,12 @@ function SchoolRegistrationPage() {
       setSchools([]); // Clear suggestions if input or city is missing
       return;
     }
-  
-    fetch(`/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(query)}&cityName=${encodeURIComponent(city)}`)
+
+    fetch(
+      `/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(
+        query
+      )}&cityName=${encodeURIComponent(city)}`
+    )
       .then((response) => {
         console.log("API Response Status:", response.status);
         return response.json();
@@ -72,6 +76,7 @@ function SchoolRegistrationPage() {
   // Handle change in the city dropdown
   const handleCityChange = (value) => {
     setSelectedCity(value);
+    handleChange("school", "");
     handleChange("city", value);
     setSchools([]); // Reset schools when city changes
     setSchoolQuery(""); // Reset query as well
@@ -80,7 +85,7 @@ function SchoolRegistrationPage() {
   // Handle query input with debouncing
   const handleSchoolQueryChange = (value) => {
     setSchoolQuery(value);
-    handleChange("school", value);
+    console.log(schoolQuery);
 
     // Debounce API call
     if (typingTimeout) {
@@ -88,7 +93,7 @@ function SchoolRegistrationPage() {
     }
 
     const timeout = setTimeout(() => {
-      fetchSchoolSuggestions(value, selectedCity);
+      fetchSchoolSuggestions(value, formData.city);
     }, 300); // 300ms delay for debounce
 
     setTypingTimeout(timeout);
