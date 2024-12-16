@@ -3,11 +3,12 @@ using System.Linq;
 
 namespace backend.Models
 {
-    public class Fair(School school, string name)
+    public class Fair(School school, string name, DateTime time)
     {
         public readonly int ID = school.GetHashCode() + name.GetHashCode();
         public readonly School School = school;
         public readonly string Name = name;
+        public readonly DateTime Time = time;
 
         private readonly List<Guide> AssignedGuides = [];
         private readonly List<Comment> Comments = [];
