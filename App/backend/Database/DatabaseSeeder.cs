@@ -138,4 +138,84 @@ namespace backend.Database
             return creds;
         }
     }
+
+    public class ScheduleDbSeeder
+    {
+        readonly ILogger _logger;
+
+        public ScheduleDbSeeder(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger("ScheduleDbSeederLogger");
+        }
+
+        public async Task SeedAsync(IServiceProvider serviceProvider)
+        {
+            using (
+                var serviceScope = serviceProvider
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope()
+            )
+            {
+                var scheduleDb = serviceScope.ServiceProvider.GetService<ScheduleDbContext>();
+                if (scheduleDb == null)
+                {
+                    return;
+                }
+                if (await scheduleDb.Database.EnsureCreatedAsync())
+                {
+                    if(!await scheduleDb.Tours.AnyAsync())
+                    {
+                        await InsertFairSampleData(scheduleDb);
+                    }
+                    if (!await scheduleDb.Fairs.AnyAsync())
+                    {
+                        await InsertTourSampleData(scheduleDb);
+                    }
+                }
+            }
+        }
+        public async Task InsertFairSampleData(ScheduleDbContext db)
+        {
+            List<Fair> fairs = new List<Fair>
+            {
+                new Fair(new School(), "x fair", new DateTime(2025, 1, 22)),
+                new Fair(new School(), "y fair", new DateTime(2025, 1, 13)),
+                new Fair(new School(), "z fair", new DateTime(2025, 1, 18))
+            };
+
+            db.Fairs.AddRange(fairs);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"Error in {nameof(ScheduleDbSeeder)}: " + exp.Message);
+                throw;
+            }
+        }
+        public async Task InsertTourSampleData(ScheduleDbContext db)
+        {
+            List<Tour> tours = new List<Tour>
+            {
+                new Tour(new DateTime(2024, 12, 25), new TourRegistirationInfo(new School(), "amogus@dijkstra.com", 32)),
+                new Tour(new DateTime(2024, 11, 27), new TourRegistirationInfo(new School(), "amogsus@dijkstra.com", 26))
+            };
+            Schedule weeklySchedule = new Schedule();
+            weeklySchedule.AddTour(tours[0], 15);
+            weeklySchedule.AddTour(tours[1], 17);
+
+            db.Tours.AddRange(tours);
+            db.Schedules.Add(weeklySchedule);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"Error in {nameof(ScheduleDbSeeder)}: " + exp.Message);
+                throw;
+            }
+        }
+    }
 }

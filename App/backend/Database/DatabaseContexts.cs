@@ -25,8 +25,6 @@ namespace backend.Database
 
             modelBuilder.Entity<Registration>().HasIndex(r => r.Code).IsUnique();
 
-            modelBuilder.Entity<TimeBlock>().HasKey(t => t.Id);
-
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
 
@@ -66,6 +64,25 @@ namespace backend.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Credential>().HasKey(c => c.Username);
+        }
+    }
+
+    public class ScheduleDbContext : DbContext
+    {
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<Tour> Tours { get; set; }
+        public DbSet<Fair> Fairs { get; set; }
+
+        public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
+            : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TimeBlock>().HasKey(s => s.ID);
+
+            modelBuilder.Entity<Tour>().HasKey(t => t.ID);
+
+            modelBuilder.Entity<Fair>().HasKey(f => f.ID);
         }
     }
 
