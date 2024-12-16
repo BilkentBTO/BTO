@@ -6,7 +6,8 @@ function CoordinatorPanel() {
   const navigate = useNavigate();
 
   const handleManageFairRequestsClick = () => {
-    // Implement Later
+    console.log("Manage Fair Requests button clicked");
+    navigate("/coordinatorPanel/manageFairRequests");
   };
 
   const handleAssignGuideToFairsClick = () => {

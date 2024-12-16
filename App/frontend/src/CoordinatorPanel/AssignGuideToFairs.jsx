@@ -135,6 +135,9 @@ function AssignGuideToFairs() {
           )}
         </div>
       )}
+      <div className="contactSection">
+        <p className="contactInfo"></p>
+      </div>
     </div>
   );
 }
