@@ -11,6 +11,8 @@ function AdminPanel() {
   };
 
   const handleAddCoordinatorClick = () => {
+    navigate("/adminPanel/addCoordinator");
+
     // Implement Later
   };
 

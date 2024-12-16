@@ -1,0 +1,30 @@
+.successAddCoordinatorPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .successMessageContainer {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .successMessageContainer h1 {
+    color: #28a745; /* Success green */
+    margin-bottom: 10px;
+  }
+  
+  .successMessageContainer p {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 10px 0;
+  }

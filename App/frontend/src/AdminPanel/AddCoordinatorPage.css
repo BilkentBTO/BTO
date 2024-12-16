@@ -1,0 +1,41 @@
+/* Main container for the page */
+.addCoordinatorPage {
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Inner container for the form */
+  .innerAddCoordinatorPage {
+    padding: 30px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px; /* Rounded corners for the form */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+    max-width: 500px; /* Limit the width of the form */
+    width: 100%; /* Make it responsive */
+  }
+  
+  /* Form container for input fields */
+  .coordinatorForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between input fields */
+  }
+  
+  /* Button styles */
+  .submitButton {
+    background-color: #007bff; /* Blue button color */
+    color: white; /* White text color */
+    padding: 10px 15px; /* Button padding */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners for the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1rem; /* Font size for readability */
+    text-align: center;
+    width: 200px;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+  }
+  
+  .submitButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
