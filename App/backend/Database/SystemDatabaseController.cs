@@ -14,14 +14,13 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public List<string?> GetAllCityNames()
+        public List<string> GetAllCityNames()
         {
-            var cityNames = _context
-                .Schools.Select(s => s.CityName)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToList();
-
+            List<string> cityNames = new List<string>();
+            foreach (var city in CityData.Cities)
+            {
+                cityNames.Add(city.name);
+            }
             return cityNames;
         }
 
@@ -32,9 +31,13 @@ namespace backend.Database
                 return new List<string>();
             }
 
+            var cityCode = CityData.Cities.FirstOrDefault(c =>
+                c.name.Equals(cityName, StringComparison.OrdinalIgnoreCase)
+            );
+
             var suggestions = _context
                 .Schools.Where(s =>
-                    s.CityName.ToLower() == cityName.ToLower()
+                    s.CityCode == cityCode.cityCode
                     && s.SchoolName.ToLower().Contains(query.ToLower())
                 )
                 .Select(s => s.SchoolName)

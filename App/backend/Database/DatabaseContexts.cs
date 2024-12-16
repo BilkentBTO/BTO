@@ -66,10 +66,10 @@ namespace backend.Database
     {
         public SchoolCsvMap()
         {
-            Map(m => m.CityCode).Name("City Code");
-            Map(m => m.CityName).Name("City Name");
             Map(m => m.SchoolCode).Name("School code");
             Map(m => m.SchoolName).Name("School Name");
+            Map(m => m.CityName).Name("City Name");
+            Map(m => m.CityCode).Name("City Code");
         }
     }
 }
