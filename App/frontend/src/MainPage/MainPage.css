@@ -6,37 +6,15 @@ body {
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
-  height: 100%;
 }
 
 .welcomeText {
   font-family: Arial, sans-serif;
   color: rgb(30, 30, 100);
   font-size: xx-large;
-  text-align: center;
   display: flex;
   justify-content: center;
-  align-items: center;
   padding-top: 5%;
-}
-
-.mainRegButton {
-  background-color: rgb(30, 30, 100);
-  color: rgb(255, 255, 255);
-  width: 600px;
-  height: 120px;
-  font: Arial;
-  font-family: sans-serif;
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: center;
-  display: inline-block;
-  transition: background-color 0.3s ease;
-  font-size: x-large;
-}
-
-.mainRegButton:hover {
-  background-color: rgb(21, 21, 70);
 }
 
 .mainPage {
@@ -67,7 +45,6 @@ body {
   margin-left: 10%;
   margin-right: 10%;
   flex-grow: 1;
-  margin-bottom: 80px;
 }
 
 .contactSection {

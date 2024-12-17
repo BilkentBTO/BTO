@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./MainRegButton.css";
 
 function MainRegButton({ name, link }) {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ function MainRegButton({ name, link }) {
   };
 
   return (
-    <button onClick={handleNavigation} className="mainRegButton">
+    <button className="mainRegButton" onClick={handleNavigation}>
       {name}
     </button>
   );

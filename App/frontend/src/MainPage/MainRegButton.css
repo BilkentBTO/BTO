@@ -1,0 +1,19 @@
+.mainRegButton {
+    background-color: rgb(30, 30, 100);
+    color: rgb(255, 255, 255);
+    width: 600px;
+    height: 120px;
+    font: Arial;
+    font-family: sans-serif;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+    font-size: x-large;
+    font-weight: bold;
+  }
+  
+  .mainRegButton:hover {
+    background-color: rgb(21, 21, 70);
+  }

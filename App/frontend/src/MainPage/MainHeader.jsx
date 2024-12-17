@@ -5,15 +5,15 @@ import "./MainHeader.css";
 function MainHeader() {
   return (
     <header className="mainHeader">
-      <div className="container">
-        <div className="textSection">
-          <img src={logo} alt="Bilkent Logo" className="logo" />
+      <div className="mainHeaderContainer">
+        <div className="mainHeaderTextSection">
+          <img src={logo} alt="Bilkent Logo" className="bilkentLogo" />
           <div>
             <h1>Bilkent University</h1>
-            <h2>Promotion Office</h2>
+            <h2>Information Office</h2>
           </div>
         </div>
-        <div className="buttonSection">
+        <div className="mainHeaderButtonSection">
           <MainButton name="Invite Bilkent to Fairs" link="/inviteBilkent" />
           <MainButton name="Join Promotion Office" link="/joinBTO" />
           <MainButton name="BTO Login" link="/login" />
