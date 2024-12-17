@@ -1,17 +1,73 @@
-  /* Existing table styles remain unchanged */
-  table {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  th, td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
+/* Table container styling */
+.table-container {
+  margin: 20px;
+  overflow-x: auto;
+  max-height: 400px; /* Set max height for the table container */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Table styling */
+table {
+  align-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  color: #000000;
+  font-size: 14px;
+  background-color: rgb(250, 250, 250);
+  border-radius: 8px; /* Rounded corners for the whole table */
+  overflow: hidden;  /* Ensures the border-radius is visible */
+}
+
+/* Header row (thead) styling */
+thead {
+  background-color: rgb(30, 30, 100); /* Background color for header */
+}
+
+/* Header cell styling */
+th {
+  font-weight: 600;
+  padding: 15px 15px;
+  text-align: center;
+  color: white; /* White text color for headers */
+  border-bottom: 1px solid #ddd;
+}
+
+/* Body row styling */
+td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e5e5e5;
+  text-align: center;
+}
+
+/* Alternating row color */
+tr:nth-child(even) {
+  background-color: rgb(242, 242, 242);
+}
+
+/* Search bar styling */
+.searchBar {
+  padding: 10px;
+  margin-left: 20px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  transition: all 0.3s ease-in-out;
+}
+
+.searchBar:focus {
+  border-color: rgb(53, 53, 53);
+  box-shadow: 0 0 2px rgb(53, 53, 53);
+}
+
+/* Center message when no data matches */
+.no-data-message {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  padding: 12px;
+}
