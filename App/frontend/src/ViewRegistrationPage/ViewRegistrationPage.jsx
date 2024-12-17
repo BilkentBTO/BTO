@@ -6,19 +6,20 @@ import "./ViewRegistrationPage.css";
 
 function ViewRegistrationPage() {
   const location = useLocation(); // Get the state passed via navigation
-  const registrationData = location.state || {}; // Fallback to an empty object if no data is passed
+  const registrationData = location.state?.registrationData || {}; // Access the data passed to this page
 
+  // Destructure API response data with fallback values
   const {
-    registrationCode,
+    code: registrationCode,
     schoolName,
-    city,
-    visitDate,
-    preferedDate,
-    visitorNum,
-    supervisor,
-    supervisorDuty,
-    supervisorPhoneNum,
-    supervisorMail,
+    cityName: city,
+    dateOfVisit,
+    prefferedVisitTime,
+    numberOfVisitors,
+    superVisorName,
+    superVisorDuty,
+    superVisorPhoneNumber,
+    superVisorMailAddress,
     notes,
   } = registrationData;
 
@@ -30,6 +31,7 @@ function ViewRegistrationPage() {
     <div className="viewRegistrationPage">
       <HeaderGlobal name={"YOUR TOUR REGISTRATION"} />
       <div className="viewRegistrationInfo">
+        {/* Registration Information */}
         <p className="viewRegistrationCode">
           <span className="viewLabel">Registration Code:</span>{" "}
           {registrationCode || "N/A"}
@@ -41,34 +43,40 @@ function ViewRegistrationPage() {
           <span className="viewLabel">City:</span> {city || "N/A"}
         </p>
         <p className="viewVisitDate">
-          <span className="viewLabel">Date of Visit:</span> {visitDate || "N/A"}
+          <span className="viewLabel">Date of Visit:</span>{" "}
+          {dateOfVisit ? new Date(dateOfVisit).toLocaleDateString() : "N/A"}
         </p>
         <p className="viewPreferedDate">
           <span className="viewLabel">Preferred Time of Visit:</span>{" "}
-          {preferedDate || "N/A"}
+          {prefferedVisitTime?.startTime
+            ? new Date(prefferedVisitTime.startTime).toLocaleTimeString()
+            : "N/A"}
         </p>
         <p className="viewVisitorNum">
           <span className="viewLabel">Number of Visitors:</span>{" "}
-          {visitorNum || "N/A"}
+          {numberOfVisitors || "N/A"}
         </p>
         <p className="viewSupervisor">
-          <span className="viewLabel">Supervisor:</span> {supervisor || "N/A"}
+          <span className="viewLabel">Supervisor Name:</span>{" "}
+          {superVisorName || "N/A"}
         </p>
         <p className="viewSupervisorDuty">
           <span className="viewLabel">Supervisor Duty:</span>{" "}
-          {supervisorDuty || "N/A"}
+          {superVisorDuty || "N/A"}
         </p>
         <p className="viewSupervisorPhoneNum">
           <span className="viewLabel">Supervisor Phone Number:</span>{" "}
-          {supervisorPhoneNum || "N/A"}
+          {superVisorPhoneNumber || "N/A"}
         </p>
         <p className="viewSupervisorMail">
           <span className="viewLabel">Supervisor Mail:</span>{" "}
-          {supervisorMail || "N/A"}
+          {superVisorMailAddress || "N/A"}
         </p>
         <p className="viewNotes">
-          <span className="viewLabel">Notes to Consider:</span> {notes || "N/A"}
+          <span className="viewLabel">Notes:</span> {notes || "N/A"}
         </p>
+
+        {/* Buttons */}
         <div className="viewButtonSection">
           <ButtonHeaderGlobal
             name={"Cancel Registration"}
@@ -77,10 +85,8 @@ function ViewRegistrationPage() {
           <ButtonHeaderGlobal name={"Back"} link="/"></ButtonHeaderGlobal>
         </div>
       </div>
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
     </div>
   );
 }
+
 export default ViewRegistrationPage;

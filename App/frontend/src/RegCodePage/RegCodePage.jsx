@@ -2,47 +2,50 @@ import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import "./RegCode.css";
 
 function RegCodePage() {
-  const [registrationCode, setRegistrationCode] = useState("");
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
+  const [registrationCode, setRegistrationCode] = useState(""); // Input field state
+  const [isPopupVisible, setIsPopupVisible] = useState(false); // Popup visibility
+  const [popupMessage, setPopupMessage] = useState(""); // Popup message
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
-  const handleViewRegistration = () => {
-    // Validate registration code
-    // TEMPORARY INFORMATION IS USED !!!!!!!!!!
-    if (registrationCode !== "CANGA123") {
-      // TEMPORARY INFORMATION IS USED !!!!!!!!!!
-      setPopupMessage("Error: Invalid registration code entered.");
+  // Function to fetch registration data
+  const handleViewRegistration = async () => {
+    if (!registrationCode.trim()) {
+      setPopupMessage("Please enter a valid registration code.");
       setIsPopupVisible(true);
       return;
     }
 
-    // Navigate to the registration page if the code is valid
-    navigate("/yourRegistration", {
-      state: {
-        // TEMPORARY INFORMATION IS USED !!!!!!!!!!
-        registrationCode: "CANGA123",
-        schoolName: "Bilkent",
-        city: "Ankara",
-        visitDate: "01/02/2025",
-        preferedDate: "01/02/2025",
-        visitorNum: "15",
-        supervisor: "Can",
-        supervisorDuty: "Headmaster",
-        supervisorPhoneNum: "0342352",
-        supervisorMail: "kutuk@mail.com",
-        notes: "5 min late",
-        // TEMPORARY INFORMATION IS USED !!!!!!!!!!
-      },
-    });
+    setIsLoading(true); // Show loading state
+    try {
+      const response = await fetch(
+        `api/Registration/GetRegistration?Code=${registrationCode}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data); // Log the API response
+
+      // Navigate to the next page with the API response
+      navigate("/viewRegistrationDetails", {
+        state: { registrationData: data },
+      });
+    } catch (error) {
+      console.error("Error fetching registration:", error);
+      setPopupMessage(
+        "Failed to retrieve registration. Please check the code."
+      );
+      setIsPopupVisible(true);
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
   };
-  useEffect(() => {
-    document.title = "View Registration Code - BTO"; // Set the tab title
-  }, []);
 
   const closePopup = () => {
     setIsPopupVisible(false); // Hide the pop-up
@@ -60,8 +63,12 @@ function RegCodePage() {
           value={registrationCode}
           onChange={(e) => setRegistrationCode(e.target.value)}
         />
-        <button className="inputButton" onClick={handleViewRegistration}>
-          View
+        <button
+          className="inputButton"
+          onClick={handleViewRegistration}
+          disabled={isLoading}
+        >
+          {isLoading ? "Loading..." : "View"}
         </button>
         <ButtonHeaderGlobal
           name={"Go to home page"}
@@ -70,22 +77,16 @@ function RegCodePage() {
       </div>
 
       {/* Pop-up for error message */}
-      <div id="popup" className={`popup ${isPopupVisible ? "" : "hidden"}`}>
-        <div className="popup-content">
-          <p id="popup-message">{popupMessage}</p>
-          <button
-            id="close-popup"
-            className="popup-button"
-            onClick={closePopup}
-          >
-            Close
-          </button>
+      {isPopupVisible && (
+        <div className="popup">
+          <div className="popup-content">
+            <p>{popupMessage}</p>
+            <button className="popup-button" onClick={closePopup}>
+              Close
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
+      )}
     </div>
   );
 }

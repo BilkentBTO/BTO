@@ -26,6 +26,8 @@ function CoordinatorPanel() {
   };
 
   const handleManageSurveysClick = () => {
+    navigate("/coordinatorPanel/manageSurveys");
+
     // Implement Later
   };
 
