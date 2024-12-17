@@ -49,10 +49,10 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            bool success = await _controller.Login(request.Username, request.Password);
-            if (!success)
+            LoginStatus success = await _controller.Login(request.Username, request.Password);
+            if (success != LoginStatus.Success)
             {
-                return BadRequest("Invalid username or password");
+                return Unauthorized("Invalid username or password");
             }
 
             var token = await GenerateJwtToken(request.Username);

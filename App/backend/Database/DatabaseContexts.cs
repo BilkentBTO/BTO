@@ -50,6 +50,10 @@ namespace backend.Database
                 csv.Context.RegisterClassMap<SchoolCsvMap>();
                 schools = csv.GetRecords<School>().ToList();
             }
+            foreach (School school in schools)
+            {
+                school.CalculatePriority();
+            }
             return schools;
         }
     }
@@ -90,7 +94,7 @@ namespace backend.Database
     {
         public SchoolCsvMap()
         {
-            Map(m => m.SchoolCode).Name("School code");
+            Map(m => m.SchoolCode).Name("School Code");
             Map(m => m.SchoolName).Name("School Name");
             Map(m => m.CityName).Name("City Name");
             Map(m => m.CityCode).Name("City Code");
