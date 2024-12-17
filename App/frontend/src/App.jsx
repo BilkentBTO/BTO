@@ -86,7 +86,10 @@ function App() {
       />
       <Route path="/successJoin" element={<SuccessJoin />} />
       <Route path="/schoolRegistration" element={<SchoolRegistrationPage />} />
-      <Route path="/yourRegistration" element={<ViewRegistrationPage />} />
+      <Route
+        path="/viewRegistrationDetails"
+        element={<ViewRegistrationPage />}
+      />
 
       <Route
         path="/adminPanel"
