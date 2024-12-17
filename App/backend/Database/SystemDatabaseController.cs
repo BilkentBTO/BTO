@@ -16,25 +16,22 @@ namespace backend.Database
 
         public async Task<string> AddRegistration(RegistrationRequest request)
         {
-            Console.WriteLine("Exec");
             try
             {
-                Console.WriteLine(request);
-                Console.WriteLine(request.SchoolName);
                 var school = await _context.Schools.FirstOrDefaultAsync(s =>
-                    s.SchoolName == request.SchoolName
+                    s.SchoolCode == request.SchoolCode
                 );
 
                 if (school == null)
                 {
-                    Console.WriteLine($"Error: School not found: {request.SchoolName}");
+                    Console.WriteLine($"Error: School not found: '{request.SchoolCode}'");
                     return "";
                 }
 
                 var registration = new Registration
                 {
                     CityName = request.CityName,
-                    SchoolName = request.SchoolName,
+                    SchoolCode = request.SchoolCode,
                     DateOfVisit = request.DateOfVisit,
                     PrefferedVisitTime = request.PreferredVisitTime,
                     NumberOfVisitors = request.NumberOfVisitors,
@@ -64,12 +61,19 @@ namespace backend.Database
 
         public async Task<Registration?> GetRegistration(string Code)
         {
-            return await _context.Registrations.SingleOrDefaultAsync(r => r.Code == Code);
+            return await _context
+                .Registrations.Include(r => r.School)
+                .Include(r => r.PrefferedVisitTime)
+                .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
         public async Task<List<Registration>> GetAllRegistrations()
         {
-            return await _context.Registrations.OrderBy(r => r.Code).ToListAsync();
+            return await _context
+                .Registrations.OrderBy(r => r.School.Priority)
+                .Include(r => r.School)
+                .Include(r => r.PrefferedVisitTime)
+                .ToListAsync();
         }
 
         public async Task<bool> AcceptRegistration(string Code)
@@ -112,29 +116,41 @@ namespace backend.Database
             return cityNames;
         }
 
-        public async Task<List<string?>> GetSchoolSuggestionsWithFilterAsync(
+        public async Task<List<SchoolSuggestion>> GetSchoolSuggestionsWithFilterAsync(
             string query,
             string cityName
         )
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-                return new List<string?>();
+                return new List<SchoolSuggestion>();
             }
 
             var cityCode = CityData.Cities.FirstOrDefault(c =>
                 c.name.Equals(cityName, StringComparison.OrdinalIgnoreCase)
             );
 
-            return await _context
+            if (cityCode == null)
+            {
+                return new List<SchoolSuggestion>();
+            }
+
+            var result = await _context
                 .Schools.Where(s =>
                     s.CityCode == cityCode.cityCode
                     && s.SchoolName.ToLower().Contains(query.ToLower())
                 )
-                .Select(s => s.SchoolName)
                 .Distinct()
                 .Take(10)
                 .ToListAsync();
+
+            return result
+                .Select(s => new SchoolSuggestion
+                {
+                    SchoolName = s.SchoolName,
+                    SchoolCode = s.SchoolCode,
+                })
+                .ToList();
         }
 
         public async Task<List<string?>> GetSchoolSuggestionsAsync(string query)
@@ -232,6 +248,19 @@ namespace backend.Database
                 _logger.LogError($"Error in {nameof(DeleteUserAsync)}: " + exp.Message);
             }
             return false;
+        }
+
+        public static string CleanInput(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return string.Empty;
+            }
+
+            return input
+                .Trim()
+                .Replace("\u00A0", " ")
+                .Normalize(System.Text.NormalizationForm.FormC);
         }
     }
 }

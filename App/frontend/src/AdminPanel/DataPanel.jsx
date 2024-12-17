@@ -13,7 +13,7 @@ function DataPanel() {
     "Relation Status",
   ];
   const data = [
-    ["TED Ankara", "Ankara", "600", "130", "Low", "Good"],
+    ["Ted Ankara Koleji", "Ankara", "600", "130", "Low", "Good"],
     ["Atatürk Anadolu", "Ankara", "100", "23", "High", "Mid"],
     ["Nesibe Aydin", "Ankara", "200", "68", "High", "Mid"],
   ];
@@ -39,13 +39,17 @@ function DataPanel() {
   };
 
   const buttonStyle = {
-    padding: "5px 10px",
-    backgroundColor: "blue",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    margin: "5px",
+    padding: "8px 16px" /* Adjust padding to fit within the cell */,
+    backgroundColor: "#1e1e64" /* Background color */,
+    color: "white" /* White text color */,
+    border: "none" /* Remove default border */,
+    borderRadius: "4px" /* Rounded corners */,
+    cursor: "pointer" /* Pointer cursor on hover */,
+    fontSize: "14px" /* Text size */,
+    width: "100%" /* Make button fill the width of the cell */,
+    maxWidth: "120px" /* Max width for button */,
+    textAlign: "center" /* Center align text */,
+    transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
   return (

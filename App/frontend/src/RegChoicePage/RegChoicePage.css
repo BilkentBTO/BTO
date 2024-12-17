@@ -20,6 +20,6 @@
     vertical-align: middle;
     justify-content: center; /* Centers buttons horizontally */
     align-items: center; /* Ensures buttons are vertically aligned in the section */
-    gap: 5vw; /* Adds space between the buttons */
+    gap: 75px; /* Adds space between the buttons */
     flex-grow: 1; /* Allows this section to expand and center vertically */
 }

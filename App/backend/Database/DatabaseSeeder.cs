@@ -133,6 +133,10 @@ namespace backend.Database
             {
                 new Credential("canga", "can123", UserType.Admin),
                 new Credential("bora", "bora123", UserType.Guide),
+                new Credential("advis", "123", UserType.Advisor),
+                new Credential("guide", "123", UserType.Guide),
+                new Credential("coord", "123", UserType.Coordinator),
+                new Credential("admin", "123", UserType.Admin),
             };
 
             return creds;

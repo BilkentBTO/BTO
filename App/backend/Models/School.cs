@@ -99,6 +99,7 @@ namespace backend.Models
     public class School()
     {
         public int PresistanceScore { get; set; }
+        public int Priority { get; set; }
         public int QualityScore { get; set; }
         public string? CityName { get; set; }
         public int CityCode { get; set; }
@@ -106,7 +107,11 @@ namespace backend.Models
         [NotMapped]
         public City City =>
             CityData.Cities.FirstOrDefault(c =>
-                c.name.Equals(CityName, StringComparison.OrdinalIgnoreCase)
+                c.name.Normalize(System.Text.NormalizationForm.FormC)
+                    .Equals(
+                        CityName.Normalize(System.Text.NormalizationForm.FormC),
+                        StringComparison.OrdinalIgnoreCase
+                    )
             );
 
         public int SchoolCode { get; set; }
@@ -122,5 +127,27 @@ namespace backend.Models
                     + QUALITY_MULTIPLIER * QualityScore
                     + DISTANCE_MULTIPLIER * City.distance
             );
+
+        public void CalculatePriority()
+        {
+            this.Priority = GetPriority();
+        }
+
+        //Debug purposes
+        public override string ToString()
+        {
+            return $"School: {SchoolName ?? "N/A"}, "
+                + $"Code: {SchoolCode}, "
+                + $"City: {CityName ?? "N/A"}, "
+                + $"Priority: {Priority}, "
+                + $"Persistence Score: {PresistanceScore}, "
+                + $"Quality Score: {QualityScore}";
+        }
+    }
+
+    public class SchoolSuggestion
+    {
+        public string? SchoolName { get; set; }
+        public int SchoolCode { get; set; }
     }
 }
