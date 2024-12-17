@@ -21,6 +21,7 @@ function SuccessSchoolReg() {
   const isApiCalled = useRef(false); // Prevent duplicate calls
   const [apiResponse, setApiResponse] = useState(null); // State to hold API response
   const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [showPopup, setShowPopup] = useState(false); // Popup state
 
   useEffect(() => {
     if (isApiCalled.current) return; // Prevent double execution
@@ -86,7 +87,6 @@ function SuccessSchoolReg() {
         setApiResponse(`Error: ${error.message}`);
       } finally {
         setIsLoading(false); // Stop loading
-        setTimeout(() => navigate("/"), 5000); // Redirect after 3 seconds
       }
     };
 
@@ -98,17 +98,50 @@ function SuccessSchoolReg() {
     }
   }, [location, navigate]);
 
+  // Function to handle the button click
+  const handleContinue = () => {
+    setShowPopup(true); // Show popup
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    navigate("/"); // Navigate to next page
+  };
+
   return (
     <div style={styles.container}>
       {isLoading ? (
         <div style={styles.message}>Processing your request...</div>
       ) : (
         <div style={styles.response}>
-          <h2>API Response</h2>
-          <h2>{apiResponse}</h2>
-          <p>You will have access through this code</p>
-          <p>Save to A Place You will not forget</p>
-          <p>Redirecting to the Admin Panel...</p>
+          <h2>Registration Successful!</h2>
+          <p>Your access code:</p>
+          <p style={styles.code}>{apiResponse}</p>
+          <p>Save this code in a secure place!</p>
+          <button onClick={handleContinue} style={styles.button}>
+            Continue
+          </button>
+        </div>
+      )}
+
+      {/* Popup */}
+      {showPopup && (
+        <div style={styles.popupOverlay}>
+          <div style={styles.popupContent}>
+            <h3>Are you sure you want to continue?</h3>
+            <p>Please confirm to proceed to the Main Page.</p>
+            <div style={styles.popupActions}>
+              <button onClick={closePopup} style={styles.confirmButton}>
+                Confirm
+              </button>
+              <button
+                onClick={() => setShowPopup(false)}
+                style={styles.cancelButton}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -135,6 +168,62 @@ const styles = {
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  },
+  code: {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    color: "#28a745",
+    margin: "10px 0",
+  },
+  button: {
+    padding: "10px 20px",
+    backgroundColor: "#007bff",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    marginTop: "15px",
+    fontSize: "1rem",
+  },
+  popupOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  popupContent: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    textAlign: "center",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+  },
+  popupActions: {
+    marginTop: "15px",
+    display: "flex",
+    justifyContent: "space-around",
+  },
+  confirmButton: {
+    padding: "10px 15px",
+    backgroundColor: "#28a745",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  cancelButton: {
+    padding: "10px 15px",
+    backgroundColor: "#dc3545",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
   },
 };
 
