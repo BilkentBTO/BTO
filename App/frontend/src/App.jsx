@@ -43,6 +43,8 @@ import AddCoordinator from "./AdminPanel/AddCoordinatorPage";
 import ConfirmCoordinatorAdd from "./AdminPanel/ConfirmCoordinatorAdd";
 import SuccessAddCoordinator from "./AdminPanel/SuccessAddCoordinator";
 import DataPanel from "./AdminPanel/DataPanel";
+import ConfirmAddUser from "./CoordinatorPanel/ConfirmAddUser";
+import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
 
 function App() {
   return (
@@ -249,6 +251,22 @@ function App() {
         element={
           <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
             <ManageFairRequests />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/coordinatorPanel/addUserConfirmation"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+            <ConfirmAddUser />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/coordinatorPanel/successAddUser"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+            <SuccessAddUser />
           </RoleProtectedRoute>
         }
       />
