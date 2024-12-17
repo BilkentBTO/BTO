@@ -12,18 +12,16 @@ function HeaderPanelGlobal({ name }) {
   };
 
   return (
-    <header className="header">
-      <div className="container">
-        <div className="headerText">
-          <img src={bilkentLogo} alt="Bilkent Logo" className="logo" />
+    <header className="headerPanelGlobal">
+      <div className="headerPanelGlobalContainer">
+        <div className="headerPanelGlobalText">
+          <img src={bilkentLogo} alt="Bilkent Logo" className="bilkentLogo" />
           <div>
             <h1>Bilkent University</h1>
-            <h2>Promotion Office</h2>
+            <h2>Information Office</h2>
           </div>
         </div>
-        <div className="title">
-          <h1>{name}</h1>
-        </div>
+        <h1 className="headerPanelGlobalTitle">{name}</h1>
         <button className="profileButton" onClick={handleProfileClick}>
           <img src={profileImage} alt="Profile Image" className="profile" />
         </button>

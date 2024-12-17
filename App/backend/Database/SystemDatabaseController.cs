@@ -43,6 +43,7 @@ namespace backend.Database
                     SuperVisorPhoneNumber = request.SuperVisorPhoneNumber,
                     SuperVisorMailAddress = request.SuperVisorMailAddress,
                     Notes = request.Notes,
+                    State = RegistrationState.Pending,
                 };
 
                 registration.GenerateCode();
@@ -69,6 +70,36 @@ namespace backend.Database
         public async Task<List<Registration>> GetAllRegistrations()
         {
             return await _context.Registrations.OrderBy(r => r.Code).ToListAsync();
+        }
+
+        public async Task<bool> AcceptRegistration(string Code)
+        {
+            var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Accepted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RejectRegistration(string Code)
+        {
+            var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Rejected;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public List<string> GetAllCityNames()

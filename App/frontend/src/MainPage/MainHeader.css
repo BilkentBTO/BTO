@@ -1,6 +1,6 @@
 .mainHeader {
     background-color: rgb(30, 30, 100);
-    padding: 20px;
+    padding: 10px;
 }
 
 .mainHeaderContainer {
@@ -16,12 +16,11 @@
 .mainHeaderTextSection {
     display: flex;
     align-items: center;
-    gap: 20px;
-    flex-grow: 1;
+    justify-content: center;
+    gap: 30px;
     font: Arial;
     font-family: sans-serif;
-    padding-left: 100px;
-    padding-right: 20px;
+    margin-left: 5%;
 }
 
 .mainHeaderTextSection .bilkentLogo {
@@ -45,12 +44,10 @@
 
 .mainHeaderButtonSection {
     display: flex;
-    gap: 15px;
+    gap: 10%;
     justify-content: flex-end;
     font: Arial;
     font-family: sans-serif;
     align-items: center;
-    padding-left: 20px;
-    padding-right: 100px;
-    margin-left: 100px;
+    margin-right: 5%;
 }

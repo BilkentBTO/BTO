@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./ButtonHeaderGlobal.css";
 
 function ButtonHeaderGlobal({ name, link }) {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ function ButtonHeaderGlobal({ name, link }) {
   };
 
   return (
-    <button onClick={handleNavigation} className="mainButton">
+    <button onClick={handleNavigation} className="buttonHeaderGlobal">
       {name}
     </button>
   );
