@@ -1,5 +1,12 @@
 namespace backend.Models
 {
+    public enum RegistrationState
+    {
+        Pending = 0,
+        Accepted = 1,
+        Rejected = 2,
+    }
+
     public class Registration()
     {
         public string? Code { get; set; }
@@ -25,6 +32,8 @@ namespace backend.Models
         public string? SuperVisorMailAddress { get; set; }
 
         public string? Notes { get; set; }
+
+        public RegistrationState State { get; set; }
 
         public void GenerateCode()
         {

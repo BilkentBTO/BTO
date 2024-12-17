@@ -37,6 +37,38 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("AcceptRegistration")]
+        public async Task<ActionResult> AcceptRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.AcceptRegistration(Code);
+            if (!result)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("RejectRegistration")]
+        public async Task<ActionResult> RejectRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.RejectRegistration(Code);
+            if (!result)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
         [HttpGet("GetAllRegistrations")]
         public async Task<ActionResult> GetAllRegistrations()
         {
