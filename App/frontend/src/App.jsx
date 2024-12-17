@@ -45,6 +45,7 @@ import SuccessAddCoordinator from "./AdminPanel/SuccessAddCoordinator";
 import DataPanel from "./AdminPanel/DataPanel";
 import ConfirmAddUser from "./CoordinatorPanel/ConfirmAddUser";
 import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
+import ManageSurveys from "./CoordinatorPanel/SurveyClasses/ManageSurveys";
 
 function App() {
   return (
@@ -259,6 +260,14 @@ function App() {
         element={
           <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
             <ConfirmAddUser />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/coordinatorPanel/manageSurveys"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+            <ManageSurveys />
           </RoleProtectedRoute>
         }
       />
