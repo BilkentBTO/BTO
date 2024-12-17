@@ -2,6 +2,13 @@ using BCrypt.Net;
 
 namespace backend.Models
 {
+    public enum LoginStatus
+    {
+        WrongUsername = 0,
+        WrongPassword = 1,
+        Success = 2,
+    }
+
     public class Credential
     {
         public string? Username { get; private set; }

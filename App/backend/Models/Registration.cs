@@ -13,7 +13,7 @@ namespace backend.Models
 
         public string? CityName { get; set; }
 
-        public string? SchoolName { get; set; }
+        public int? SchoolCode { get; set; }
 
         public School? School { get; set; }
 
@@ -43,14 +43,24 @@ namespace backend.Models
 
         public void FillSchool(School school)
         {
+            Console.WriteLine("Filled: ", school.Priority);
             this.School = school;
+        }
+
+        public int GetPriority()
+        {
+            if (this.School == null)
+            {
+                return 0;
+            }
+            return this.School.GetPriority();
         }
     }
 
     public class RegistrationRequest
     {
         public string? CityName { get; set; }
-        public string? SchoolName { get; set; }
+        public int? SchoolCode { get; set; }
         public DateTime DateOfVisit { get; set; }
         public TimeBlock? PreferredVisitTime { get; set; }
         public int NumberOfVisitors { get; set; }

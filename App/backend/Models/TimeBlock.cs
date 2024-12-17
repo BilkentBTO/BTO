@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
@@ -25,11 +27,15 @@ namespace backend.Models
             return true;
         }
     }
+
     public class TimeBlock
     {
         private const byte MAX_TOURS_PER_BLOCK = 3;
         private const int PRIORITY_BIAS = 100;
-        public int? ID { get; set; }
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int MaxStudentCount { get; private set; }

@@ -1,93 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EvaluateTourRequests.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
-import { useNavigate } from "react-router-dom";
 
 function EvaluateTourRequests() {
-  const navigate = useNavigate();
+  const [headers] = useState([
+    "Tour ID",
+    "School",
+    "City",
+    "Date",
+    "Number of Visitors",
+    "Supervisor Name",
+  ]);
 
-  // TEMPORARY DATA
-  const headers = [
+  const [popupHeaders] = useState([
     "Tour ID",
-    "School",
+    "School Name",
     "City",
-    "Date",
-    "Time",
+    "Date of Visit",
     "Number of Visitors",
-    "Rating",
-  ];
-  const data = [
-    ["1", "TED Ankara", "Ankara", "30.03.2025", "18.00", "25", "High"],
-    [
-      "2",
-      "Ankara Atatürk Lisesi",
-      "Ankara",
-      "30.03.2025",
-      "11.00",
-      "11",
-      "High",
-    ],
-    ["3", "Jale Tezer", "Ankara", "30.03.2025", "17.00", "56", "High"],
-  ];
-  const completeHeaders = [
-    "Tour ID",
-    "School",
-    "City",
-    "Date",
-    "Time",
-    "Number of Visitors",
-    "Supervisor",
+    "Supervisor Name",
     "Supervisor Duty",
     "Supervisor Phone Number",
-    "Supervisor Mail",
-    "Rating",
+    "Supervisor Email",
     "Notes",
-  ];
-  const completeData = [
-    [
-      "1",
-      "TED Ankara",
-      "Ankara",
-      "30.03.2025",
-      "18.00",
-      "25",
-      "Ege Ertem",
-      "Principal",
-      "123124",
-      "mail@mail.com",
-      "High",
-      "Note note note",
-    ],
-    [
-      "2",
-      "Ankara Atatürk Lisesi",
-      "Ankara",
-      "30.03.2025",
-      "11.00",
-      "11",
-      "Can Kütükoğlu",
-      "Principal",
-      "123124",
-      "mail@mail.com",
-      "High",
-      "Note note note",
-    ],
-    [
-      "3",
-      "Jale Tezer",
-      "Ankara",
-      "30.03.2025",
-      "17.00",
-      "56",
-      "Bora Akoğuz",
-      "Principal",
-      "123124",
-      "mail@mail.com",
-      "High",
-      "Note note note",
-    ],
-  ];
+  ]);
+
+  const [tableData, setTableData] = useState([]);
+  const [completeData, setCompleteData] = useState([]);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const buttonStyle = {
     padding: "5px 10px",
@@ -96,13 +38,56 @@ function EvaluateTourRequests() {
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
-    margin: "5px", // Add margin to distinguish buttons
+    margin: "5px",
   };
 
   const buttonName = "Decide";
 
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+  useEffect(() => {
+    const fetchTourRequests = async () => {
+      try {
+        const response = await fetch("/api/Registration/GetAllRegistrations");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const apiData = await response.json();
+
+        // Map data for the table (simplified table data)
+        const simplifiedData = apiData.map((item) => [
+          item.code,
+          item.schoolName || "N/A",
+          item.cityName || "N/A",
+          item.dateOfVisit.split("T")[0],
+          item.numberOfVisitors || "N/A",
+          item.superVisorName || "N/A",
+        ]);
+
+        // Detailed data for the popup
+        const detailedData = apiData.map((item) => [
+          item.code,
+          item.schoolName || "N/A",
+          item.cityName || "N/A",
+          item.dateOfVisit.split("T")[0],
+          item.numberOfVisitors || "N/A",
+          item.superVisorName || "N/A",
+          item.superVisorDuty || "N/A",
+          item.superVisorPhoneNumber || "N/A",
+          item.superVisorMailAddress || "N/A",
+          item.notes || "N/A",
+        ]);
+
+        // Update tableData and completeData
+        setTableData(simplifiedData);
+        setCompleteData(detailedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchTourRequests();
+  }, []); // Fetch data only on component mount
 
   const handleRowClick = (rowData) => {
     const tourId = rowData[0];
@@ -116,38 +101,32 @@ function EvaluateTourRequests() {
     setSelectedRow(null);
   };
 
-  const approve = () => {
-    // Approve logic to be implemented later
-  };
-
-  const deny = () => {
-    // Deny logic to be implemented later
-  };
-
-  const proposeDate = () => {
-    // Propose another date logic to be implemented later
-  };
-
   return (
     <div className="evaluateTourRequests">
       <HeaderPanelGlobal name={"ADVISOR PANEL"} />
-      <div>
-        <h1 className="evaluateTourRequestsHeading">Evaluate Tour Requests</h1>
+      <h1 className="evaluateTourRequestsHeading">Evaluate Tour Requests</h1>
+
+      {/* Ensure that updated tableData is passed to the TableWithButtons */}
+      {tableData.length > 0 ? (
         <TableWithButtons
           headers={headers}
-          data={data}
+          data={tableData}
           onButtonClick={handleRowClick}
-          buttonStyle={buttonStyle} // Pass custom button style
+          buttonStyle={buttonStyle}
           buttonName={buttonName}
         />
-      </div>
+      ) : (
+        <p>Loading table data...</p>
+      )}
+
+      {/* Popup for detailed view */}
       {popupVisible && selectedRow && (
         <div className="requestPopupOverlay">
           <div className="requestPopupContent">
             <h2>Tour Details</h2>
             <table className="popupTable">
               <tbody>
-                {completeHeaders.map((header, index) => (
+                {popupHeaders.map((header, index) => (
                   <tr key={index}>
                     <td>
                       <strong>{header}:</strong>
@@ -157,42 +136,12 @@ function EvaluateTourRequests() {
                 ))}
               </tbody>
             </table>
-            <div className="popupButtons">
-              <button
-                className="popupButton"
-                onClick={approve}
-                style={buttonStyle}
-              >
-                Approve
-              </button>
-              <button
-                className="popupButton"
-                onClick={deny}
-                style={buttonStyle}
-              >
-                Deny
-              </button>
-              <button
-                className="popupButton"
-                onClick={proposeDate}
-                style={buttonStyle}
-              >
-                Propose Another Date
-              </button>
-              <button
-                className="popupButton"
-                onClick={closePopup}
-                style={buttonStyle}
-              >
-                Return
-              </button>
-            </div>
+            <button style={buttonStyle} onClick={closePopup}>
+              Close
+            </button>
           </div>
         </div>
       )}
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
     </div>
   );
 }

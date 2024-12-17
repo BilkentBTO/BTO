@@ -38,20 +38,20 @@ namespace backend.Database
             return user.UserType;
         }
 
-        public async Task<bool> Login(string username, string plainPassword)
+        public async Task<LoginStatus> Login(string username, string plainPassword)
         {
             var creds = await _context.Credentials.SingleOrDefaultAsync(c =>
                 c.Username == username
             );
             if (creds == null)
             {
-                return false;
+                return LoginStatus.WrongUsername;
             }
-            if (creds.VerifyLogin(plainPassword))
+            if (!creds.VerifyLogin(plainPassword))
             {
-                return true;
+                return LoginStatus.WrongPassword;
             }
-            return false;
+            return LoginStatus.Success;
         }
 
         public async Task<bool> Register(string username, string plainPassword, UserType userType)
