@@ -14,18 +14,21 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public async Task<bool> AddRegistration(RegistrationRequest request)
+        public async Task<string> AddRegistration(RegistrationRequest request)
         {
+            Console.WriteLine("Exec");
             try
             {
+                Console.WriteLine(request);
+                Console.WriteLine(request.SchoolName);
                 var school = await _context.Schools.FirstOrDefaultAsync(s =>
                     s.SchoolName == request.SchoolName
                 );
 
                 if (school == null)
                 {
-                    Console.WriteLine("Error: School not found.");
-                    return false;
+                    Console.WriteLine($"Error: School not found: {request.SchoolName}");
+                    return "";
                 }
 
                 var registration = new Registration
@@ -33,7 +36,7 @@ namespace backend.Database
                     CityName = request.CityName,
                     SchoolName = request.SchoolName,
                     DateOfVisit = request.DateOfVisit,
-                    PrefferedVisitTime = request.PrefferedVisitTime,
+                    PrefferedVisitTime = request.PreferredVisitTime,
                     NumberOfVisitors = request.NumberOfVisitors,
                     SuperVisorName = request.SuperVisorName,
                     SuperVisorDuty = request.SuperVisorDuty,
@@ -49,18 +52,23 @@ namespace backend.Database
 
                 var result = await _context.SaveChangesAsync();
 
-                return result > 0;
+                return registration.Code;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error adding registration: {ex.Message}");
-                return false;
+                return "";
             }
         }
 
         public async Task<Registration?> GetRegistration(string Code)
         {
             return await _context.Registrations.SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<List<Registration>> GetAllRegistrations()
+        {
+            return await _context.Registrations.OrderBy(r => r.Code).ToListAsync();
         }
 
         public List<string> GetAllCityNames()

@@ -7,17 +7,14 @@ function AdminPanel() {
 
   const handleListCoordinatorsClick = () => {
     navigate("/adminPanel/listCoordinators");
-    // Implement Later
   };
 
   const handleAddCoordinatorClick = () => {
     navigate("/adminPanel/addCoordinator");
-
-    // Implement Later
   };
 
   const handleAccessDataPanelClick = () => {
-    // Implement Later
+    navigate("/adminPanel/dataPanel");
   };
 
   const handleAccessCoordinatorPanelClick = () => {

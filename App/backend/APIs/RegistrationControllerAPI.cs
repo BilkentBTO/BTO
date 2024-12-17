@@ -19,12 +19,45 @@ namespace backend.Server.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult> AddRegistration([FromBody] RegistrationRequest registration)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            registration.DateOfVisit = DateTime.SpecifyKind(
+                registration.DateOfVisit,
+                DateTimeKind.Utc
+            );
+
             var result = await _controller.AddRegistration(registration);
-            if (!result)
+            if (string.IsNullOrEmpty(result))
             {
                 return BadRequest(result);
             }
-            return Ok();
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllRegistrations")]
+        public async Task<ActionResult> GetAllRegistrations()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllRegistrations();
+            return Ok(result);
+        }
+
+        [HttpGet("GetRegistration")]
+        public async Task<ActionResult> GetRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetRegistration(Code);
+            return Ok(result);
         }
     }
 }
