@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { parseISO, formatISO } from "date-fns";
 
@@ -18,8 +18,14 @@ const convertTimeToUTC = (dateString, timeString) => {
 function SuccessSchoolReg() {
   const location = useLocation();
   const navigate = useNavigate();
+  const isApiCalled = useRef(false); // Prevent duplicate calls
+  const [apiResponse, setApiResponse] = useState(null); // State to hold API response
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   useEffect(() => {
+    if (isApiCalled.current) return; // Prevent double execution
+    isApiCalled.current = true;
+
     const formData = location.state?.formData || {};
 
     const dateOfVisitUTC = convertDateToUTC(formData.visitDate);
@@ -28,11 +34,15 @@ function SuccessSchoolReg() {
       return;
     }
 
-    const startTimeUTC = convertTimeToUTC(formData.visitDate, formData.visitTime);
+    const startTimeUTC = convertTimeToUTC(
+      formData.visitDate,
+      formData.visitTime
+    );
     if (!startTimeUTC) {
       alert("Invalid visit time.");
       return;
     }
+
     const endTime = new Date(startTimeUTC);
     endTime.setHours(endTime.getHours() + 2);
     const endTimeUTC = formatISO(endTime, { representation: "complete" });
@@ -42,7 +52,7 @@ function SuccessSchoolReg() {
       schoolName: formData.school,
       dateOfVisit: dateOfVisitUTC,
       prefferedVisitTime: {
-        id: 0, // Adjust if you have a dynamic ID
+        id: 0,
         startTime: startTimeUTC,
         endTime: endTimeUTC,
       },
@@ -54,7 +64,6 @@ function SuccessSchoolReg() {
       notes: formData.notes,
     };
 
-    console.log("API:" , registrationRequest);
     const registerSchool = async () => {
       try {
         const response = await fetch("/api/Registration/Register", {
@@ -69,12 +78,15 @@ function SuccessSchoolReg() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        //HAVE A NICE PAGE FOR THIS. 
-        console.log(await response.text());
-        // Navigate to the desired location after successful registration
-        navigate("/");
+
+        const responseText = await response.text();
+        setApiResponse(responseText); // Save the response
       } catch (error) {
         console.error("Error registering school:", error);
+        setApiResponse(`Error: ${error.message}`);
+      } finally {
+        setIsLoading(false); // Stop loading
+        setTimeout(() => navigate("/"), 5000); // Redirect after 3 seconds
       }
     };
 
@@ -86,7 +98,44 @@ function SuccessSchoolReg() {
     }
   }, [location, navigate]);
 
-  return null;
+  return (
+    <div style={styles.container}>
+      {isLoading ? (
+        <div style={styles.message}>Processing your request...</div>
+      ) : (
+        <div style={styles.response}>
+          <h2>API Response</h2>
+          <h2>{apiResponse}</h2>
+          <p>You will have access through this code</p>
+          <p>Save to A Place You will not forget</p>
+          <p>Redirecting to the Admin Panel...</p>
+        </div>
+      )}
+    </div>
+  );
 }
+
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    backgroundColor: "#f9f9f9",
+    textAlign: "center",
+  },
+  message: {
+    fontSize: "1.5rem",
+    color: "#007bff",
+  },
+  response: {
+    fontSize: "1.2rem",
+    color: "#333",
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+  },
+};
 
 export default SuccessSchoolReg;
