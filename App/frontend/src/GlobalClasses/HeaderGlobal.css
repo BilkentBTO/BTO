@@ -1,54 +1,53 @@
-.header {
+.headerGlobal {
     background-color: rgb(30, 30, 100);
     padding: 20px;
     max-height: 120px;
 }
 
-.container {
-    max-height: 120px;
-    display: flex; /* Enable Flexbox for horizontal layout */
-    justify-content: space-between; /* Space between the left and right sections */
-    align-items: center; /* Vertically center both sections */
-    margin-left: 0;
-
+.headerGlobalContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(30, 30, 100);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
 }
 
-.title {
+.headerGlobalTitle {
     display: flex;
     align-items: center; /* Vertically center the text within this container */
     justify-content: center; /* Horizontally center (useful for block-like elements) */
-    margin-right: 10%;
-    margin-left: auto;
+    margin-right: 5%;
     font-family: 'Arial', sans-serif;
     height: 100%; /* Make it take full height of the header */
-    padding: 0 20px; /* Optional padding for better spacing */
+    color:white;
 }
 
-.headerText {
-
+.headerGlobalText {
     display: flex;
     align-items: center;
-    gap: 20px;
-    font-size: large;
+    justify-content: center;
+    gap: 40px;
     font: Arial;
     font-family: sans-serif;
-    padding-left: 100px;
-    padding-right: 20px;
+    margin-left: 5%;
+    padding-left: 2px;
 }
 
-.headerText .logo {
+.headerGlobalText .bilkentLogo {
     width: 100px;
     height: auto;
 }
 
-.headerText h1 {
+.headerGlobalText h1 {
     margin: 0;
     color: white;
     font-size: 30px;
     font-weight: bold;
 }
 
-.headerText h2 {
+.headerGlobalText h2 {
     margin: 0;
     color: white;
     font-size: 20px;
@@ -66,5 +65,4 @@
     background: none; /* Removes background styling */
     cursor: pointer; /* Adds a pointer cursor */
     padding: 0; /* Removes extra padding */
-    
 }
