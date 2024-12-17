@@ -8,6 +8,8 @@
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("../assets/bilkent_image.png");
 }
 .buttonRegChoiceSection {
     margin-left: 10%;

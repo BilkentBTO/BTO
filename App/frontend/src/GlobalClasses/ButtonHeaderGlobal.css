@@ -1,4 +1,4 @@
-button {
+.buttonHeaderGlobal {
     cursor: pointer;
     padding: 10px 30px;
     border: none;
@@ -9,6 +9,6 @@ button {
     font-size: larger;
 }
 
-button:hover {
+.buttonHeaderGlobal:hover {
     background-color: rgb(21, 21, 70);
 }
