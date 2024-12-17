@@ -11,6 +11,7 @@ function ManageSurveys() {
     ["Survey #4"],
     ["Survey #5"],
   ]);
+
   const [showCreatePopup, setShowCreatePopup] = useState(false);
   const [newSurveyName, setNewSurveyName] = useState("");
   const [showManagePopup, setShowManagePopup] = useState(false);
@@ -18,36 +19,57 @@ function ManageSurveys() {
 
   const headers = ["Survey Name"];
 
-  // Handle "Create Survey" popup
+  // Open Create Survey popup
   const handleCreateSurvey = () => {
     setShowCreatePopup(true);
   };
 
+  // Add a new survey and trigger re-render
   const handleAddSurvey = () => {
     if (newSurveyName.trim() !== "") {
-      setSurveys((prev) => [...prev, [newSurveyName]]);
+      setSurveys((prev) => {
+        const updatedSurveys = [...prev, [newSurveyName]];
+        return updatedSurveys.sort((a, b) => a[0].localeCompare(b[0])); // Sort alphabetically
+      });
       setNewSurveyName("");
       setShowCreatePopup(false);
     }
   };
 
-  // Handle "Manage" button click
+  // Open Manage Survey popup
   const handleManageSurvey = (survey) => {
     setSelectedSurvey(survey);
     setShowManagePopup(true);
   };
 
+  // Close the Manage Survey popup
   const handleCloseManagePopup = () => {
     setShowManagePopup(false);
     setSelectedSurvey(null);
   };
 
+  // Delete the selected survey and trigger re-render
+  const handleDeleteSurvey = () => {
+    setSurveys((prevSurveys) =>
+      prevSurveys.filter((survey) => survey[0] !== selectedSurvey[0])
+    );
+    handleCloseManagePopup();
+  };
+
   return (
-    <div>
+    <div className="manageSurveys">
       <HeaderPanelGlobal name="Survey Panel" />
       <div className="surveyPanel">
+        {/* Create Survey Button */}
+        <div className="createSurveySection">
+          <button onClick={handleCreateSurvey} className="createSurveyButton">
+            Create Survey
+          </button>
+        </div>
+
         {/* TableWithButtons */}
         <TableWithButtons
+          key={surveys.length} // Unique key to trigger re-render
           headers={headers}
           data={surveys}
           onButtonClick={handleManageSurvey}
@@ -90,26 +112,23 @@ function ManageSurveys() {
               <p>Here you can manage the survey details.</p>
               <div className="popupActions">
                 <button
-                  onClick={handleCloseManagePopup}
+                  onClick={() => alert(`Starting ${selectedSurvey[0]}`)}
                   className="confirmButton"
                 >
                   Start
                 </button>
                 <button
-                  onClick={handleCloseManagePopup}
+                  onClick={() => alert(`Editing ${selectedSurvey[0]}`)}
                   className="confirmButton"
                 >
                   Edit
                 </button>
-                <button
-                  onClick={handleCloseManagePopup}
-                  className="confirmButton"
-                >
+                <button onClick={handleDeleteSurvey} className="deleteButton">
                   Delete
                 </button>
                 <button
                   onClick={handleCloseManagePopup}
-                  className="confirmButton"
+                  className="closeButton"
                 >
                   Close
                 </button>
