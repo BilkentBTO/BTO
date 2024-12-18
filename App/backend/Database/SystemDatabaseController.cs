@@ -250,17 +250,29 @@ namespace backend.Database
             return false;
         }
 
-        public static string CleanInput(string input)
+        public async Task<bool> MakeUserRegistrationRequest(UserCreateRequest request)
         {
-            if (string.IsNullOrWhiteSpace(input))
+            try
             {
-                return string.Empty;
-            }
+                var user = new User(request.Name, request.Surname, request.Mail)
+                {
+                    BilkentID = request.BilkentID,
+                    MajorCode = request.MajorCode,
+                    CurrentYear = request.CurrentYear,
+                    UserType = UserType.Pending,
+                };
 
-            return input
-                .Trim()
-                .Replace("\u00A0", " ")
-                .Normalize(System.Text.NormalizationForm.FormC);
+                _context.Users.Add(user);
+
+                var result = await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding registration: {ex.Message}");
+                return false;
+            }
         }
     }
 }

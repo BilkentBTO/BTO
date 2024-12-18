@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,8 +73,8 @@ namespace backend.Database
         {
             var users = new List<User>
             {
-                new User(1, "Ege", UserType.Guide),
-                new User(2, "Bora", UserType.Admin),
+                new User("Ege", "Ertem", "ege@gmail.com"),
+                new User("Bora", "Akoğuz", "bora@gmail.com"),
             };
 
             return users;

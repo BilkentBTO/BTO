@@ -47,9 +47,16 @@
   margin-top: 20px;
 }
 
-/* Buttons Styling */
-.viewButtonSection button {
-  background-color: rgb(30, 30, 100);/* Blue background */
+.viewCodeCancelButton:hover {
+  background-color: #810202; /* Darker blue on hover */
+}
+
+.viewCodeBackButton:hover {
+  background-color: #0517bd; /* Darker blue on hover */
+}
+
+.viewCodeCancelButton{
+  background-color: rgb(216, 0, 0);/* Blue background */
   color: #ffffff; /* White text */
   border: none;
   border-radius: 5px; /* Rounded corners */
@@ -59,7 +66,13 @@
   transition: all 0.3s ease;
 }
 
-.viewButtonSection button:hover {
-  background-color: #0d47a1; /* Darker blue on hover */
-  transform: translateY(-3px); /* Subtle lift effect */
+.viewCodeBackButton{
+  background-color: rgb(30, 30, 100);/* Blue background */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
