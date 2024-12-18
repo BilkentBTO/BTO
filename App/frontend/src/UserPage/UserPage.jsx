@@ -6,19 +6,9 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import "./UserPage.css";
 
 function UserPage({ username }) {
-  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("email@example.com"); // Only email is customizable
-
-  const handleEdit = () => {
-    setIsEditing(true); // Enter edit mode
-  };
-
-  const handleSave = () => {
-    setIsEditing(false); // Exit edit mode
-    console.log("Updated Email:", email); // Save the new email (can be sent to a server)
-  };
 
   const handleLogout = () => {
     console.log("Logout");
@@ -26,9 +16,11 @@ function UserPage({ username }) {
     navigate("/");
   };
 
-  const handleCancel = () => {
-    setIsEditing(false); // Exit edit mode without saving
+  const handleBack = () => {
+    console.log("Back");
+    // DOES NOT WORK, EITHER DELETE OR IMPLEMENT
   };
+
   useEffect(() => {
     const token = localStorage.getItem("jwt");
     if (token) {
@@ -52,70 +44,44 @@ function UserPage({ username }) {
     document.title = "View Profile - BTO"; // Set the tab title
   }, []);
 
-  useEffect(() => {
-    document.title = "View Profile - BTO"; // Set the tab title
-  }, []);
   return (
     <div>
       <HeaderGlobal name={"Profile Page"} />
       <div className="profileSection">
-        <img src={profileImage} alt="Profile" />
-        <div className="infoLog">
-          <div className="box">
-            <p>Name:</p>
-          </div>
-          <div className="info">
-            <p>{name}</p>
-          </div>
-        </div>
-        <div className="infoLog">
-          <div className="box">
-            <p>Surname:</p>
-          </div>
-          <div className="info">
-            <p>Cindaruk</p>
-          </div>
-        </div>
-        <div className="infoLog">
-          <div className="box">
-            <p>Username:</p>
-          </div>
-          <div className="info">
-            <p>{name}</p>
-          </div>
-        </div>
-        <div className="infoLog">
-          <div className="box">
-            <p>Email:</p>
-          </div>
-          <div className="info">
-            {isEditing ? (
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="emailEdit"
-              />
-            ) : (
-              <p>{email}</p>
-            )}
-          </div>
-        </div>
-        {isEditing ? (
-          <div className="buttonGroup">
-            <button onClick={handleSave} className="saveButton">
-              Save
-            </button>
-            <button onClick={handleCancel} className="cancelButton">
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <button onClick={handleEdit}>Change Email</button>
-        )}
-        <button className="logoutButton" onClick={handleLogout}>
+        <img className="profileImage" src={profileImage} alt="Profile" />
+        <table className="profileTable">
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <td>{name}</td>
+            </tr>
+            <tr>
+              <th>Surname</th>
+              <td>Cindaruk</td>
+            </tr>
+            <tr>
+              <th>Username</th>
+              <td>{username || name}</td>
+            </tr>
+            <tr>
+              <th>Email</th>
+              <td>{email}</td>
+            </tr>
+            <tr>
+              <th>Role</th>
+              <td>Admin</td>
+            </tr>
+          </tbody>
+        </table>
+        <button className="profileBackButton" onClick={handleBack}>
+          Back
+        </button>
+        <button className="profileLogoutButton" onClick={handleLogout}>
           Logout
         </button>
+      </div>
+      <div className="contactSection">
+        <p className="contactInfo"></p>
       </div>
     </div>
   );

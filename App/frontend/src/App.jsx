@@ -49,6 +49,7 @@ import ManageSurveys from "./CoordinatorPanel/SurveyClasses/ManageSurveys";
 import CreateSurvey from "./CoordinatorPanel/SurveyClasses/CreateSurvey";
 
 function App() {
+  //UserPage has problems!!!!!!!!!!!!
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
@@ -58,8 +59,6 @@ function App() {
       <Route path="/regCode" element={<RegCodePage />} />
       <Route path="/joinBTO" element={<JoinBTOPage />} />
       <Route path="/inviteBilkent" element={<InviteBilkentPage />} />
-      <Route path="/userPage" element={<UserPage />} />
-
       <Route
         path="/continueSchoolReg"
         element={<SchoolRegistrationContinuePage />}
@@ -320,6 +319,16 @@ function App() {
         element={
           <RoleProtectedRoute allowedRoles={["Admin"]}>
             <DataPanel />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/userPage"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <UserPage />
           </RoleProtectedRoute>
         }
       />

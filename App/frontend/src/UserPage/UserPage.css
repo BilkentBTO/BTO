@@ -1,28 +1,83 @@
-.profileSection{
+.profileSection {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 100px;
-}
-.profileSection img{
-    width: 100px;
-    height: auto;
-    border-radius: 5px;
+    margin: 100px auto;
+    text-align: center;
+    max-width: 600px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    border-radius: 8px;
 }
 
-.buttonGroup{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+.profileImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 20px;
 }
-.emailEdit{
-    font-size: 14px;
-    border: "1px solid #ccc";
+
+.profileTable {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.profileTable th {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 10px 10px;
+    width: 40%;
+    background-color: rgb(30, 30, 100);
+    color: white;
+    font-weight: bold;
+    border-right: 1px solid #ddd;
+}
+
+.profileTable td {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 10px 20px;
+    width: 60%;
+    background-color: rgb(245, 245, 245);
+    color: rgb(30, 30, 100);
+    border-left: 1px solid #ddd;
+}
+
+.profileTable tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.profileTable tr:last-child {
+    border-bottom: none;
+}
+
+.profileBackButton {
+    margin-top: 25px;
+    padding: 10px 20px;
+    background-color: rgb(116, 116, 116);
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    border: none;
     border-radius: 4px;
-    background-color: rgba(30, 35, 100, 0.213);
+    cursor: pointer;
 }
-.logoutButton{
-    margin-top: 10px;
-    background-color: red;
+
+.profileLogoutButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: rgb(221, 20, 20);
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.profileLogoutButton:hover {
+    background-color: rgb(173, 0, 0);
 }
