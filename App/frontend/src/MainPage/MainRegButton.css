@@ -6,6 +6,7 @@
     font: Arial;
     font-family: sans-serif;
     border-radius: 8px;
+    border: 0;
     cursor: pointer;
     text-align: center;
     display: inline-block;

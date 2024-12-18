@@ -3,6 +3,7 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import { useNavigate } from "react-router-dom";
 import "./RegCode.css";
+import returnButton from "../assets/return.png";
 
 function RegCodePage() {
   const [registrationCode, setRegistrationCode] = useState(""); // Input field state
@@ -51,37 +52,51 @@ function RegCodePage() {
     setIsPopupVisible(false); // Hide the pop-up
   };
 
+  const handleBackClick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="regCodePage">
       <HeaderGlobal name={"VIEW YOUR REGISTRATION"}></HeaderGlobal>
-      <div className="inputSection">
-        <h2 className="inputTitle">Enter Your Registration Code</h2>
-        <input
-          type="text"
-          className="inputField"
-          placeholder="Type Code"
-          value={registrationCode}
-          onChange={(e) => setRegistrationCode(e.target.value)}
-        />
-        <button
-          className="inputButton"
-          onClick={handleViewRegistration}
-          disabled={isLoading}
-        >
-          {isLoading ? "Loading..." : "View"}
-        </button>
-        <ButtonHeaderGlobal
-          name={"Go to home page"}
-          link="/"
-        ></ButtonHeaderGlobal>
+      <div className="regCodePageInputSection">
+        <div className="regCodePageContainer">
+          <h2 className="regCodePageInputTitle">
+            Enter Your Registration Code
+          </h2>
+          <input
+            type="text"
+            className="regCodePageInputField"
+            placeholder="Type Code"
+            value={registrationCode}
+            onChange={(e) => setRegistrationCode(e.target.value)}
+          />
+          <button
+            className="regCodePageInputButton"
+            onClick={handleViewRegistration}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "View Registration"}
+          </button>
+          <button
+            className="regCodePageBackButton"
+            onClick={handleBackClick}
+            disabled={isLoading}
+          >
+            Back
+          </button>
+        </div>
+        <div className="contactSection">
+          <p className="contactInfo"></p>
+        </div>
       </div>
 
       {/* Pop-up for error message */}
       {isPopupVisible && (
-        <div className="popup">
-          <div className="popup-content">
+        <div className="regCodePagePopup">
+          <div className="regCodePagePopupContent">
             <p>{popupMessage}</p>
-            <button className="popup-button" onClick={closePopup}>
+            <button className="regCodePagePopupButton" onClick={closePopup}>
               Close
             </button>
           </div>
