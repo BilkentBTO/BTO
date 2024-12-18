@@ -1,161 +1,173 @@
 /* Main Page Layout */
 .loginPage {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: rgba(30, 30, 100);
-  }
-  /* Logo Styling */
-  .logoLogin {
-    width: 100px;
-    height: auto;
-    align-self: center;
-    margin-top: 10%;
-  }
-  .forgotPasswordButton{
-    width: 80%;
-    padding: 12px 15px;
-    background-color: #003366;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-  }
-  
-  /* Login Section Styling */
-  .loginSection {
-    position: relative; /* Necessary for the absolute positioning of children */
-    background: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    width: 300px;
-    height: auto;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-  
-  .loginHeader {
-    font-size: 1.5em;
-    font-family: 'Arial', sans-serif;
-    margin-bottom: 20px;
-  }
-
-  
-
-  .login-text-edit {
-    width: 80%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .login-text-edit:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  }
-  
-  .login-text-edit::placeholder {
-    color: #aaa;
-    font-style: italic;
-  }
-  
-  .loginButton {
-    width: 80%;
-    padding: 12px 15px;
-    background-color: #003366;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-  }
-  
-  .loginButton:hover {
-    background-color: #002244;
-  }
-  
-  /* Contact Section */
-  .contactSection {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-    z-index: 10;
-    background: rgb(30, 30, 100);
-    font: Arial, sans-serif;
-    font-size: large;
-    text-align: center;
-    padding: 10px 0;
-  }
-  
-  .contactInfo {
-    color: rgb(255, 255, 255);
-    font-weight: 400;
-  }
- .loginPage .popup {
-    display: flex; /* Flexbox for centering */
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    z-index: 1000; /* Ensures it's above everything */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: rgba(30, 30, 100);
 }
 
-.loginPage .popup.hidden {
-    display: none; /* Hides the pop-up when the class is added */
+/* Logo Styling */
+.logoLogin {
+  width: 100px;
+  height: auto;
+  align-self: center;
+  margin-top: 10%;
 }
 
-.loginPage .popup-content {
-    background: white;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.loginForgotPasswordButton {
+  width: 80%;
+  padding: 12px 15px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
-.loginPage .popup-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #003366;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+/* Login Section Styling */
+.loginSection {
+  position: relative; /* Necessary for the absolute positioning of children */
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  width: 300px;
+  height: auto;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.loginPage .popup-button:hover {
-    background-color: #002244;
+.loginHeader {
+  font-size: 1.5em;
+  font-family: 'Arial', sans-serif;
+  margin-bottom: 20px;
 }
-  .returnButton {
-    position: absolute; /* Ensures the button is positioned relative to its nearest positioned ancestor */
-    top: 10px; /* Adjusts the vertical distance from the top of the container */
-    left: 10px; /* Adjusts the horizontal distance from the left of the container */
-    width: 30px; /* Adjust the size of the button */
-    height: 30px; /* Ensure a square button */
-    background: none; /* Removes default button background */
-    border: none; /* Removes default button border */
-    cursor: pointer; /* Changes the cursor to pointer on hover */
-    z-index: 10; /* Ensures the button is above other elements */
+
+.login-text-edit {
+  width: 80%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-text-edit:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.login-text-edit::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.loginButton {
+  width: 80%;
+  padding: 12px 15px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.loginButton:hover {
+  background-color: #002244;
+}
+
+/* Contact Section */
+.contactSection {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  z-index: 10;
+  background: rgb(30, 30, 100);
+  font: Arial, sans-serif;
+  font-size: large;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.contactInfo {
+  color: rgb(255, 255, 255);
+  font-weight: 400;
+}
+
+/* Pop-up Styling */
+.loginPage .loginPopup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* Fixes the position relative to the viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1000; /* Ensures it's above everything */
+}
+
+.loginPage .loginPopup.hidden {
+  display: none; /* Hides the pop-up when the class is added */
+}
+
+.loginPage .loginPopupContent {
+  background: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px; /* Controls the width of the pop-up */
+}
+
+.loginPage .loginPopupButton {
+  width: 80%;
+  padding: 12px 15px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.loginPage .loginPopupButton:hover {
+  background-color: #002244;
+}
+
+/* Return Button Styling */
+.returnButton {
+  position: absolute; /* Ensures the button is positioned relative to its nearest positioned ancestor */
+  top: 10px; /* Adjusts the vertical distance from the top of the container */
+  left: 10px; /* Adjusts the horizontal distance from the left of the container */
+  width: 30px; /* Adjust the size of the button */
+  height: 30px; /* Ensure a square button */
+  background: none; /* Removes default button background */
+  border: none; /* Removes default button border */
+  cursor: pointer; /* Changes the cursor to pointer on hover */
+  z-index: 10; /* Ensures the button is above other elements */
 }
 
 .returnButton img {
-    width: 100%; /* Ensures the icon/image fills the button */
-    height: auto; /* Maintains the aspect ratio */
+  width: 100%; /* Ensures the icon/image fills the button */
+  height: auto; /* Maintains the aspect ratio */
 }

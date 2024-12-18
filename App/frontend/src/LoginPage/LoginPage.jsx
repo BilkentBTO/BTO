@@ -104,23 +104,23 @@ function LoginPage() {
         </button>
 
         {/* Pop-up for error message */}
-        <div id="popup" className={`popup ${isPopupVisible ? "" : "hidden"}`}>
-          <div className="popup-content">
+        <div
+          id="popup"
+          className={`loginPopup ${isPopupVisible ? "" : "hidden"}`}
+        >
+          <div className="loginPopupContent">
             <p id="popup-message">{popupMessage}</p>
             <button
               id="close-popup"
-              className="popup-button"
+              className="loginPopupButton"
               onClick={closePopup}
             >
               Close
             </button>
-            <button className="forgotPasswordButton" onClick={forgotPassword}>
-              Forgot Password?
-            </button>
           </div>
         </div>
 
-        <button className="forgotPasswordButton" onClick={forgotPassword}>
+        <button className="loginForgotPasswordButton" onClick={forgotPassword}>
           Forgot Password?
         </button>
       </div>
