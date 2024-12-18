@@ -241,7 +241,7 @@ namespace backend.Database
 
             try
             {
-                return (await _context.SaveChangesAsync() > 0 ? true : false);
+                return await _context.SaveChangesAsync() > 0 ? true : false;
             }
             catch (System.Exception exp)
             {
@@ -273,6 +273,11 @@ namespace backend.Database
                 Console.WriteLine($"Error adding registration: {ex.Message}");
                 return false;
             }
+        }
+
+        public List<Major> GetAllMajors()
+        {
+            return Major.AllMajors;
         }
     }
 }

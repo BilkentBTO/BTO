@@ -98,7 +98,7 @@ namespace backend.Models
 
     public class School()
     {
-        public int PresistanceScore { get; set; }
+        public int PersistanceScore { get; set; }
         public int Priority { get; set; }
         public int QualityScore { get; set; }
         public string? CityName { get; set; }
@@ -123,7 +123,7 @@ namespace backend.Models
 
         public int GetPriority() =>
             Convert.ToInt32(
-                PERSISTANCE_MULTIPLIER * PresistanceScore
+                PERSISTANCE_MULTIPLIER * PersistanceScore
                     + QUALITY_MULTIPLIER * QualityScore
                     + DISTANCE_MULTIPLIER * City.distance
             );
@@ -140,7 +140,7 @@ namespace backend.Models
                 + $"Code: {SchoolCode}, "
                 + $"City: {CityName ?? "N/A"}, "
                 + $"Priority: {Priority}, "
-                + $"Persistence Score: {PresistanceScore}, "
+                + $"Persistence Score: {PersistanceScore}, "
                 + $"Quality Score: {QualityScore}";
         }
     }

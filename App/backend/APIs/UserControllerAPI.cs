@@ -16,6 +16,28 @@ namespace backend.Server.Controllers
             _controller = controller;
         }
 
+        [HttpPost("register")]
+        public async Task<ActionResult> UserRegistration([FromBody] UserCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var success = await _controller.MakeUserRegistrationRequest(request);
+            if (!success)
+            {
+                return BadRequest("Unable to make request. Try again later.");
+            }
+            return Ok(success);
+        }
+
+        [HttpGet("majors")]
+        public IActionResult GetCities()
+        {
+            return Ok(_controller.GetAllMajors());
+        }
+
         [HttpGet()]
         [Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(List<User>), 200)]
@@ -29,6 +51,22 @@ namespace backend.Server.Controllers
             }
             return Ok(customers);
         }
+
+        /*
+        [HttpGet("{id}")]
+        [Authorize(Policy = "Admin&Coordinator")]
+        [ProducesResponseType(typeof(List<User>), 200)]
+        [ProducesResponseType(typeof(List<User>), 404)]
+        public async Task<ActionResult> GetAllUsersFiltered()
+        {
+            var customers = await _controller.GetUsersAsync();
+            if (customers == null)
+            {
+                return NotFound();
+            }
+            return Ok(customers);
+        }
+        */
 
         [HttpGet("{id}", Name = "GetUsersRoute")]
         [Authorize(Policy = "Admin&Coordinator")]
