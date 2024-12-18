@@ -78,45 +78,65 @@
 .regCodePageInputButton:hover {
   background-color: #126e00; /* Darker color on hover */
 }
-
+/* Fullscreen dark background overlay */
 .regCodePagePopup {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  padding: 20px;
-  display: block;
-  font-family: Arial, sans-serif;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark background */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center the popup */
+  z-index: 1000; /* Ensure it is above other elements */
 }
 
-.regCodePagePopup.hidden {
-  display: none;
-}
-
+/* Popup content centered on the screen */
 .regCodePagePopupContent {
-  text-align: center;
+  font-family: 'Arial', sans-serif;
+
+  background-color: #ffffff; /* White background for the popup */
+  color: #333333; /* Dark text for readability */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px 30px; /* Padding inside the popup */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+  max-width: 400px; /* Limit width */
+  width: 100%; /* Responsive width */
+  text-align: center; /* Center-align the content */
+  animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in effect */
 }
 
+/* Fade-in animation for popup */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Button inside popup */
 .regCodePagePopupButton {
-  background-color: #ce0000; /* Button background color */
+  font-family: 'Arial', sans-serif;
+  background-color: #ff0000; /* Button background */
   color: white; /* Text color */
   padding: 10px 20px; /* Padding inside the button */
   font-size: 16px; /* Font size */
-  font-weight: bold; /* Bold text */
+  font-weight: bold;
   border: none; /* Remove border */
   border-radius: 6px; /* Rounded corners */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease; /* Smooth transition */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s ease;
+  margin-top: 15px; /* Spacing above button */
 }
 
 .regCodePagePopupButton:hover {
-  background-color: #8b0000;
+  background-color: #ff0000b2; /* Darker green on hover */
 }
-
 .regCodePageBackButton{
   background-color: #5f5f5f; /* Button background color */
   color: white; /* Text color */
