@@ -1,52 +1,65 @@
 /* Overall container styling */
 .viewRegistrationPage {
-    flex-direction: column;
-    justify-content: space-between; /* Ensures header and contact section stay in place */
-    height: 100vh; /* Full height of the viewport */
-    width: 100%; /* Full width */
-    background-color: #f7f9fc; /* Subtle background color for readability */
-    font-family: Arial, sans-serif; /* Sets Arial font globally for the page */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-  }
-  
-  /* Styling for the registration info section */
-  .viewRegistrationInfo {
-    flex-grow: 1; /* Ensures this section grows to fill available space */
-    margin-top: 0;
-    margin-bottom: 100px; /* Adds space below the info section for the button area */
-    padding: 60px;
-    background-color: rgb(245, 245, 245); /* Card-like background for better visibility */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    overflow-y: auto; /* Allows scrolling if content overflows */
-  }
-  
-  /* Styling for individual info lines */
-  .viewRegistrationInfo p {
-    margin: 10px 0; /* Adds spacing between each line */
-    font-size: 22px; /* Sets a large, readable font size */
-    line-height: 1.5; /* Improves readability with proper line spacing */
-    color: #000000; /* Neutral dark color for text */
-  }
-  
-  /* Bold styling for labels in viewRegistrationInfo */
-  .viewRegistrationInfo .viewLabel {
-    font-weight: bold; /* Makes the labels bold */
-    margin-right: 5px; /* Adds spacing between label and value */
-    color: #000000;
-    padding: 0.3%;
-    border-radius: 5px;
-  }
-  
-  /* Styling for the button section */
-  .viewButtonSection {
-    text-align: center; /* Center-aligns the buttons */
-    margin-top: 5%;
-    display: flex; /* Enables flex layout for side-by-side buttons */
-    justify-content: center; /* Centers the buttons horizontally */
-    gap: 15px; /* Adds spacing between the buttons */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh; /* Ensures full height */
+  width: 100%;
+  background-color: #f7f9fc; /* Subtle background */
+  font-family: Arial, sans-serif;
+  padding: 20px; /* General padding */
+  box-sizing: border-box;
+}
+
+/* Registration Info Container */
+.viewRegistrationInfo {
+  background-color: #ffffff; /* White card background */
+  width: 100%;
+  max-width: 700px;
+  padding: 30px;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  margin: 20px 0;
+  overflow-y: auto; /* Scroll if content overflows */
+  text-align: left; /* Align text to the left */
+}
+
+/* Individual Info Lines */
+.viewRegistrationInfo p {
+  margin: 15px 0; /* Spacing between paragraphs */
+  font-size: 18px; /* Readable font size */
+  color: #333; /* Dark gray for better readability */
+}
+
+/* Highlighted Labels */
+.viewRegistrationInfo .viewLabel {
+  font-weight: bold; /* Bold labels */
+  color: rgb(30, 30, 100); /* Blue accent for labels */
+  margin-right: 5px; /* Small spacing between label and value */
+}
+
+/* Button Section */
+.viewButtonSection {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 15px; /* Adds spacing between buttons */
+  margin-top: 20px;
+}
+
+/* Buttons Styling */
+.viewButtonSection button {
+  background-color: rgb(30, 30, 100);/* Blue background */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewButtonSection button:hover {
+  background-color: #0d47a1; /* Darker blue on hover */
+  transform: translateY(-3px); /* Subtle lift effect */
+}
