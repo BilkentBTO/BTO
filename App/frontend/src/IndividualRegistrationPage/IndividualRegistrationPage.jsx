@@ -113,6 +113,9 @@ function IndividualRegistrationPage() {
           <p className="contactInfo"></p>
         </div>
       </div>
+      <div className="contactSection">
+        <p className="contactInfo"></p>
+      </div>
     </div>
   );
 }

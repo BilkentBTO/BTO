@@ -9,15 +9,20 @@
 .innerSchoolRegPage{
     display: flex;
     flex-direction:column;
-    margin-top:80px;
+    margin-top:70px;
 }
 
 .submitButton {
-    background-color:  rgb(30, 30, 100);
-    color: white; 
-    padding: 10px 20px;
-    border: none;
-    font-size: 16px;
+  background-color: #007bff; /* Blue button color */
+  color: white; /* White text color */
+  padding: 10px 15px; /* Button padding */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners for the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 1rem; /* Font size for readability */
+  text-align: center;
+  width: 200px;
+  transition: background-color 0.3s ease;
   }
   
   .submitButton:hover {

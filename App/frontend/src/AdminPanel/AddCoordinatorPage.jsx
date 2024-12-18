@@ -81,7 +81,7 @@ function AddCoordinator() {
           />
 
           {/* Submit Button */}
-          <button onClick={handleSubmit} className="submitButton">
+          <button onClick={handleSubmit} className="addCoordinatorSubmitButton">
             Add Coordinator
           </button>
         </div>
