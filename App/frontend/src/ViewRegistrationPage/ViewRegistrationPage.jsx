@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import "./ViewRegistrationPage.css";
+import { useNavigate } from "react-router-dom";
 
 function ViewRegistrationPage() {
   const location = useLocation(); // Get the state passed via navigation
@@ -28,6 +29,16 @@ function ViewRegistrationPage() {
     document.title = "View Tour Registration - BTO"; // Set the tab title
     console.log("RegData: ", registrationData);
   }, []);
+
+  const navigate = useNavigate();
+
+  const handleCancelClick = () => {
+    navigate("/");
+  };
+
+  const handleBackClick = () => {
+    navigate("/");
+  };
 
   return (
     <div>
@@ -85,12 +96,19 @@ function ViewRegistrationPage() {
 
           {/* Buttons */}
           <div className="viewButtonSection">
-            <ButtonHeaderGlobal
-              name={"Cancel Registration"}
-              link="/"
-            ></ButtonHeaderGlobal>
-            <ButtonHeaderGlobal name={"Back"} link="/"></ButtonHeaderGlobal>
+            <button
+              className="viewCodeCancelButton"
+              onClick={handleCancelClick}
+            >
+              Cancel Registration
+            </button>
+            <button className="viewCodeBackButton" onClick={handleBackClick}>
+              Back
+            </button>
           </div>
+        </div>
+        <div className="contactSection">
+          <p className="contactInfo"></p>
         </div>
       </div>
     </div>
