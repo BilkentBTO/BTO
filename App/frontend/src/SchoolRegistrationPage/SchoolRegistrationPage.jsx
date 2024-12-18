@@ -20,6 +20,7 @@ function SchoolRegistrationPage() {
       location?.state?.formData || {
         city: "",
         school: "",
+        schoolID: "",
         visitDate: "",
         visitTime: "",
         visitorCount: "",
@@ -50,7 +51,6 @@ function SchoolRegistrationPage() {
   // Fetch Schools Dynamically as User Types
   const fetchSchoolSuggestions = (query, city) => {
     if (!query || !city) {
-      console.log("Missing query or city:", { query, city });
       setSchools([]); // Clear suggestions if input or city is missing
       return;
     }
@@ -60,13 +60,17 @@ function SchoolRegistrationPage() {
         query
       )}&cityName=${encodeURIComponent(city)}`
     )
-      .then((response) => {
-        console.log("API Response Status:", response.status);
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
         console.log("API Response Data:", data);
-        setSchools(data); // Update school suggestions
+
+        // Map both schoolName and schoolCode into objects
+        const schoolData = data.map((school) => ({
+          name: school.schoolName,
+          id: school.schoolCode,
+        }));
+
+        setSchools(schoolData);
       })
       .catch((error) => {
         console.error("Error fetching school suggestions:", error);
@@ -107,6 +111,16 @@ function SchoolRegistrationPage() {
     }));
   };
 
+  const handleSchoolChange = (selectedSchoolName) => {
+    const selectedSchool = schools.find(
+      (school) => school.name === selectedSchoolName
+    );
+
+    if (selectedSchool) {
+      handleChange("school", selectedSchool.name); // Save school name
+      handleChange("schoolID", selectedSchool.id); // Save school ID
+    }
+  };
   const handleSubmit = () => {
     if (
       !formData.city ||
@@ -135,13 +149,11 @@ function SchoolRegistrationPage() {
 
           {/* School Dropdown */}
           <FormDropDownGlobal
-            arr={schools}
+            arr={schools.map((school) => school.name)} // Pass school names
             question="School Name*"
-            onChange={(value) => handleChange("school", value)}
+            onChange={handleSchoolChange} // Call to update both name and ID
             initialValue={formData.school}
-            onInput={(e) => {
-              handleSchoolQueryChange(e.target.value);
-            }}
+            onInput={(e) => handleSchoolQueryChange(e.target.value)} // For search query
           />
 
           {/* Visit Date Input */}

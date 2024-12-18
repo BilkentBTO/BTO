@@ -50,7 +50,7 @@ function SuccessSchoolReg() {
 
     const registrationRequest = {
       cityName: formData.city,
-      schoolName: formData.school,
+      schoolCode: formData.schoolID,
       dateOfVisit: dateOfVisitUTC,
       prefferedVisitTime: {
         id: 0,
