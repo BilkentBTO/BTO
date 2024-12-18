@@ -111,15 +111,15 @@ function IndividualConfirmation() {
 
       {/* Confirmation Popup */}
       {showPopup && (
-        <div className="popupOverlay">
-          <div className="popupContent">
+        <div className="formPopupOverlay">
+          <div className="formPopupContent">
             <h2>Confirm Registration</h2>
             <p>Are you sure you want to confirm this registration?</p>
-            <div className="popupActions">
-              <button onClick={confirmReg} className="confirmButton">
-                Yes, Confirm
+            <div className="formPopupActions">
+              <button onClick={confirmReg} className="formPopupConfirmButton">
+                Confirm
               </button>
-              <button onClick={closePopup} className="cancelButton">
+              <button onClick={closePopup} className="formPopupCancelButton">
                 Cancel
               </button>
             </div>

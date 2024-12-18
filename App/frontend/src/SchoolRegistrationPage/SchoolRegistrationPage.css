@@ -154,7 +154,7 @@
     flex-direction: row;
   }
 
-  .popupOverlay {
+  .formPopupOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -167,7 +167,7 @@
     z-index: 1000;
   }
   
-  .popupContent {
+  .formPopupContent {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -176,20 +176,24 @@
     width: 300px;
   }
   
-  .popupContent h2 {
+  .formPopupContent h2 {
     margin-bottom: 10px;
+    font-family: Arial, sans-serif;
   }
   
-  .popupContent p {
+  .formPopupContent p {
     margin-bottom: 20px;
+    font-family: Arial, sans-serif;
   }
   
-  .popupActions {
+  .formPopupActions {
     display: flex;
     justify-content: space-around;
   }
   
-  .confirmButton {
+  .formPopupConfirmButton {
+    font-size: 15px;
+    font-family: Arial, sans-serif;
     padding: 10px 20px;
     background-color: #4caf50;
     color: white;
@@ -198,7 +202,9 @@
     cursor: pointer;
   }
   
-  .cancelButton {
+  .formPopupCancelButton {
+    font-size: 15px;
+    font-family: Arial, sans-serif;
     padding: 10px 20px;
     background-color: #f44336;
     color: white;
@@ -207,10 +213,10 @@
     cursor: pointer;
   }
   
-  .confirmButton:hover {
+  .formConfirmButton:hover {
     background-color: #45a049;
   }
   
-  .cancelButton:hover {
+  .formCancelButton:hover {
     background-color: #d32f2f;
   }
