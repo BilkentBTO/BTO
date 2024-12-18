@@ -127,10 +127,20 @@ function SchoolRegistrationConfirmation() {
               </div>
             </div>
             <div className="buttonLayout">
-              <button onClick={handleEdit}>Edit</button>
-              <button onClick={handleConfirmClick}>Confirm</button>
+              <button className="formEditButton" onClick={handleEdit}>
+                Edit
+              </button>
+              <button
+                className="formConfirmButton"
+                onClick={handleConfirmClick}
+              >
+                Confirm
+              </button>
             </div>
           </div>
+        </div>
+        <div className="contactSection">
+          <p className="contactInfo"></p>
         </div>
       </div>
 

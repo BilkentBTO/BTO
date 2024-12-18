@@ -103,6 +103,9 @@ function SchoolRegistrationContinuePage() {
           </button>
         </div>
       </div>
+      <div className="contactSection">
+        <p className="contactInfo"></p>
+      </div>
     </div>
   );
 }
