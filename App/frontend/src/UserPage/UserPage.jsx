@@ -8,7 +8,8 @@ import "./UserPage.css";
 function UserPage({ username }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("email@example.com"); // Only email is customizable
+  const [role, setRole] = useState(""); // State to store the role
+  const [email, setEmail] = useState("email@example.com");
 
   const handleLogout = () => {
     console.log("Logout");
@@ -18,7 +19,23 @@ function UserPage({ username }) {
 
   const handleBack = () => {
     console.log("Back");
-    // DOES NOT WORK, EITHER DELETE OR IMPLEMENT
+    // Navigate to different pages based on the role
+    switch (role.toLowerCase()) {
+      case "admin":
+        navigate("/adminPanel");
+        break;
+      case "advisor":
+        navigate("/advisorPanel");
+        break;
+      case "guide":
+        navigate("/guidePanel");
+        break;
+      case "coordinator":
+        navigate("/coordinatorPanel");
+        break;
+      default:
+        navigate("/"); // Default fallback page
+    }
   };
 
   useEffect(() => {
@@ -26,13 +43,26 @@ function UserPage({ username }) {
     if (token) {
       try {
         const decodedToken = jwtDecode(token); // Decode the token
+
+        // Extract the name claim
         const nameClaim =
           decodedToken[
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
-          ]; // Extract the name claim
-        setName(nameClaim || "Unknown"); // Set the name or a default value
+          ];
+        setName(nameClaim || "Unknown");
+
+        // Extract the role claim (adjust based on your JWT structure)
+        const roleClaim =
+          decodedToken[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ] || decodedToken.role; // Use "role" if no namespace is used
+        setRole(roleClaim || "User");
+
+        console.log("Decoded Token:", decodedToken);
+        console.log("Role:", roleClaim);
       } catch (error) {
         console.error("Error decoding token:", error);
+        navigate("/login"); // Redirect to login if token is invalid
       }
     } else {
       console.log("No token found");
@@ -41,7 +71,7 @@ function UserPage({ username }) {
   }, [navigate]);
 
   useEffect(() => {
-    document.title = "View Profile - BTO"; // Set the tab title
+    document.title = "View Profile - BTO";
   }, []);
 
   return (
@@ -57,19 +87,19 @@ function UserPage({ username }) {
             </tr>
             <tr>
               <th>Surname</th>
-              <td>Cindaruk</td>
+              <td>{name}</td>
             </tr>
             <tr>
               <th>Username</th>
-              <td>{username || name}</td>
+              <td>{name}</td>
+            </tr>
+            <tr>
+              <th>Role</th>
+              <td>{role}</td>
             </tr>
             <tr>
               <th>Email</th>
               <td>{email}</td>
-            </tr>
-            <tr>
-              <th>Role</th>
-              <td>Admin</td>
             </tr>
           </tbody>
         </table>
