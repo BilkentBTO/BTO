@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import HeaderPanelGlobal from "../../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../../GlobalClasses/TableWithButtons";
 import "./ManageSurveys.css";
+import { useNavigate } from "react-router-dom";
 
 function ManageSurveys() {
   const [surveys, setSurveys] = useState([
@@ -16,7 +17,6 @@ function ManageSurveys() {
   const [newSurveyName, setNewSurveyName] = useState("");
   const [showManagePopup, setShowManagePopup] = useState(false);
   const [selectedSurvey, setSelectedSurvey] = useState(null);
-
   const headers = ["Survey Name"];
 
   // Open Create Survey popup
