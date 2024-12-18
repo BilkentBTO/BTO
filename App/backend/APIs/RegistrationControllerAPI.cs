@@ -92,6 +92,17 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
+        [HttpGet("tour/registrations/{state}")]
+        public async Task<ActionResult> GetAllRegistrationsFiltered(RegistrationState state)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllFairRegistrationsFiltered(state);
+            return Ok(result);
+        }
+
         [HttpPost("fair/register")]
         public async Task<ActionResult> AddFairRegistration(
             [FromBody] FairRegistrationRequest registration
@@ -155,6 +166,17 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _controller.GetAllFairRegistrations();
+            return Ok(result);
+        }
+
+        [HttpGet("fair/getregistrations/{state}")]
+        public async Task<ActionResult> GetAllFairRegistrationsFiltered(RegistrationState state)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllFairRegistrationsFiltered(state);
             return Ok(result);
         }
 
