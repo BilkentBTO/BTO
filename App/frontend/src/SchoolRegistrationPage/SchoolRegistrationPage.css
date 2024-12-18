@@ -70,7 +70,6 @@
     word-wrap: break-word;
     word-break: break-word;
     padding: 10px; /* Add padding around the box */
-    border: 2px solid rgb(30, 30, 100); /* Optional border for the box */
     border-radius: 5px; /* Optional rounded corners */
     background-color: rgba(30, 35, 100, 0.213); /* Background color for the box */
   }
@@ -120,7 +119,7 @@
 
   .formEditButton{
     width: 200px;
-    background-color:  rgb(0, 123, 255);
+    background-color:  darkblue;
     color: white; 
     padding: 10px 20px;
     border: none;
