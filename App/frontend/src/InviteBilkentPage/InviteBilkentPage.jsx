@@ -49,10 +49,19 @@ function InviteBilkentPage() {
       return;
     }
 
-    fetch(`/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(query)}&cityName=${encodeURIComponent(city)}`)
+    fetch(
+      `/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(
+        query
+      )}&cityName=${encodeURIComponent(city)}`
+    )
       .then((response) => response.json())
-      .then((data) => setSchools(data))
-      .catch((error) => console.error("Error fetching school suggestions:", error));
+      .then((data) => {
+        const schoolNames = data.map((school) => school.schoolName); // Extract school names
+        setSchools(schoolNames); // Set only names
+      })
+      .catch((error) =>
+        console.error("Error fetching school suggestions:", error)
+      );
   };
 
   // Handle City Selection
