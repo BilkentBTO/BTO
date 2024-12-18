@@ -14,12 +14,9 @@
 .buttonRegChoiceSection {
     margin-left: 10%;
     margin-right: 10%;
-    margin-top: 0;
-    margin-bottom: 75px;
+    margin-bottom: 386px;
     display: flex;
-    vertical-align: middle;
     justify-content: center; /* Centers buttons horizontally */
-    align-items: center; /* Ensures buttons are vertically aligned in the section */
+    align-content: center; /* Ensures buttons are vertically aligned in the section */
     gap: 75px; /* Adds space between the buttons */
-    flex-grow: 1; /* Allows this section to expand and center vertically */
 }
