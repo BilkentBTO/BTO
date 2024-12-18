@@ -14,6 +14,49 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
+        public async Task<string> AddFairRegistration(FairRegistrationRequest request)
+        {
+            try
+            {
+                var school = await _context.Schools.FirstOrDefaultAsync(s =>
+                    s.SchoolCode == request.SchoolCode
+                );
+
+                if (school == null)
+                {
+                    Console.WriteLine($"Error: School not found: '{request.SchoolCode}'");
+                    return "";
+                }
+
+                var registration = new FairRegistration
+                {
+                    CityName = request.CityName,
+                    SchoolCode = request.SchoolCode,
+                    DateOfVisit = request.DateOfVisit,
+                    SuperVisorName = request.SuperVisorName,
+                    SuperVisorDuty = request.SuperVisorDuty,
+                    SuperVisorPhoneNumber = request.SuperVisorPhoneNumber,
+                    SuperVisorMailAddress = request.SuperVisorMailAddress,
+                    Notes = request.Notes,
+                    State = RegistrationState.Pending,
+                };
+
+                registration.GenerateCode();
+                registration.FillSchool(school);
+
+                _context.FairRegistrations.Add(registration);
+
+                var result = await _context.SaveChangesAsync();
+
+                return registration.Code;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding registration: {ex.Message}");
+                return "";
+            }
+        }
+
         public async Task<string> AddRegistration(RegistrationRequest request)
         {
             try
@@ -67,12 +110,27 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
+        public async Task<FairRegistration?> GetFairRegistration(string Code)
+        {
+            return await _context
+                .FairRegistrations.Include(r => r.School)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
         public async Task<List<Registration>> GetAllRegistrations()
         {
             return await _context
                 .Registrations.OrderBy(r => r.School.Priority)
                 .Include(r => r.School)
                 .Include(r => r.PrefferedVisitTime)
+                .ToListAsync();
+        }
+
+        public async Task<List<FairRegistration>> GetAllFairRegistrations()
+        {
+            return await _context
+                .FairRegistrations.OrderBy(r => r.School.Priority)
+                .Include(r => r.School)
                 .ToListAsync();
         }
 
@@ -91,9 +149,39 @@ namespace backend.Database
             return true;
         }
 
+        public async Task<bool> AcceptFairRegistration(string Code)
+        {
+            var registration = await _context.FairRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Accepted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> RejectRegistration(string Code)
         {
             var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Rejected;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RejectFairRegistration(string Code)
+        {
+            var registration = await _context.FairRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -183,6 +271,11 @@ namespace backend.Database
         public async Task<User> GetUserAsync(int id)
         {
             return await _context.Users.SingleOrDefaultAsync(c => c.id == id);
+        }
+
+        public async Task<List<User>> GetUserFilteredAsync(UserType id)
+        {
+            return await _context.Users.Where(u => u.UserType == id).ToListAsync();
         }
 
         public async Task<User?> InsertUserAsync(User user)

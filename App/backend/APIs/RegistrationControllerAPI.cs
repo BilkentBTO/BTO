@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Server.Controllers
 {
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     public class RegistrationController : ControllerBase
     {
         private readonly SystemDatabaseController _controller;
@@ -16,7 +16,7 @@ namespace backend.Server.Controllers
             _controller = context;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("tour/register")]
         public async Task<ActionResult> AddRegistration([FromBody] RegistrationRequest registration)
         {
             if (!ModelState.IsValid)
@@ -37,7 +37,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AcceptRegistration")]
+        [HttpPost("tour/acceptregistration")]
         public async Task<ActionResult> AcceptRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -53,7 +53,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("RejectRegistration")]
+        [HttpPost("tour/rejectregistration")]
         public async Task<ActionResult> RejectRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -69,7 +69,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetAllRegistrations")]
+        [HttpGet("tour/registrations")]
         public async Task<ActionResult> GetAllRegistrations()
         {
             if (!ModelState.IsValid)
@@ -80,7 +80,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetRegistration")]
+        [HttpGet("tour/getregistration")]
         public async Task<ActionResult> GetRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -89,6 +89,84 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.GetRegistration(Code);
+            return Ok(result);
+        }
+
+        [HttpPost("fair/register")]
+        public async Task<ActionResult> AddFairRegistration(
+            [FromBody] FairRegistrationRequest registration
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            registration.DateOfVisit = DateTime.SpecifyKind(
+                registration.DateOfVisit,
+                DateTimeKind.Utc
+            );
+
+            var result = await _controller.AddFairRegistration(registration);
+            if (string.IsNullOrEmpty(result))
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("fair/acceptregistration")]
+        public async Task<ActionResult> AcceptFairRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.AcceptFairRegistration(Code);
+            if (!result)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("fair/rejectregistration")]
+        public async Task<ActionResult> RejectFairRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.RejectFairRegistration(Code);
+            if (!result)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("fair/getregistrations")]
+        public async Task<ActionResult> GetAllFairRegistrations()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllFairRegistrations();
+            return Ok(result);
+        }
+
+        [HttpGet("fair/getregistration")]
+        public async Task<ActionResult> GetFairRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetFairRegistration(Code);
             return Ok(result);
         }
     }
