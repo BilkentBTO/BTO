@@ -137,6 +137,7 @@ function SchoolRegistrationPage() {
   return (
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"SCHOOL REGISTRATION FORM"} />
+      <div className="schoolRegContainer"></div>
       <div className="innerSchoolRegPage">
         <div className="schoolRegForm">
           {/* City Dropdown */}
@@ -186,6 +187,9 @@ function SchoolRegistrationPage() {
             Continue
           </button>
         </div>
+      </div>
+      <div className="contactSection">
+        <p className="contactInfo"></p>
       </div>
     </div>
   );
