@@ -40,6 +40,7 @@ function JoinBTOPage() {
         name: "",
         surname: "",
         bilkentID: "",
+        major: "",
         majorCode: "",
         currentYear: "",
         mail: "",
@@ -102,9 +103,10 @@ function JoinBTOPage() {
               const selectedMajor = majors.find(
                 (major) => major.name === value
               );
+              handleChange("major", selectedMajor.name);
               handleChange("majorCode", selectedMajor?.id);
             }}
-            initialValue={formData.majorCode}
+            initialValue={formData.major}
           />
           <FormDropDownGlobal
             arr={years}
