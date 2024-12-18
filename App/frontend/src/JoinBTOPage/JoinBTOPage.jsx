@@ -3,55 +3,72 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function JoinBTOPage() {
-  const majors = ["CS", "POLS", "EE", "IE"];
-  const years = ["1. Year", "2. Year", "3. Year", "4. Year"];
+  const [majors, setMajors] = useState([]);
+  const years = ["1", "2", "3", "4"];
   const navigate = useNavigate();
   const location = useLocation();
+
   useEffect(() => {
-    document.title = "Join BTO - BTO"; // Set the tab title
+    document.title = "Join BTO - BTO";
+
+    // Fetch majors from API
+    const fetchMajors = async () => {
+      try {
+        const response = await fetch("/api/User/majors");
+        if (!response.ok) throw new Error("Failed to fetch majors");
+
+        const data = await response.json();
+        const majorOptions = data.map((major) => ({
+          id: major.id,
+          name: major.name,
+        }));
+        setMajors(majorOptions);
+      } catch (error) {
+        console.error("Error fetching majors:", error);
+      }
+    };
+
+    fetchMajors();
   }, []);
 
-  // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
     return (
       location?.state?.formData || {
         name: "",
         surname: "",
-        id: "",
-        major: "",
-        year: "",
+        bilkentID: "",
+        majorCode: "",
+        currentYear: "",
+        mail: "",
       }
     );
   });
 
-  // Generic handler for form state updates
   const handleChange = (key, value) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,
     }));
   };
-
-  // Handle form submission
   const handleSubmit = () => {
-    // Validate required fields
     if (
       !formData.name ||
       !formData.surname ||
-      !formData.id ||
-      !formData.major ||
-      !formData.year
+      !formData.bilkentID ||
+      !formData.majorCode ||
+      !formData.currentYear ||
+      !formData.mail
     ) {
       alert("Please fill in all the required fields.");
       return;
     }
 
-    // Log and navigate with form data
-    console.log("Form Data:", formData);
+    console.log("Form Data to Confirm:", formData); // Log to check formData before navigating
+
+    // Navigate to the confirmation page with formData
     navigate("/joinConfirmation", { state: { formData } });
   };
 
@@ -60,7 +77,6 @@ function JoinBTOPage() {
       <HeaderGlobal name={"JOIN BTO"} />
       <div className="innerSchoolRegPage">
         <div className="schoolRegForm">
-          {/* City Dropdown */}
           <FormInputGlobal
             question="Name*"
             type="text"
@@ -75,32 +91,39 @@ function JoinBTOPage() {
           />
           <FormInputGlobal
             question="Bilkent ID*"
-            type="text"
-            value={formData.id}
-            onChange={(value) => handleChange("id", value)}
+            type="number"
+            value={formData.bilkentID}
+            onChange={(value) => handleChange("bilkentID", value)}
           />
           <FormDropDownGlobal
-            arr={majors}
+            arr={majors.map((major) => major.name)}
             question="Major*"
-            onChange={(value) => handleChange("major", value)}
-            initialValue={formData.major}
+            onChange={(value) => {
+              const selectedMajor = majors.find(
+                (major) => major.name === value
+              );
+              handleChange("majorCode", selectedMajor?.id);
+            }}
+            initialValue={formData.majorCode}
           />
-
-          {/* Preferred Time Dropdown */}
           <FormDropDownGlobal
             arr={years}
             question="Current Year*"
-            onChange={(value) => handleChange("year", value)}
-            initialValue={formData.year}
+            onChange={(value) =>
+              handleChange("currentYear", parseInt(value, 10))
+            }
+            initialValue={formData.currentYear}
+          />
+          <FormInputGlobal
+            question="Email*"
+            type="email"
+            value={formData.mail}
+            onChange={(value) => handleChange("mail", value)}
           />
 
           <button onClick={handleSubmit} className="submitButton">
             Submit
           </button>
-        </div>
-
-        <div className="contactSection">
-          <p className="contactInfo"></p>
         </div>
       </div>
     </div>
