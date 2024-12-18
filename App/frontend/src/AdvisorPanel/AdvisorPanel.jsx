@@ -4,9 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 function AdvisorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
-  const lastAdvisorItem1 = "Item1";
-  const lastAdvisorItem2 = "Item2";
-  const lastAdvisorItem3 = "Item3";
   //TEMPORARY VALUES !!!!!!!!!!!!!!
   const navigate = useNavigate();
 
@@ -43,11 +40,9 @@ function AdvisorPanel() {
       <div className="buttonAdvisorPanelSection">
         <div className="buttonAdvisorPanel">
           <button onClick={handleToursAndGuidesClick}>Tours and Guides</button>
-          <p className="lastAdvisorItem">{lastAdvisorItem1}</p>
         </div>
         <div className="buttonAdvisorPanel">
           <button onClick={handleGuideRequestsClick}>Guide Requests</button>
-          <p className="lastAdvisorItem">{lastAdvisorItem2}</p>
         </div>
         <div className="buttonAdvisorPanel">
           <button onClick={handleEvaluateTourRequestsClick}>
@@ -68,7 +63,6 @@ function AdvisorPanel() {
           <button onClick={handleResponsibleToursClick}>
             Responsible Tours
           </button>
-          <p className="lastAdvisorItem">{lastAdvisorItem3}</p>
         </div>
       </div>
       <div className="contactSection">

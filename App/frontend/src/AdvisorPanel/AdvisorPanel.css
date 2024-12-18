@@ -3,6 +3,7 @@
     margin-top: 20px;
     display: grid; /* Use a grid layout */
     grid-template-columns: repeat(2, 1fr); /* Creates two columns */
+    height: auto;
     grid-gap: 2vw; /* Adds spacing between buttons */
     justify-content: center; /* Ensures the grid is centered horizontally */
     align-items: center; /* Ensures the grid is centered vertically */
