@@ -19,13 +19,16 @@ function SuccessJoin() {
     <div className="successJoinPage">
       <HeaderGlobal name={"Registration Successful!"} />
       <div className="successMessage">
-        <h2>Welcome to BTO, {formData.name}!</h2>
+        <h2>Thank for applying to BTO, {formData.name}!</h2>
         <p>Your registration is complete.</p>
         <p>Email: {formData.mail}</p>
         <p>Bilkent ID: {formData.bilkentID}</p>
         <button onClick={() => navigate("/")} className="returnButton">
           Return to Home
         </button>
+      </div>
+      <div className="contactSection">
+        <p className="contactInfo"></p>
       </div>
     </div>
   );
