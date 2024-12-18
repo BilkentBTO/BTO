@@ -11,7 +11,7 @@ function ViewRegistrationPage() {
   // Destructure API response data with fallback values
   const {
     code: registrationCode,
-    schoolName,
+    school,
     cityName: city,
     dateOfVisit,
     prefferedVisitTime,
@@ -23,8 +23,10 @@ function ViewRegistrationPage() {
     notes,
   } = registrationData;
 
+  const schoolName = school?.schoolName || "N/A"; // Access schoolName safely
   useEffect(() => {
     document.title = "View Tour Registration - BTO"; // Set the tab title
+    console.log("RegData: ", registrationData);
   }, []);
 
   return (

@@ -16,6 +16,7 @@ function EvaluateTourRequests() {
   const [popupHeaders] = useState([
     "Tour ID",
     "School Name",
+    "Priority",
     "City",
     "Date of Visit",
     "Number of Visitors",
@@ -57,7 +58,7 @@ function EvaluateTourRequests() {
         // Map data for the table (simplified table data)
         const simplifiedData = apiData.map((item) => [
           item.code,
-          item.schoolName || "N/A",
+          item.school?.schoolName || "N/A",
           item.cityName || "N/A",
           item.dateOfVisit.split("T")[0],
           item.numberOfVisitors || "N/A",
@@ -67,7 +68,8 @@ function EvaluateTourRequests() {
         // Detailed data for the popup
         const detailedData = apiData.map((item) => [
           item.code,
-          item.schoolName || "N/A",
+          item.school?.schoolName || "N/A",
+          item.school?.priority !== undefined ? item.school.priority : "N/A",
           item.cityName || "N/A",
           item.dateOfVisit.split("T")[0],
           item.numberOfVisitors || "N/A",
