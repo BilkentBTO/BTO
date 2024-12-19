@@ -1,46 +1,39 @@
 .buttonGuidePanelSection {
     display: grid; /* Use a grid layout */
     grid-template-columns: repeat(2, 1fr); /* Creates two columns */
-    grid-gap:20px; /* Adds spacing between buttons */
-    gap: 50px;
+    gap: 50px; /* Adds spacing between buttons */
     justify-content: center; /* Centers the grid horizontally */
     align-items: center; /* Centers the grid vertically */
     width: 80%; /* Adjusts the width of the button container */
-    height: auto; /* Makes the container height fit its content */
-    flex-grow: 1; /* Allows the section to grow to fill available space */
-    padding: 5%; /* Adds inner padding */
     margin: 0 auto; /* Horizontally centers the section within its parent */
     box-sizing: border-box; /* Ensures padding is included in width/height */
 }
 
-.buttonGuidePanel {
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(100, 100, 200); /* Light background color for the panel */
-    border-radius: 5px; /* Rounded corners for the panel */
-    width: 90%;
-    height: 90%;
-    padding: 5%; /* Adds spacing inside the panel */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-.innerGuide{
-    padding: 5%;
+.innerGuide {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("../assets/bilkentPanelImage.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
     justify-content: center;
     align-items: center;
-}
-.buttonGuidePanel button{
-    width: 100%;
-    height: 60%;
-}
-.lastGuideItem {
-    background-color: rgb(0, 30, 120); /* Background color for the last item */
-    color: white; /* White text color */
-    border-radius: 5px; /* Rounded corners for the last guide item */
-    padding: 5%; /* Adds padding inside the item */
-    text-align: center; /* Centers the text inside the item */
-    height: 10%;
-    font-size: 1.1rem; /* Adjusts font size for readability */
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow for emphasis */
+    height: 80vh;
 }
 
+.innerGuide button {
+    border-radius: 5px; /* Rounded corners for buttons */
+    color: white; /* Button text color */
+    background-color: rgb(30, 30, 100); /* Button background color */
+    font-family: Arial, sans-serif; /* Button font */
+    font-size: x-large; /* Large font size */
+    font-weight: bold;
+    width: 100%; /* Button width */
+    height: 100%; /* Button height */
+    padding: 5%;
+}
+
+.innerGuide button:hover {
+    background-color: rgb(19, 19, 70);
+}

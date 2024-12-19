@@ -39,20 +39,15 @@ function GuidePanel() {
       <HeaderPanelGlobal name={"GUIDE PANEL"} />
       <div className="innerGuide">
         <div className="buttonGuidePanelSection">
-          <div className="buttonGuidePanel">
-            <button onClick={handleAvailableToursClick}>Available Tours</button>
-          </div>
-          <div className="buttonGuidePanel">
-            <button onClick={handleAssignedFairsClick}>Assigned Fairs</button>
-          </div>
-          <div className="buttonGuidePanel">
-            <button onClick={handleAssignedToursClick}>Assigned Tours</button>
-          </div>
-          <div className="buttonGuidePanel">
-            <button onClick={handleEditAvailableHoursClick}>
-              Edit Available Hours
-            </button>
-          </div>
+          <button onClick={handleAvailableToursClick}>Available Tours</button>
+
+          <button onClick={handleAssignedFairsClick}>Assigned Fairs</button>
+
+          <button onClick={handleAssignedToursClick}>Assigned Tours</button>
+
+          <button onClick={handleEditAvailableHoursClick}>
+            Edit Available Hours
+          </button>
         </div>
       </div>
       <div className="contactSection">
