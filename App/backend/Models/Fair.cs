@@ -13,6 +13,8 @@ namespace backend.Models
         private readonly List<Guide> AssignedGuides = [];
         private readonly List<Comment> Comments = [];
 
+
+
         public bool AddGuide(Guide guide)
         {
             if (AssignedGuides.Contains(guide))

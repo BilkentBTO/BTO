@@ -2,16 +2,10 @@
     background-color: rgb(30, 30, 100);
     padding: 20px;
     max-height: 120px;
-}
-
-.headerGlobalContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(30, 30, 100);
     color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
 }
 
 .headerGlobalTitle {
