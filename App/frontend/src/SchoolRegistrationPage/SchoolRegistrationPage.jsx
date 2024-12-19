@@ -186,9 +186,6 @@ function SchoolRegistrationPage() {
       <button onClick={handleSubmit} className="submitButton">
         Continue
       </button>
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
     </div>
   );
 }

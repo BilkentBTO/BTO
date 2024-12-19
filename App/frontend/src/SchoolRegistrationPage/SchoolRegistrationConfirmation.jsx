@@ -139,9 +139,6 @@ function SchoolRegistrationConfirmation() {
             </div>
           </div>
         </div>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
-        </div>
       </div>
 
       {/* Confirmation Popup */}
