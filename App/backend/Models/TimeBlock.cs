@@ -10,15 +10,16 @@ namespace backend.Models
     
     public class Schedule
     {
-        public int weekID { get; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; }
 
         private readonly int TimeBlockCount = Convert.ToInt32((END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES));
  
         public TimeBlock[,] TimeBlocks;
 
-        public Schedule(int week)
+        public Schedule()
         {
-            weekID = week;
             TimeBlocks = new TimeBlock[DAYS, TimeBlockCount];
         }
 
