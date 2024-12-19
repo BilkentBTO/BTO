@@ -103,6 +103,33 @@ namespace backend.Models
         }
     }
 
+    public class IndividualRegistration()
+    {
+        public string? Code { get; set; }
+
+        public DateTime DateOfVisit { get; set; }
+
+        public TimeBlock? PrefferedVisitTime { get; set; }
+
+        public string? IndividualName { get; set; }
+
+        public Major? IndividualPreferredMajor { get; set; }
+
+        public string? IndividualPhoneNumber { get; set; }
+
+        public string? IndividualMailAddress { get; set; }
+
+        public string? Notes { get; set; }
+
+        public RegistrationState State { get; set; }
+
+        public void GenerateCode()
+        {
+            var randomSuffix = new Random().Next(1000, 9999);
+            this.Code = $"{this.IndividualName}{randomSuffix}";
+        }
+    }
+
     public class TourRegistrationRequest
     {
         public string? CityName { get; set; }
@@ -126,6 +153,17 @@ namespace backend.Models
         public string? SuperVisorDuty { get; set; }
         public string? SuperVisorPhoneNumber { get; set; }
         public string? SuperVisorMailAddress { get; set; }
+        public string? Notes { get; set; }
+    }
+
+    public class IndividualRegistrationRequest
+    {
+        public DateTime DateOfVisit { get; set; }
+        public TimeBlock? PreferredVisitTime { get; set; }
+        public string? IndividualName { get; set; }
+        public Major? IndividualPreferredMajor { get; set; }
+        public string? IndividualPhoneNumber { get; set; }
+        public string? IndividualMailAddress { get; set; }
         public string? Notes { get; set; }
     }
 }

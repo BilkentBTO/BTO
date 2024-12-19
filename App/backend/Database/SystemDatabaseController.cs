@@ -217,6 +217,87 @@ namespace backend.Database
             return true;
         }
 
+        public async Task<string> AddIndividualRegistration(IndividualRegistrationRequest request)
+        {
+            try
+            {
+                var registration = new IndividualRegistration
+                {
+                    DateOfVisit = request.DateOfVisit,
+                    IndividualName = request.IndividualName,
+                    IndividualPhoneNumber = request.IndividualPhoneNumber,
+                    IndividualMailAddress = request.IndividualMailAddress,
+                    Notes = request.Notes,
+                    State = RegistrationState.Pending,
+                };
+
+                registration.GenerateCode();
+
+                _context.IndividualRegistrations.Add(registration);
+
+                var result = await _context.SaveChangesAsync();
+
+                return registration.Code;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding registration: {ex.Message}");
+                return "";
+            }
+        }
+
+        public async Task<List<IndividualRegistration>> GetAllIndividualRegistrations()
+        {
+            return await _context
+                .IndividualRegistrations.OrderBy(static r => r.IndividualName)
+                .ToListAsync();
+        }
+
+        public async Task<List<IndividualRegistration>> GetAllIndividualRegistrationsFiltered(
+            RegistrationState state
+        )
+        {
+            return await _context
+                .IndividualRegistrations.Where(r => r.State == state)
+                .OrderBy(r => r.IndividualName)
+                .ToListAsync();
+        }
+
+        public async Task<IndividualRegistration?> GetIndividualRegistration(string Code)
+        {
+            return await _context.IndividualRegistrations.SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<bool> AcceptIndividualRegistration(string Code)
+        {
+            var registration = await _context.IndividualRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Accepted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RejectIndividualRegistration(string Code)
+        {
+            var registration = await _context.IndividualRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Rejected;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public List<string> GetAllCityNames()
         {
             List<string> cityNames = new List<string>();

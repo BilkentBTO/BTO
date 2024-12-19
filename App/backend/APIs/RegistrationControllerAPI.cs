@@ -193,5 +193,96 @@ namespace backend.Server.Controllers
             var result = await _controller.GetFairRegistration(Code);
             return Ok(result);
         }
+
+        [HttpPost("individual/register")]
+        public async Task<ActionResult> AddIndividualRegistration(
+            [FromBody] IndividualRegistrationRequest registration
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            registration.DateOfVisit = DateTime.SpecifyKind(
+                registration.DateOfVisit,
+                DateTimeKind.Utc
+            );
+
+            var result = await _controller.AddIndividualRegistration(registration);
+            if (string.IsNullOrEmpty(result))
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("individual/acceptregistration")]
+        public async Task<ActionResult> AcceptIndividualRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.AcceptIndividualRegistration(Code);
+            if (!result)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("individual/rejectregistration")]
+        public async Task<ActionResult> RejectIndividualRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.RejectIndividualRegistration(Code);
+            if (!result)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("individual/registrations")]
+        public async Task<ActionResult> GetAllIndividualRegistrations()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllIndividualRegistrations();
+            return Ok(result);
+        }
+
+        [HttpGet("individual/getregistration")]
+        public async Task<ActionResult> GetIndividualRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetIndividualRegistration(Code);
+            return Ok(result);
+        }
+
+        [HttpGet("individual/registrations/{state}")]
+        public async Task<ActionResult> GetAllIndividualRegistrationsFiltered(
+            RegistrationState state
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllIndividualRegistrationsFiltered(state);
+            return Ok(result);
+        }
     }
 }
