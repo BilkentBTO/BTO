@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+[Microsoft.AspNetCore.Mvc.Route("api/schools")]
 public class SchoolsController : ControllerBase
 {
     private readonly SystemDatabaseController _controller;

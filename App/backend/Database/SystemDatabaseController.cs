@@ -14,10 +14,45 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
+        public async Task<Registration?> GetGeneralRegistration(string Code)
+        {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return null;
+            }
+
+            var type = Code[0];
+            switch (type)
+            {
+                case 'T':
+                    return await _context
+                        .TourRegistrations.Include(r => r.School)
+                        .Include(r => r.PreferredVisitTime)
+                        .SingleOrDefaultAsync(r => r.Code == Code);
+                case 'F':
+                    return await _context
+                        .FairRegistrations.Include(r => r.School)
+                        .SingleOrDefaultAsync(r => r.Code == Code);
+                case 'I':
+                    return await _context
+                        .IndividualRegistrations.Include(r => r.PreferredVisitTime)
+                        .SingleOrDefaultAsync(r => r.Code == Code);
+                default:
+                    return null;
+            }
+        }
+
         public async Task<string> AddTourRegistration(TourRegistrationRequest request)
         {
             try
             {
+                var exists = _context.TourRegistrations.Any(r =>
+                    r.SchoolCode == request.SchoolCode
+                );
+                if (exists)
+                {
+                    return "";
+                }
                 var school = await _context.Schools.FirstOrDefaultAsync(s =>
                     s.SchoolCode == request.SchoolCode
                 );
@@ -46,7 +81,7 @@ namespace backend.Database
                 registration.GenerateCode();
                 registration.FillSchool(school);
 
-                _context.Registrations.Add(registration);
+                _context.TourRegistrations.Add(registration);
 
                 var result = await _context.SaveChangesAsync();
 
@@ -67,7 +102,7 @@ namespace backend.Database
         public async Task<TourRegistration?> GetTourRegistration(string Code)
         {
             return await _context
-                .Registrations.Include(r => r.School)
+                .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
@@ -75,7 +110,7 @@ namespace backend.Database
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
         {
             return await _context
-                .Registrations.Include(r => r.School)
+                .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .ToListAsync();
@@ -86,7 +121,7 @@ namespace backend.Database
         )
         {
             return await _context
-                .Registrations.Where(r => r.State == state)
+                .TourRegistrations.Where(r => r.State == state)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
@@ -95,7 +130,7 @@ namespace backend.Database
 
         public async Task<bool> AcceptTourRegistration(string Code)
         {
-            var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+            var registration = await _context.TourRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -110,7 +145,7 @@ namespace backend.Database
 
         public async Task<bool> RejectTourRegistration(string Code)
         {
-            var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+            var registration = await _context.TourRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/register")]
     public class RegistrationController : ControllerBase
     {
         private readonly SystemDatabaseController _controller;
@@ -16,14 +16,32 @@ namespace backend.Server.Controllers
             _controller = context;
         }
 
-        [HttpPost("tour/register")]
+        [HttpGet("general")]
+        public async Task<ActionResult> GetGeneralRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetGeneralRegistration(Code);
+            if (result == null)
+            {
+                return NotFound(new { message = "Registration not found." });
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("tour")]
         public async Task<ActionResult> AddTourRegistration(
             [FromBody] TourRegistrationRequest registration
         )
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(
+                    new { message = "Invalid registration data.", errors = ModelState }
+                );
             }
 
             registration.DateOfVisit = DateTime.SpecifyKind(
@@ -31,7 +49,22 @@ namespace backend.Server.Controllers
                 DateTimeKind.Utc
             );
 
+            if (registration.SchoolCode == null || registration.SchoolCode < 0)
+            {
+                return BadRequest(new { message = "Valid SchoolCode is required." });
+            }
+
+            if (string.IsNullOrEmpty(registration.CityName))
+            {
+                return BadRequest(new { message = "CityName is required." });
+            }
+            if (registration.NumberOfVisitors <= 0)
+            {
+                return BadRequest(new { message = "NumberOfVisitors must be greater than zero." });
+            }
+
             var result = await _controller.AddTourRegistration(registration);
+
             if (string.IsNullOrEmpty(result))
             {
                 return BadRequest(result);
@@ -39,7 +72,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("tour/acceptregistration")]
+        [HttpPost("tour/accept")]
         public async Task<ActionResult> AcceptTourRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -55,7 +88,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("tour/rejectregistration")]
+        [HttpPost("tour/reject")]
         public async Task<ActionResult> RejectTourRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -82,7 +115,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("tour/getregistration")]
+        [HttpGet("tour")]
         public async Task<ActionResult> GetTourRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -105,7 +138,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("fair/register")]
+        [HttpPost("fair")]
         public async Task<ActionResult> AddFairRegistration(
             [FromBody] FairRegistrationRequest registration
         )
@@ -128,7 +161,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("fair/acceptregistration")]
+        [HttpPost("fair/accept")]
         public async Task<ActionResult> AcceptFairRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -144,7 +177,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("fair/rejectregistration")]
+        [HttpPost("fair/reject")]
         public async Task<ActionResult> RejectFairRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -160,7 +193,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("fair/getregistrations")]
+        [HttpGet("fair")]
         public async Task<ActionResult> GetAllFairRegistrations()
         {
             if (!ModelState.IsValid)
@@ -194,7 +227,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("individual/register")]
+        [HttpPost("individual")]
         public async Task<ActionResult> AddIndividualRegistration(
             [FromBody] IndividualRegistrationRequest registration
         )
@@ -217,7 +250,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("individual/acceptregistration")]
+        [HttpPost("individual/accept")]
         public async Task<ActionResult> AcceptIndividualRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -233,7 +266,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpPost("individual/rejectregistration")]
+        [HttpPost("individual/reject")]
         public async Task<ActionResult> RejectIndividualRegistration(string Code)
         {
             if (!ModelState.IsValid)
@@ -260,7 +293,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("individual/getregistration")]
+        [HttpGet("individual")]
         public async Task<ActionResult> GetIndividualRegistration(string Code)
         {
             if (!ModelState.IsValid)

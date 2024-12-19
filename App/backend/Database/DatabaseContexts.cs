@@ -10,7 +10,7 @@ namespace backend.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<School> Schools { get; set; }
-        public DbSet<TourRegistration> Registrations { get; set; }
+        public DbSet<TourRegistration> TourRegistrations { get; set; }
         public DbSet<FairRegistration> FairRegistrations { get; set; }
         public DbSet<IndividualRegistration> IndividualRegistrations { get; set; }
 

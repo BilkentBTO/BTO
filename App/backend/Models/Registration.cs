@@ -9,9 +9,15 @@ namespace backend.Models
         Rejected = 2,
     }
 
-    public class TourRegistration()
+    public class Registration()
     {
         public string? Code { get; set; }
+        public string? Type { get; set; }
+    }
+
+    public class TourRegistration : Registration
+    {
+        public TourRegistration() => this.Type = "Tour";
 
         public string? CityName { get; set; }
 
@@ -40,7 +46,7 @@ namespace backend.Models
         public void GenerateCode()
         {
             var randomSuffix = new Random().Next(1000, 9999);
-            this.Code = $"{this.CityName}{randomSuffix}";
+            this.Code = $"T-{this.CityName}{randomSuffix}";
         }
 
         public void FillSchool(School school)
@@ -59,9 +65,9 @@ namespace backend.Models
         }
     }
 
-    public class FairRegistration()
+    public class FairRegistration : Registration
     {
-        public string? Code { get; set; }
+        public FairRegistration() => this.Type = "Fair";
 
         public string? CityName { get; set; }
 
@@ -86,7 +92,7 @@ namespace backend.Models
         public void GenerateCode()
         {
             var randomSuffix = new Random().Next(1000, 9999);
-            this.Code = $"{this.CityName}{randomSuffix}";
+            this.Code = $"F-{this.CityName}{randomSuffix}";
         }
 
         public void FillSchool(School school)
@@ -105,9 +111,9 @@ namespace backend.Models
         }
     }
 
-    public class IndividualRegistration()
+    public class IndividualRegistration : Registration
     {
-        public string? Code { get; set; }
+        public IndividualRegistration() => this.Type = "Individual";
 
         public DateTime DateOfVisit { get; set; }
 
@@ -132,7 +138,7 @@ namespace backend.Models
         public void GenerateCode()
         {
             var randomSuffix = new Random().Next(1000, 9999);
-            this.Code = $"{this.IndividualName}{randomSuffix}";
+            this.Code = $"I-{this.IndividualName}{randomSuffix}";
         }
     }
 

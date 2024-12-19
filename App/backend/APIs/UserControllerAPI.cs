@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Server.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("/api/user")]
     public class UserController : ControllerBase
     {
         private readonly SystemDatabaseController _controller;
