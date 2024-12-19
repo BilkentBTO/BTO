@@ -10,7 +10,7 @@ namespace backend.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<School> Schools { get; set; }
-        public DbSet<Registration> Registrations { get; set; }
+        public DbSet<TourRegistration> Registrations { get; set; }
 
         public DbSet<FairRegistration> FairRegistrations { get; set; }
 
@@ -23,9 +23,9 @@ namespace backend.Database
 
             modelBuilder.Entity<School>().HasKey(s => s.SchoolName);
 
-            modelBuilder.Entity<Registration>().HasKey(r => r.Code);
+            modelBuilder.Entity<TourRegistration>().HasKey(r => r.Code);
 
-            modelBuilder.Entity<Registration>().HasIndex(r => r.Code).IsUnique();
+            modelBuilder.Entity<TourRegistration>().HasIndex(r => r.Code).IsUnique();
 
             modelBuilder.Entity<FairRegistration>().HasKey(r => r.Code);
 

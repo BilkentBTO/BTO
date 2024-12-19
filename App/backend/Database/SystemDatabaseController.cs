@@ -14,7 +14,7 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public async Task<string> AddRegistration(RegistrationRequest request)
+        public async Task<string> AddTourRegistration(TourRegistrationRequest request)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace backend.Database
                     return "";
                 }
 
-                var registration = new Registration
+                var registration = new TourRegistration
                 {
                     CityName = request.CityName,
                     SchoolCode = request.SchoolCode,
@@ -59,7 +59,7 @@ namespace backend.Database
             }
         }
 
-        public async Task<Registration?> GetRegistration(string Code)
+        public async Task<TourRegistration?> GetTourRegistration(string Code)
         {
             return await _context
                 .Registrations.Include(r => r.School)
@@ -67,7 +67,7 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
-        public async Task<List<Registration>> GetAllRegistrations()
+        public async Task<List<TourRegistration>> GetAllTourRegistrations()
         {
             return await _context
                 .Registrations.OrderBy(r => r.School.Priority)
@@ -76,7 +76,9 @@ namespace backend.Database
                 .ToListAsync();
         }
 
-        public async Task<List<Registration>> GetAllRegistrationsFiltered(RegistrationState state)
+        public async Task<List<TourRegistration>> GetAllTourRegistrationsFiltered(
+            RegistrationState state
+        )
         {
             return await _context
                 .Registrations.Where(r => r.State == state)
@@ -86,7 +88,7 @@ namespace backend.Database
                 .ToListAsync();
         }
 
-        public async Task<bool> AcceptRegistration(string Code)
+        public async Task<bool> AcceptTourRegistration(string Code)
         {
             var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
@@ -101,7 +103,7 @@ namespace backend.Database
             return true;
         }
 
-        public async Task<bool> RejectRegistration(string Code)
+        public async Task<bool> RejectTourRegistration(string Code)
         {
             var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
                 r.Code == Code

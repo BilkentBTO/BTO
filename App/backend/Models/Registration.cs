@@ -7,7 +7,7 @@ namespace backend.Models
         Rejected = 2,
     }
 
-    public class Registration()
+    public class TourRegistration()
     {
         public string? Code { get; set; }
 
@@ -103,7 +103,7 @@ namespace backend.Models
         }
     }
 
-    public class RegistrationRequest
+    public class TourRegistrationRequest
     {
         public string? CityName { get; set; }
         public int? SchoolCode { get; set; }

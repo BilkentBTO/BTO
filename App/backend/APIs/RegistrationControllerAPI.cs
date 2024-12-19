@@ -17,7 +17,9 @@ namespace backend.Server.Controllers
         }
 
         [HttpPost("tour/register")]
-        public async Task<ActionResult> AddRegistration([FromBody] RegistrationRequest registration)
+        public async Task<ActionResult> AddTourRegistration(
+            [FromBody] TourRegistrationRequest registration
+        )
         {
             if (!ModelState.IsValid)
             {
@@ -29,7 +31,7 @@ namespace backend.Server.Controllers
                 DateTimeKind.Utc
             );
 
-            var result = await _controller.AddRegistration(registration);
+            var result = await _controller.AddTourRegistration(registration);
             if (string.IsNullOrEmpty(result))
             {
                 return BadRequest(result);
@@ -38,14 +40,14 @@ namespace backend.Server.Controllers
         }
 
         [HttpPost("tour/acceptregistration")]
-        public async Task<ActionResult> AcceptRegistration(string Code)
+        public async Task<ActionResult> AcceptTourRegistration(string Code)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _controller.AcceptRegistration(Code);
+            var result = await _controller.AcceptTourRegistration(Code);
             if (!result)
             {
                 return BadRequest(result);
@@ -54,14 +56,14 @@ namespace backend.Server.Controllers
         }
 
         [HttpPost("tour/rejectregistration")]
-        public async Task<ActionResult> RejectRegistration(string Code)
+        public async Task<ActionResult> RejectTourRegistration(string Code)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _controller.RejectRegistration(Code);
+            var result = await _controller.RejectTourRegistration(Code);
             if (!result)
             {
                 return BadRequest(result);
@@ -70,36 +72,36 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet("tour/registrations")]
-        public async Task<ActionResult> GetAllRegistrations()
+        public async Task<ActionResult> GetAllTourRegistrations()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _controller.GetAllRegistrations();
+            var result = await _controller.GetAllTourRegistrations();
             return Ok(result);
         }
 
         [HttpGet("tour/getregistration")]
-        public async Task<ActionResult> GetRegistration(string Code)
+        public async Task<ActionResult> GetTourRegistration(string Code)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _controller.GetRegistration(Code);
+            var result = await _controller.GetTourRegistration(Code);
             return Ok(result);
         }
 
         [HttpGet("tour/registrations/{state}")]
-        public async Task<ActionResult> GetAllRegistrationsFiltered(RegistrationState state)
+        public async Task<ActionResult> GetAllTourRegistrationsFiltered(RegistrationState state)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _controller.GetAllFairRegistrationsFiltered(state);
+            var result = await _controller.GetAllTourRegistrationsFiltered(state);
             return Ok(result);
         }
 
