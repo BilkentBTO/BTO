@@ -37,31 +37,26 @@ function AdvisorPanel() {
   return (
     <div className="advisorPanel">
       <HeaderPanelGlobal name={"ADVISOR PANEL"} />
-      <div className="buttonAdvisorPanelSection">
-        <div className="buttonAdvisorPanel">
+      <div className="innerAdvisor">
+        <div className="buttonAdvisorPanelSection">
           <button onClick={handleToursAndGuidesClick}>Tours and Guides</button>
-        </div>
-        <div className="buttonAdvisorPanel">
+
           <button onClick={handleGuideRequestsClick}>Guide Requests</button>
-        </div>
-        <div className="buttonAdvisorPanel">
+
           <button onClick={handleEvaluateTourRequestsClick}>
             Evaluate Tour Requests
           </button>
-        </div>
-        <div className="buttonAdvisorPanel">
+
           <button onClick={handleAccessMessagePanelClick}>
             Access Message Panel
           </button>
-        </div>
-        <div className="buttonAdvisorPanel">
-          <button onClick={handleAccessGuidePanelClick}>
-            Access Guide Panel
-          </button>
-        </div>
-        <div className="buttonAdvisorPanel">
+
           <button onClick={handleResponsibleToursClick}>
             Responsible Tours
+          </button>
+
+          <button onClick={handleAccessGuidePanelClick}>
+            Access Guide Panel
           </button>
         </div>
       </div>

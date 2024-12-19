@@ -1,30 +1,40 @@
 .buttonAdvisorPanelSection {
-    margin: 0 auto; /* Centers the section horizontally */
-    margin-top: 20px;
     display: grid; /* Use a grid layout */
     grid-template-columns: repeat(2, 1fr); /* Creates two columns */
-    height: auto;
-    grid-gap: 2vw; /* Adds spacing between buttons */
-    justify-content: center; /* Ensures the grid is centered horizontally */
-    align-items: center; /* Ensures the grid is centered vertically */
-    width: 60%; /* Adjusts the width of the button container */
-    flex-grow: 1; /* Allows the section to grow to fill the available space */
+    gap: 50px; /* Adds spacing between buttons */
+    justify-content: center; /* Centers the grid horizontally */
+    align-items: center; /* Centers the grid vertically */
+    width: 80%; /* Adjusts the width of the button container */
+    margin: 0 auto; /* Horizontally centers the section within its parent */
+    box-sizing: border-box; /* Ensures padding is included in width/height */
 }
 
-.buttonAdvisorPanel {
-    background-color: rgb(100, 100, 200); /* Light background color for the panel */
-    border-radius: 5px; /* Rounded corners for the panel */
-    padding: 10px; /* Adds spacing inside the panel */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+.innerAdvisor {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("../assets/bilkentPanelImage.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
 }
 
-.lastAdvisorItem {
-    background-color: rgb(0, 30, 120); /* Background color for the last item */
-    color: white; /* White text color */
-    border-radius: 5px; /* Rounded corners for the last guide item */
-    padding: 15px; /* Adds padding inside the item */
-    text-align: center; /* Centers the text inside the item */
-    font-size: 1.1rem; /* Adjusts font size for readability */
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow for emphasis */
+.buttonAdvisorPanelSection button {
+    border:0;
+    border-radius: 5px; /* Rounded corners for buttons */
+    color: white; /* Button text color */
+    background-color: rgb(30, 30, 100); /* Button background color */
+    font-family: Arial, sans-serif; /* Button font */
+    font-size: x-large; /* Large font size */
+    font-weight: bold;
+    width: 100%; /* Button width */
+    height: 15vh; /* Button height */
+    padding: 5%;
+}
+
+.buttonAdvisorPanelSection button:hover {
+    background-color: rgb(19, 19, 70);
 }
