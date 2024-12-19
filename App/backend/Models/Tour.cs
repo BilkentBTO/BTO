@@ -90,8 +90,8 @@ namespace backend.Models
 
         public bool HasSurvey() => Survey != null;
 
-        public Survey? GetSurvey() => Survey;
+        public Survey_temp? GetSurvey() => Survey;
 
-        public void AssignSurvey(Survey survey) => Survey = survey;
+        public void AssignSurvey(Survey_temp survey) => Survey = survey;
     }
 }

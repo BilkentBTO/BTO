@@ -46,8 +46,10 @@ namespace backend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public int MaxStudentCount { get; private set; }
-        private readonly SortedList<Tour, int> ScheduledTours = new(MAX_TOURS_PER_BLOCK);
-        private readonly SortedList<Tour, int> AlternativeTours = [];
+
+        // int, int = tourID, tourPriority
+        public readonly SortedList<int, int> ScheduledTours = new(MAX_TOURS_PER_BLOCK);
+        public readonly SortedList<int, int> AlternativeTours = [];
 
         public int ToursCount => ScheduledTours.Count + AlternativeTours.Count;
 
@@ -58,18 +60,18 @@ namespace backend.Models
                 int leastPriorityScheduled = ScheduledTours.GetValueAtIndex(0);
                 if (leastPriorityScheduled + PRIORITY_BIAS < tour.Priority)
                 {
-                    Tour leastPriorityTour = ScheduledTours.GetKeyAtIndex(0);
+                    int leastPriorityTour = ScheduledTours.GetKeyAtIndex(0);
                     ScheduledTours.RemoveAt(0);
-                    ScheduledTours.Add(tour, tour.Priority);
+                    ScheduledTours.Add(tour.ID, tour.Priority);
 
                     // MAIL leastPriorityTour CANCEL
                 }
                 else
-                    AlternativeTours.Add(tour, tour.Priority);
+                    AlternativeTours.Add(tour.ID, tour.Priority);
             }
             else
             {
-                ScheduledTours.Add(tour, tour.Priority);
+                ScheduledTours.Add(tour.ID, tour.Priority);
                 // MAIL tour ACCEPTED
             }
         }
@@ -77,14 +79,14 @@ namespace backend.Models
         public void AcceptAlternativeTour(Tour scheduledTour, Tour acceptedTour)
         {
             if (
-                ScheduledTours.ContainsKey(scheduledTour)
-                && AlternativeTours.ContainsKey(acceptedTour)
+                ScheduledTours.ContainsKey(scheduledTour.ID)
+                && AlternativeTours.ContainsKey(acceptedTour.ID)
             )
             {
-                AlternativeTours.Remove(acceptedTour);
-                ScheduledTours.Remove(scheduledTour);
+                AlternativeTours.Remove(acceptedTour.ID);
+                ScheduledTours.Remove(scheduledTour.ID);
 
-                ScheduledTours.Add(acceptedTour, acceptedTour.Priority);
+                ScheduledTours.Add(acceptedTour.ID, acceptedTour.Priority);
 
                 // MAIL scheduledTour CANCELLED acceptedTour ACCEPTED
             }
@@ -92,20 +94,16 @@ namespace backend.Models
 
         public void RemoveTour(Tour tour)
         {
-            if (AlternativeTours.Remove(tour))
+            if (AlternativeTours.Remove(tour.ID))
                 return;
 
-            if (ScheduledTours.Remove(tour) && AlternativeTours.Count != 0)
+            if (ScheduledTours.Remove(tour.ID) && AlternativeTours.Count != 0)
             {
                 int lastIndex = AlternativeTours.Count - 1;
-                Tour nextPriorityTour = AlternativeTours.GetKeyAtIndex(lastIndex);
+                KeyValuePair<int, int> nextPriorityTour = AlternativeTours.ElementAt(lastIndex);
                 AlternativeTours.RemoveAt(lastIndex);
-                ScheduledTours.Add(nextPriorityTour, nextPriorityTour.Priority);
+                ScheduledTours.Add(nextPriorityTour.Key, nextPriorityTour.Value);
             }
         }
-
-        public Tour[] GetScheduledTours() => ScheduledTours.Keys.ToArray();
-
-        public Tour[] GetAlternativeTours() => AlternativeTours.Keys.ToArray();
     }
 }
