@@ -6,33 +6,29 @@ using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    public class Schedule
+    public class Schedule // updated to daily
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; }
 
-        private readonly int TimeBlockCount = Convert.ToInt32(
-            (END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES)
-        );
-
-        public TimeBlock[,] TimeBlocks;
+        public TimeBlock[] TimeBlocks;
 
         public Schedule()
         {
-            TimeBlocks = new TimeBlock[DAYS, TimeBlockCount];
+            TimeBlocks = new TimeBlock[TimeBlocksPerDay];
         }
 
-        public bool AddTour(Tour tour, int hour)
+        public bool AddTour(Tour tour, int entranceTimeBlockID)
         {
             if (tour == null)
                 return false;
-            if (hour < START_HOURS || hour >= END_HOURS)
+            if (entranceTimeBlockID < 0 || entranceTimeBlockID >= TimeBlocks.Length)
                 return false;
 
-            TimeBlock? SelectedTimeBlock = TimeBlocks[(int)tour.Time.DayOfWeek, hour];
+            TimeBlock? SelectedTimeBlock = TimeBlocks[entranceTimeBlockID];
             if (SelectedTimeBlock == null)
-                TimeBlocks[(int)tour.Time.DayOfWeek, hour] = SelectedTimeBlock = new TimeBlock();
+                TimeBlocks[entranceTimeBlockID] = SelectedTimeBlock = new TimeBlock();
 
             SelectedTimeBlock.AddTour(tour);
             return true;
