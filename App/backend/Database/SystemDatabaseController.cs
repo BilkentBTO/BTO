@@ -33,7 +33,7 @@ namespace backend.Database
                     CityName = request.CityName,
                     SchoolCode = request.SchoolCode,
                     DateOfVisit = request.DateOfVisit,
-                    PrefferedVisitTime = request.PreferredVisitTime,
+                    PreferredVisitTime = request.PreferredVisitTime,
                     NumberOfVisitors = request.NumberOfVisitors,
                     SuperVisorName = request.SuperVisorName,
                     SuperVisorDuty = request.SuperVisorDuty,
@@ -50,6 +50,11 @@ namespace backend.Database
 
                 var result = await _context.SaveChangesAsync();
 
+                if (registration.Code == null)
+                {
+                    return "";
+                }
+
                 return registration.Code;
             }
             catch (Exception ex)
@@ -63,16 +68,16 @@ namespace backend.Database
         {
             return await _context
                 .Registrations.Include(r => r.School)
-                .Include(r => r.PrefferedVisitTime)
+                .Include(r => r.PreferredVisitTime)
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
         {
             return await _context
-                .Registrations.OrderBy(r => r.School.Priority)
-                .Include(r => r.School)
-                .Include(r => r.PrefferedVisitTime)
+                .Registrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .ToListAsync();
         }
 
@@ -82,9 +87,9 @@ namespace backend.Database
         {
             return await _context
                 .Registrations.Where(r => r.State == state)
-                .OrderBy(r => r.School.Priority)
+                .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
-                .Include(r => r.PrefferedVisitTime)
+                .Include(r => r.PreferredVisitTime)
                 .ToListAsync();
         }
 
@@ -152,6 +157,10 @@ namespace backend.Database
 
                 var result = await _context.SaveChangesAsync();
 
+                if (registration.Code == null)
+                {
+                    return "";
+                }
                 return registration.Code;
             }
             catch (Exception ex)
@@ -164,7 +173,7 @@ namespace backend.Database
         public async Task<List<FairRegistration>> GetAllFairRegistrations()
         {
             return await _context
-                .FairRegistrations.OrderBy(r => r.School.Priority)
+                .FairRegistrations.OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
                 .ToListAsync();
         }
@@ -175,7 +184,7 @@ namespace backend.Database
         {
             return await _context
                 .FairRegistrations.Where(r => r.State == state)
-                .OrderBy(r => r.School.Priority)
+                .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
                 .ToListAsync();
         }
@@ -237,7 +246,10 @@ namespace backend.Database
                 _context.IndividualRegistrations.Add(registration);
 
                 var result = await _context.SaveChangesAsync();
-
+                if (registration.Code == null)
+                {
+                    return "";
+                }
                 return registration.Code;
             }
             catch (Exception ex)
@@ -323,7 +335,7 @@ namespace backend.Database
                 c.name.Equals(cityName, StringComparison.OrdinalIgnoreCase)
             );
 
-            if (cityCode == null)
+            if (cityCode.Equals(default))
             {
                 return new List<SchoolSuggestion>();
             }
@@ -331,6 +343,7 @@ namespace backend.Database
             var result = await _context
                 .Schools.Where(s =>
                     s.CityCode == cityCode.cityCode
+                    && s.SchoolName != null
                     && s.SchoolName.ToLower().Contains(query.ToLower())
                 )
                 .Distinct()
@@ -355,7 +368,8 @@ namespace backend.Database
 
             return await _context
                 .Schools.Where(s =>
-                    EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
+                    s.SchoolName != null
+                    && EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
                 )
                 .Select(s => s.SchoolName)
                 .Distinct()
@@ -363,7 +377,7 @@ namespace backend.Database
                 .ToListAsync();
         }
 
-        public async Task<School> GetSchoolByName(string name)
+        public async Task<School?> GetSchoolByName(string name)
         {
             return await _context.Schools.SingleOrDefaultAsync(s => s.SchoolName == name);
         }
@@ -373,7 +387,7 @@ namespace backend.Database
             return await _context.Users.OrderBy(c => c.Name).ToListAsync();
         }
 
-        public async Task<User> GetUserAsync(int id)
+        public async Task<User?> GetUserAsync(int id)
         {
             return await _context.Users.SingleOrDefaultAsync(c => c.id == id);
         }
@@ -435,6 +449,10 @@ namespace backend.Database
 
             var user = await _context.Users.SingleOrDefaultAsync(c => c.id == id);
 
+            if (user == null)
+            {
+                return false;
+            }
             _ = _context.Remove(user);
 
             try
@@ -452,6 +470,10 @@ namespace backend.Database
         {
             try
             {
+                if (request.Name == null || request.Surname == null || request.Mail == null)
+                {
+                    return false;
+                }
                 var user = new User(request.Name, request.Surname, request.Mail)
                 {
                     BilkentID = request.BilkentID,

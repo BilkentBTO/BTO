@@ -109,7 +109,7 @@ namespace backend.Models
             CityData.Cities.FirstOrDefault(c =>
                 c.name.Normalize(System.Text.NormalizationForm.FormC)
                     .Equals(
-                        CityName.Normalize(System.Text.NormalizationForm.FormC),
+                        CityName?.Normalize(System.Text.NormalizationForm.FormC) ?? string.Empty,
                         StringComparison.OrdinalIgnoreCase
                     )
             );

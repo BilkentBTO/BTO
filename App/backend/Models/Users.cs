@@ -112,11 +112,11 @@ namespace backend.Models
 
     public class UserCreateRequest
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
         public int? BilkentID { get; set; }
         public int MajorCode { get; set; }
         public int? CurrentYear { get; set; }
-        public string Mail { get; set; }
+        public string? Mail { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace backend.Models
 
         public DateTime DateOfVisit { get; set; }
 
-        public TimeBlock? PrefferedVisitTime { get; set; }
+        public TimeBlock? PreferredVisitTime { get; set; }
 
         public int NumberOfVisitors { get; set; }
 
@@ -111,7 +111,7 @@ namespace backend.Models
 
         public DateTime DateOfVisit { get; set; }
 
-        public TimeBlock? PrefferedVisitTime { get; set; }
+        public TimeBlock? PreferredVisitTime { get; set; }
 
         public string? IndividualName { get; set; }
 
