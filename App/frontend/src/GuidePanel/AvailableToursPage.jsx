@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import { useNavigate } from "react-router-dom";
@@ -6,63 +6,40 @@ import "./AvailableToursPage.css";
 
 function AvailableToursPage() {
   const navigate = useNavigate();
-  // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  const headers = [
-    "Tour ID",
-    "School",
-    "City",
-    "Date",
-    "Time",
-    "Nunmber of Visitors",
-    "Supervisor",
-    "Supervisor Duty",
-    "Supervisor Phone Number",
-    "Supervisor Mail",
-    "Notes",
-  ];
-  const data = [
-    [
-      "1",
-      "TED Ankara",
-      "Ankara",
-      "30.03.2025",
-      "18.00",
-      "25",
-      "Ege Ertem",
-      "Pricipal",
-      "123124",
-      "mail@mail.com",
-      "Note note note",
-    ],
-    [
-      "2",
-      "Ankara Atatürk Lisesi",
-      "Ankara",
-      "30.03.2025",
-      "11.00",
-      "11",
-      "Can Kütükoğlu",
-      "Pricipal",
-      "123124",
-      "mail@mail.com",
-      "Note note note",
-    ],
-    [
-      "3",
-      "Jale Tezer",
-      "Ankara",
-      "30.03.2025",
-      "17.00",
-      "56",
-      "Bora Akoğuz",
-      "Pricipal",
-      "123124",
-      "mail@mail.com",
-      "Note note note",
-    ],
-  ];
+  const [data, setData] = useState([]); // State to hold fetched data
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+
+  // Table headers (only the required columns)
+  const headers = ["Tour ID", "Date", "School", "Number of Visitors"];
+
+  // Fetch tours data from the API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/register/tour/registrations/1");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setData(apiData); // Set the API response to the state
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false); // Stop the loading indicator
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleRowClick = (rowData) => {
-    //navigate("/guidePanel/assignedTours/manageTour", { state: { rowData } }); // Pass rowData via state
+    // Find the full data for the clicked row
+    const selectedTour = data.find((item) => item.code === rowData[0]);
+    console.log("SELECTED TOUR: ", selectedTour);
+    // Navigate to the detailed tour management page
+    navigate("/guidePanel/assignedTours/manageTour", {
+      state: { selectedTour },
+    });
   };
 
   const buttonStyle = {
@@ -79,20 +56,31 @@ function AvailableToursPage() {
     transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
-  const buttonName = "Apply";
+  const buttonName = "View";
 
   return (
     <div className="availableToursPage">
       <HeaderPanelGlobal name={"GUIDE PANEL"} />
       <div>
         <h1 className="availableToursHeading">Available Tours</h1>
-        <TableWithButtons
-          headers={headers}
-          data={data}
-          onButtonClick={handleRowClick}
-          buttonStyle={buttonStyle} // Pass custom button style
-          buttonName={buttonName}
-        />
+        {isLoading ? (
+          <p>Loading available tours...</p>
+        ) : data.length > 0 ? (
+          <TableWithButtons
+            headers={headers}
+            data={data.map((item) => [
+              item.code || "N/A", // Tour ID
+              new Date(item.dateOfVisit).toLocaleDateString() || "N/A", // Date
+              item.school?.schoolName || "N/A", // School
+              item.numberOfVisitors || "N/A", // Number of Visitors
+            ])} // Map the required data to the table rows
+            onButtonClick={handleRowClick}
+            buttonStyle={buttonStyle} // Pass custom button style
+            buttonName={buttonName}
+          />
+        ) : (
+          <p>No available tours found.</p>
+        )}
       </div>
       <div className="contactSection">
         <p className="contactInfo"></p>
