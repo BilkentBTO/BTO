@@ -10,10 +10,19 @@
 .innerEditPage .rightInner{
     width: 50%;
     min-width: 600px; /* Prevent shrinking below 600px */
-
     flex-shrink: 0; /* Prevent it from shrinking */
+    background-color: rgb(231, 231, 240); 
 }
+
+.leftInner{
+  width: 50%;
+    min-width: 600px; /* Prevent shrinking below 600px */
+    flex-shrink: 0; /* Prevent it from shrinking */
+    background-color: rgb(255, 255, 255);
+}
+
 .editPopUp .popup-overlay {
+  font-family: Arial, Helvetica, sans-serif;
   position: fixed;
   top: 0;
   left: 0;

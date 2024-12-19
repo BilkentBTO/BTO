@@ -1,16 +1,10 @@
 .mainHeader {
     background-color: rgb(30, 30, 100);
     padding: 10px;
-}
-
-.mainHeaderContainer {
+    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(30, 30, 100);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
 }
 
 .mainHeaderTextSection {

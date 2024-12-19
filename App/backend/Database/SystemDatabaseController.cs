@@ -5,14 +5,50 @@ namespace backend.Database
 {
     public class SystemDatabaseController
     {
-        private readonly SystemDbContext _context;
+        private readonly SystemDbContext _SystemContext;
+        private readonly ScheduleDbContext _ScheduleContext;
         private readonly ILogger _logger;
 
-        public SystemDatabaseController(SystemDbContext context, ILoggerFactory loggerFactory)
+        public SystemDatabaseController(
+            SystemDbContext SystemContext,
+            ScheduleDbContext ScheduleContext,
+            ILoggerFactory loggerFactory
+        )
         {
-            _context = context;
+            _SystemContext = SystemContext;
+            _ScheduleContext = ScheduleContext;
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
+
+        /*
+        public async Task<bool> AddGuideTourApplication(int TourID, int GuideUID)
+        {
+            if (TourID < 0 || GuideUID < 0)
+            {
+                return false;
+            }
+
+            Tour? Tour = await _ScheduleContext
+                .Tours.Include(t => t.School)
+                .SingleOrDefaultAsync(t => t.ID == TourID);
+
+            if (Tour == null)
+            {
+                return false;
+            }
+
+            User? Guide = await _SystemContext.Users.SingleOrDefaultAsync(u => u.Id == GuideUID);
+
+            if (Guide == null || Guide.UserType != UserType.Guide)
+            {
+                return false;
+            }
+            
+
+            Tour.AssignGuide(Guide);
+
+            
+        }*/
 
         public async Task<Registration?> GetGeneralRegistration(string Code)
         {
@@ -25,16 +61,16 @@ namespace backend.Database
             switch (type)
             {
                 case 'T':
-                    return await _context
+                    return await _SystemContext
                         .TourRegistrations.Include(r => r.School)
                         .Include(r => r.PreferredVisitTime)
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 case 'F':
-                    return await _context
+                    return await _SystemContext
                         .FairRegistrations.Include(r => r.School)
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 case 'I':
-                    return await _context
+                    return await _SystemContext
                         .IndividualRegistrations.Include(r => r.PreferredVisitTime)
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 default:
@@ -46,18 +82,18 @@ namespace backend.Database
         {
             try
             {
-                var exists = _context.TourRegistrations.Any(r =>
+                var DoesSchoolExist = _SystemContext.TourRegistrations.Any(r =>
                     r.SchoolCode == request.SchoolCode
                 );
-                if (exists)
+                if (DoesSchoolExist)
                 {
                     return "";
                 }
-                var school = await _context.Schools.FirstOrDefaultAsync(s =>
+                var School = await _SystemContext.Schools.FirstOrDefaultAsync(s =>
                     s.SchoolCode == request.SchoolCode
                 );
 
-                if (school == null)
+                if (School == null)
                 {
                     Console.WriteLine($"Error: School not found: '{request.SchoolCode}'");
                     return "";
@@ -79,11 +115,11 @@ namespace backend.Database
                 };
 
                 registration.GenerateCode();
-                registration.FillSchool(school);
+                registration.FillSchool(School);
 
-                _context.TourRegistrations.Add(registration);
+                _SystemContext.TourRegistrations.Add(registration);
 
-                var result = await _context.SaveChangesAsync();
+                var result = await _SystemContext.SaveChangesAsync();
 
                 if (registration.Code == null)
                 {
@@ -101,7 +137,7 @@ namespace backend.Database
 
         public async Task<TourRegistration?> GetTourRegistration(string Code)
         {
-            return await _context
+            return await _SystemContext
                 .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
                 .SingleOrDefaultAsync(r => r.Code == Code);
@@ -109,7 +145,7 @@ namespace backend.Database
 
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
         {
-            return await _context
+            return await _SystemContext
                 .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
@@ -120,7 +156,7 @@ namespace backend.Database
             RegistrationState state
         )
         {
-            return await _context
+            return await _SystemContext
                 .TourRegistrations.Where(r => r.State == state)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
@@ -130,7 +166,7 @@ namespace backend.Database
 
         public async Task<bool> AcceptTourRegistration(string Code)
         {
-            var registration = await _context.TourRegistrations.SingleOrDefaultAsync(r =>
+            var registration = await _SystemContext.TourRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -139,13 +175,13 @@ namespace backend.Database
                 return false;
             }
             registration.State = RegistrationState.Accepted;
-            await _context.SaveChangesAsync();
+            await _SystemContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> RejectTourRegistration(string Code)
         {
-            var registration = await _context.TourRegistrations.SingleOrDefaultAsync(r =>
+            var registration = await _SystemContext.TourRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -154,7 +190,7 @@ namespace backend.Database
                 return false;
             }
             registration.State = RegistrationState.Rejected;
-            await _context.SaveChangesAsync();
+            await _SystemContext.SaveChangesAsync();
             return true;
         }
 
@@ -162,7 +198,7 @@ namespace backend.Database
         {
             try
             {
-                var school = await _context.Schools.FirstOrDefaultAsync(s =>
+                var school = await _SystemContext.Schools.FirstOrDefaultAsync(s =>
                     s.SchoolCode == request.SchoolCode
                 );
 
@@ -188,9 +224,9 @@ namespace backend.Database
                 registration.GenerateCode();
                 registration.FillSchool(school);
 
-                _context.FairRegistrations.Add(registration);
+                _SystemContext.FairRegistrations.Add(registration);
 
-                var result = await _context.SaveChangesAsync();
+                var result = await _SystemContext.SaveChangesAsync();
 
                 if (registration.Code == null)
                 {
@@ -207,7 +243,7 @@ namespace backend.Database
 
         public async Task<List<FairRegistration>> GetAllFairRegistrations()
         {
-            return await _context
+            return await _SystemContext
                 .FairRegistrations.OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
                 .ToListAsync();
@@ -217,7 +253,7 @@ namespace backend.Database
             RegistrationState state
         )
         {
-            return await _context
+            return await _SystemContext
                 .FairRegistrations.Where(r => r.State == state)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
@@ -226,14 +262,14 @@ namespace backend.Database
 
         public async Task<FairRegistration?> GetFairRegistration(string Code)
         {
-            return await _context
+            return await _SystemContext
                 .FairRegistrations.Include(r => r.School)
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
         public async Task<bool> AcceptFairRegistration(string Code)
         {
-            var registration = await _context.FairRegistrations.SingleOrDefaultAsync(r =>
+            var registration = await _SystemContext.FairRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -242,13 +278,13 @@ namespace backend.Database
                 return false;
             }
             registration.State = RegistrationState.Accepted;
-            await _context.SaveChangesAsync();
+            await _SystemContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> RejectFairRegistration(string Code)
         {
-            var registration = await _context.FairRegistrations.SingleOrDefaultAsync(r =>
+            var registration = await _SystemContext.FairRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -257,7 +293,7 @@ namespace backend.Database
                 return false;
             }
             registration.State = RegistrationState.Rejected;
-            await _context.SaveChangesAsync();
+            await _SystemContext.SaveChangesAsync();
             return true;
         }
 
@@ -278,9 +314,9 @@ namespace backend.Database
 
                 registration.GenerateCode();
 
-                _context.IndividualRegistrations.Add(registration);
+                _SystemContext.IndividualRegistrations.Add(registration);
 
-                var result = await _context.SaveChangesAsync();
+                var result = await _SystemContext.SaveChangesAsync();
                 if (registration.Code == null)
                 {
                     return "";
@@ -296,7 +332,7 @@ namespace backend.Database
 
         public async Task<List<IndividualRegistration>> GetAllIndividualRegistrations()
         {
-            return await _context
+            return await _SystemContext
                 .IndividualRegistrations.OrderBy(static r => r.IndividualName)
                 .ToListAsync();
         }
@@ -305,7 +341,7 @@ namespace backend.Database
             RegistrationState state
         )
         {
-            return await _context
+            return await _SystemContext
                 .IndividualRegistrations.Where(r => r.State == state)
                 .OrderBy(r => r.IndividualName)
                 .ToListAsync();
@@ -313,13 +349,15 @@ namespace backend.Database
 
         public async Task<IndividualRegistration?> GetIndividualRegistration(string Code)
         {
-            return await _context.IndividualRegistrations.SingleOrDefaultAsync(r => r.Code == Code);
+            return await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
         }
 
         public async Task<bool> AcceptIndividualRegistration(string Code)
         {
-            var registration = await _context.IndividualRegistrations.SingleOrDefaultAsync(r =>
-                r.Code == Code
+            var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
+                r => r.Code == Code
             );
 
             if (registration == null)
@@ -327,14 +365,14 @@ namespace backend.Database
                 return false;
             }
             registration.State = RegistrationState.Accepted;
-            await _context.SaveChangesAsync();
+            await _SystemContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> RejectIndividualRegistration(string Code)
         {
-            var registration = await _context.IndividualRegistrations.SingleOrDefaultAsync(r =>
-                r.Code == Code
+            var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
+                r => r.Code == Code
             );
 
             if (registration == null)
@@ -342,7 +380,7 @@ namespace backend.Database
                 return false;
             }
             registration.State = RegistrationState.Rejected;
-            await _context.SaveChangesAsync();
+            await _SystemContext.SaveChangesAsync();
             return true;
         }
 
@@ -375,7 +413,7 @@ namespace backend.Database
                 return new List<SchoolSuggestion>();
             }
 
-            var result = await _context
+            var result = await _SystemContext
                 .Schools.Where(s =>
                     s.CityCode == cityCode.cityCode
                     && s.SchoolName != null
@@ -401,7 +439,7 @@ namespace backend.Database
                 return new List<string?>();
             }
 
-            return await _context
+            return await _SystemContext
                 .Schools.Where(s =>
                     s.SchoolName != null
                     && EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
@@ -414,36 +452,36 @@ namespace backend.Database
 
         public async Task<School?> GetSchoolByName(string name)
         {
-            return await _context.Schools.SingleOrDefaultAsync(s => s.SchoolName == name);
+            return await _SystemContext.Schools.SingleOrDefaultAsync(s => s.SchoolName == name);
         }
 
         public async Task<List<User>> GetUsersAsync()
         {
-            return await _context.Users.OrderBy(c => c.Name).ToListAsync();
+            return await _SystemContext.Users.OrderBy(c => c.Name).ToListAsync();
         }
 
         public async Task<User?> GetUserAsync(int id)
         {
-            return await _context.Users.SingleOrDefaultAsync(c => c.Id == id);
+            return await _SystemContext.Users.SingleOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<User>> GetUserFilteredAsync(UserType id)
         {
-            return await _context.Users.Where(u => u.UserType == id).ToListAsync();
+            return await _SystemContext.Users.Where(u => u.UserType == id).ToListAsync();
         }
 
         public async Task<User?> InsertUserAsync(User user)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.Id == user.Id);
+            bool userExists = await _SystemContext.Users.AnyAsync(u => u.Id == user.Id);
             if (userExists)
             {
                 return null;
             }
 
-            _context.Add(user);
+            _SystemContext.Add(user);
             try
             {
-                await _context.SaveChangesAsync();
+                await _SystemContext.SaveChangesAsync();
             }
             catch (System.Exception exp)
             {
@@ -455,17 +493,17 @@ namespace backend.Database
 
         public async Task<bool> UpdateUserAsync(User user)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.Id == user.Id);
+            bool userExists = await _SystemContext.Users.AnyAsync(u => u.Id == user.Id);
             if (!userExists)
             {
                 return false;
             }
 
-            _context.Users.Attach(user);
-            _context.Entry(user).State = EntityState.Modified;
+            _SystemContext.Users.Attach(user);
+            _SystemContext.Entry(user).State = EntityState.Modified;
             try
             {
-                return (await _context.SaveChangesAsync() > 0 ? true : false);
+                return (await _SystemContext.SaveChangesAsync() > 0 ? true : false);
             }
             catch (Exception exp)
             {
@@ -476,23 +514,23 @@ namespace backend.Database
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.Id == id);
+            bool userExists = await _SystemContext.Users.AnyAsync(u => u.Id == id);
             if (!userExists)
             {
                 return false;
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(c => c.Id == id);
+            var user = await _SystemContext.Users.SingleOrDefaultAsync(c => c.Id == id);
 
             if (user == null)
             {
                 return false;
             }
-            _ = _context.Remove(user);
+            _ = _SystemContext.Remove(user);
 
             try
             {
-                return await _context.SaveChangesAsync() > 0 ? true : false;
+                return await _SystemContext.SaveChangesAsync() > 0 ? true : false;
             }
             catch (System.Exception exp)
             {
@@ -517,9 +555,9 @@ namespace backend.Database
                     UserType = UserType.Pending,
                 };
 
-                _context.Users.Add(user);
+                _SystemContext.Users.Add(user);
 
-                var result = await _context.SaveChangesAsync();
+                var result = await _SystemContext.SaveChangesAsync();
 
                 return true;
             }

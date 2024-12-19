@@ -15,8 +15,8 @@
   align-items: center;
   justify-content: center;
   width: 200px;
-  padding: 10px;
-  border: 2px solid black;
+  padding: 12px; /* Add padding around the box */
+    border:0;
   border-radius: 5px;
   background-color: rgb(30, 35, 100);
 }
