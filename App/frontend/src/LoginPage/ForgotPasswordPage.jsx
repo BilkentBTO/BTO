@@ -38,7 +38,7 @@ function ForgotPasswordPage() {
       <div className="loginSection">
         <img
           src={returnButton}
-          className="returnButton"
+          className="returnLoginButton"
           onClick={goBack}
           alt="Go Back"
         />
@@ -65,7 +65,7 @@ function ForgotPasswordPage() {
           <p id="popup-message">{popupMessage}</p>
           <button
             id="close-popup"
-            className="popup-button"
+            className="popupForgotbutton"
             onClick={closePopup}
           >
             Close
