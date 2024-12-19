@@ -225,6 +225,7 @@ namespace backend.Database
                 {
                     DateOfVisit = request.DateOfVisit,
                     IndividualName = request.IndividualName,
+                    IndividualMajorCode = request.IndividualPreferredMajorCode,
                     IndividualPhoneNumber = request.IndividualPhoneNumber,
                     IndividualMailAddress = request.IndividualMailAddress,
                     Notes = request.Notes,
