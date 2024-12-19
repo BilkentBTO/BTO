@@ -197,11 +197,10 @@ function InviteBilkentPage() {
             value={formData.notes}
             onChange={(value) => handleChange("notes", value)}
           />
-
-          <button onClick={validateAndSubmit} className="submitButton">
-            Submit
-          </button>
         </div>
+        <button onClick={validateAndSubmit} className="submitButton">
+          Submit
+        </button>
         <div className="contactSection">
           <p className="contactInfo"></p>
         </div>

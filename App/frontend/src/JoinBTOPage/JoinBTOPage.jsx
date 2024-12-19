@@ -122,12 +122,11 @@ function JoinBTOPage() {
             value={formData.mail}
             onChange={(value) => handleChange("mail", value)}
           />
-
-          <button onClick={handleSubmit} className="submitButton">
-            Submit
-          </button>
         </div>
       </div>
+      <button onClick={handleSubmit} className="submitButton">
+        Submit
+      </button>
       <div className="contactSection">
         <p className="contactInfo"></p>
       </div>
