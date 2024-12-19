@@ -67,7 +67,7 @@ function SuccessSchoolReg() {
 
     const registerSchool = async () => {
       try {
-        const response = await fetch("/api/Registration/tour/register", {
+        const response = await fetch("/api/register/tour", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

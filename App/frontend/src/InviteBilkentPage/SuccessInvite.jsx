@@ -35,7 +35,7 @@ function SuccessInvite() {
     console.log("Registeration: ", registration);
     const registerData = async () => {
       try {
-        const response = await fetch("/api/Registration/fair/register", {
+        const response = await fetch("/api/register/fair", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -143,12 +143,10 @@ const styles = {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
   },
   code: {
-    fontSize: "1rem",
+    fontSize: "1.5rem",
     fontWeight: "bold",
     color: "#28a745",
     margin: "10px 0",
-    whiteSpace: "pre-wrap", // Ensures JSON is formatted properly
-    textAlign: "left",
   },
   button: {
     padding: "10px 20px",
@@ -202,5 +200,4 @@ const styles = {
     cursor: "pointer",
   },
 };
-
 export default SuccessInvite;
