@@ -54,7 +54,7 @@ function AdvisorPanel() {
             Access Message Panel
           </button>
         </div>
-        <div className="buttonAdvisorPanelTour">
+        <div className="buttonAdvisorPanel">
           <button onClick={handleAccessGuidePanelClick}>
             Access Guide Panel
           </button>
