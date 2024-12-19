@@ -201,9 +201,6 @@ function InviteBilkentPage() {
         <button onClick={validateAndSubmit} className="submitButton">
           Submit
         </button>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
-        </div>
       </div>
     </div>
   );
