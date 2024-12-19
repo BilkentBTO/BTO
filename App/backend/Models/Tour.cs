@@ -1,9 +1,22 @@
 using System.Collections;
 using System.Linq;
 
+using static BTO.Constrains.TimeConstrains;
+
 namespace backend.Models
 {
-    public class Survey { } // TEMPORARY
+    public class Availability
+    {
+        private readonly int TimeBlockCount = Convert.ToInt32((END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES));
+
+        private bool[,] Data;
+
+        public Availability()
+        {
+            Data = new bool[DAYS, TimeBlockCount];
+        }
+    }
+    public class Survey_temp { }
 
     [Serializable]
     public class Comment(string comment)
@@ -29,7 +42,7 @@ namespace backend.Models
         private Guide? AssignedGuide;
         private readonly List<Guide> AssignedCandidateGuides = [];
 
-        private Survey? Survey;
+        private Survey_temp? Survey;
         private readonly List<Comment> Comments = [];
 
         public int Priority => RegistirationInfo.School.GetPriority();

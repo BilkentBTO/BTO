@@ -8,11 +8,13 @@ namespace backend.Database
     {
         private readonly SystemDbSeeder _systemDbSeeder;
         private readonly CredentialDbSeeder _credentialDbSeeder;
+        private readonly ScheduleDbSeeder _scheduleDbSeeder;
 
-        public Seeder(SystemDbSeeder userDbSeeder, CredentialDbSeeder credentialDbSeeder)
+        public Seeder(SystemDbSeeder userDbSeeder, CredentialDbSeeder credentialDbSeeder, ScheduleDbSeeder scheduleDbSeeder)
         {
             _systemDbSeeder = userDbSeeder;
             _credentialDbSeeder = credentialDbSeeder;
+            _scheduleDbSeeder = scheduleDbSeeder;
         }
 
         public async Task SeedAsync(IServiceProvider serviceProvider)

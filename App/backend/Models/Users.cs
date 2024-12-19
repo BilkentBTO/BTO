@@ -88,8 +88,13 @@ namespace backend.Models
 
     public class Guide : User
     {
-        public Guide(string Name, string Surname, string Mail)
-            : base(Name, Surname, Mail) { }
+        public bool IsCandidate { get; private set; }
+        public Availability Schedule { get; private set; }
+        public Guide(string Name, string Surname, string Mail, bool isCandidate = false)
+            : base(Name, Surname, Mail) {
+            IsCandidate = isCandidate;
+            Schedule = new Availability();
+        }
     }
 
     public class Advisor : User

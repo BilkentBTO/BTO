@@ -3,20 +3,30 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using static BTO.Constrains.TimeConstrains;
+
 namespace backend.Models
 {
+    
     public class Schedule
     {
-        public const int DAYS = 7;
-        public const int HOURS = 24;
+        public int weekID { get; }
 
-        public static TimeBlock?[,] TimeBlocks = new TimeBlock[DAYS, HOURS];
+        private readonly int TimeBlockCount = Convert.ToInt32((END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES));
+ 
+        public TimeBlock[,] TimeBlocks;
+
+        public Schedule(int week)
+        {
+            weekID = week;
+            TimeBlocks = new TimeBlock[DAYS, TimeBlockCount];
+        }
 
         public bool AddTour(Tour tour, int hour)
         {
             if (tour == null)
                 return false;
-            if (hour < 0 || hour >= 24)
+            if (hour < START_HOURS || hour >= END_HOURS)
                 return false;
 
             TimeBlock? SelectedTimeBlock = TimeBlocks[(int)tour.Time.DayOfWeek, hour];
@@ -27,7 +37,6 @@ namespace backend.Models
             return true;
         }
     }
-
     public class TimeBlock
     {
         private const byte MAX_TOURS_PER_BLOCK = 3;
@@ -36,8 +45,6 @@ namespace backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
         public int MaxStudentCount { get; private set; }
         private readonly SortedList<Tour, int> ScheduledTours = new(MAX_TOURS_PER_BLOCK);
         private readonly SortedList<Tour, int> AlternativeTours = [];
