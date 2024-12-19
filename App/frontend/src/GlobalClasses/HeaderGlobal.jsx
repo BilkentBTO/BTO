@@ -10,18 +10,16 @@ function HeaderGlobal({ name }) {
   };
   return (
     <header className="headerGlobal">
-      <div className="headerGlobalContainer">
-        <div className="headerGlobalText">
-          <button className="bilkentButton" onClick={handleBilkentClick}>
-            <img src={bilkentLogo} alt="Bilkent Logo" className="bilkentLogo" />
-          </button>
-          <div>
-            <h1>Bilkent University</h1>
-            <h2>Information Office</h2>
-          </div>
+      <div className="headerGlobalText">
+        <button className="bilkentButton" onClick={handleBilkentClick}>
+          <img src={bilkentLogo} alt="Bilkent Logo" className="bilkentLogo" />
+        </button>
+        <div>
+          <h1>Bilkent University</h1>
+          <h2>Information Office</h2>
         </div>
-        <h1 className="headerGlobalTitle">{name}</h1>
       </div>
+      <h1 className="headerGlobalTitle">{name}</h1>
     </header>
   );
 }

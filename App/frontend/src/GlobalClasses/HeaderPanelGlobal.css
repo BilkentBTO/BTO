@@ -2,13 +2,9 @@
     background-color: rgb(30, 30, 100);
     padding: 15px;
     max-height: 120px;
-}
-
-.headerPanelGlobalContainer {
-    max-height: 120px;
     display:flex; /* Enable Flexbox for horizontal layout */
     justify-content: space-between; /* Space between the left and right sections */
-    align-items: center; /* Vertically center both sections */
+    align-items: center;
 }
 
 .headerPanelGlobalTitle {

@@ -170,6 +170,49 @@ function EditAvailableHoursPage() {
       return updatedData;
     });
   };
+
+  const buttonStyleBusy = {
+    padding: "8px 16px",
+    backgroundColor: "red",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+
+  const buttonStyleAvailable = {
+    padding: "8px 16px",
+    backgroundColor: "green",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+
+  const buttonStyleUpdate = {
+    padding: "8px 16px",
+    backgroundColor: "#1e1e64",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+
   return (
     <div className="editAvailableHours">
       <HeaderPanelGlobal name={"Edit Available Hours"} />
@@ -201,18 +244,21 @@ function EditAvailableHoursPage() {
             {/* Buttons to set state and add data */}
             <div className="buttonEditSection">
               <button
+                style={buttonStyleBusy}
                 className="busyButton"
                 onClick={() => handleAddRow("Busy")}
               >
                 Set Busy
               </button>
               <button
+                style={buttonStyleAvailable}
                 className="availableButton"
                 onClick={() => handleAddRow("Available")}
               >
                 Set Available
               </button>
               <button
+                style={buttonStyleUpdate}
                 className="updateTableButton"
                 onClick={showConfirmationPopup}
               >
