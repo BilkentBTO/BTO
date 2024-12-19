@@ -389,7 +389,7 @@ namespace backend.Database
 
         public async Task<User?> GetUserAsync(int id)
         {
-            return await _context.Users.SingleOrDefaultAsync(c => c.id == id);
+            return await _context.Users.SingleOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<User>> GetUserFilteredAsync(UserType id)
@@ -399,7 +399,7 @@ namespace backend.Database
 
         public async Task<User?> InsertUserAsync(User user)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.id == user.id);
+            bool userExists = await _context.Users.AnyAsync(u => u.Id == user.Id);
             if (userExists)
             {
                 return null;
@@ -420,7 +420,7 @@ namespace backend.Database
 
         public async Task<bool> UpdateUserAsync(User user)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.id == user.id);
+            bool userExists = await _context.Users.AnyAsync(u => u.Id == user.Id);
             if (!userExists)
             {
                 return false;
@@ -441,13 +441,13 @@ namespace backend.Database
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.id == id);
+            bool userExists = await _context.Users.AnyAsync(u => u.Id == id);
             if (!userExists)
             {
                 return false;
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(c => c.id == id);
+            var user = await _context.Users.SingleOrDefaultAsync(c => c.Id == id);
 
             if (user == null)
             {

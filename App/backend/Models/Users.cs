@@ -72,7 +72,7 @@ namespace backend.Models
 
     public class User(string Name, string Surname, string Mail)
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = Name;
         public string Surname { get; set; } = Surname;
         public string Mail { get; set; } = Mail;

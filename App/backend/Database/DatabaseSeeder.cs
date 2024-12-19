@@ -170,11 +170,11 @@ namespace backend.Database
                 {
                     if (!await scheduleDb.Tours.AnyAsync())
                     {
-                        await InsertFairSampleData(scheduleDb);
+                        await InsertTourSampleData(scheduleDb);
                     }
                     if (!await scheduleDb.Fairs.AnyAsync())
                     {
-                        await InsertTourSampleData(scheduleDb);
+                        await InsertFairSampleData(scheduleDb);
                     }
                 }
             }

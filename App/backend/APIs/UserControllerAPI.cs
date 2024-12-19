@@ -109,7 +109,7 @@ namespace backend.Server.Controllers
             {
                 return BadRequest("Unable to insert user");
             }
-            return CreatedAtRoute("GetUsersRoute", new { id = newUser.id }, newUser);
+            return CreatedAtRoute("GetUsersRoute", new { id = newUser.Id }, newUser);
         }
 
         [HttpPut("{id}")]

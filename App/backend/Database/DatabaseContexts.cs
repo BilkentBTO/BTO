@@ -19,7 +19,7 @@ namespace backend.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(u => u.id);
+            modelBuilder.Entity<User>().HasKey(u => u.Id);
 
             modelBuilder.Entity<School>().HasKey(s => s.SchoolName);
 
