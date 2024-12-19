@@ -13,6 +13,7 @@ namespace backend.Database
         public DbSet<TourRegistration> TourRegistrations { get; set; }
         public DbSet<FairRegistration> FairRegistrations { get; set; }
         public DbSet<IndividualRegistration> IndividualRegistrations { get; set; }
+        public DbSet<GuideTourApplication> GuideTourApplication { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
@@ -34,6 +35,10 @@ namespace backend.Database
             modelBuilder.Entity<IndividualRegistration>().HasKey(r => r.Code);
 
             modelBuilder.Entity<IndividualRegistration>().HasIndex(r => r.Code).IsUnique();
+
+            modelBuilder.Entity<GuideTourApplication>().HasKey(r => r.Code);
+
+            modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.Code).IsUnique();
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
