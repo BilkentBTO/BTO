@@ -10,7 +10,11 @@ namespace backend.Database
         private readonly CredentialDbSeeder _credentialDbSeeder;
         private readonly ScheduleDbSeeder _scheduleDbSeeder;
 
-        public Seeder(SystemDbSeeder userDbSeeder, CredentialDbSeeder credentialDbSeeder, ScheduleDbSeeder scheduleDbSeeder)
+        public Seeder(
+            SystemDbSeeder userDbSeeder,
+            CredentialDbSeeder credentialDbSeeder,
+            ScheduleDbSeeder scheduleDbSeeder
+        )
         {
             _systemDbSeeder = userDbSeeder;
             _credentialDbSeeder = credentialDbSeeder;
@@ -205,17 +209,7 @@ namespace backend.Database
 
         public async Task InsertTourSampleData(ScheduleDbContext db)
         {
-            List<Tour> tours = new List<Tour>
-            {
-                new Tour(
-                    new DateTime(2024, 12, 25),
-                    new TourRegistirationInfo(new School(), "amogus@dijkstra.com", 32)
-                ),
-                new Tour(
-                    new DateTime(2024, 11, 27),
-                    new TourRegistirationInfo(new School(), "amogsus@dijkstra.com", 26)
-                ),
-            };
+            List<Tour> tours = new List<Tour> { new Tour(), new Tour() };
             Schedule weeklySchedule = new Schedule();
             weeklySchedule.AddTour(tours[0], 15);
             weeklySchedule.AddTour(tours[1], 17);

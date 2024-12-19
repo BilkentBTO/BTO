@@ -1,13 +1,17 @@
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-
 using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
     public class Availability
     {
-        private readonly int TimeBlockCount = Convert.ToInt32((END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES));
+        [Key]
+        public int Id { get; set; }
+        private readonly int TimeBlockCount = Convert.ToInt32(
+            (END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES)
+        );
 
         private bool[,] Data;
 
@@ -16,6 +20,7 @@ namespace backend.Models
             Data = new bool[DAYS, TimeBlockCount];
         }
     }
+
     public class Survey_temp { }
 
     [Serializable]
@@ -33,11 +38,11 @@ namespace backend.Models
         public ushort StudentCount = studenCount;
     }
 
-    public class Tour(DateTime time, TourRegistirationInfo regInfo)
+    public class Tour()
     {
-        public readonly int ID = time.GetHashCode() + regInfo.GetHashCode();
-        public DateTime Time { get; private set; } = time;
-        public readonly TourRegistirationInfo RegistirationInfo = regInfo;
+        public int ID { get; set; }
+        public DateTime Time { get; private set; }
+        public readonly TourRegistirationInfo RegistirationInfo;
 
         private Guide? AssignedGuide;
         private readonly List<Guide> AssignedCandidateGuides = [];

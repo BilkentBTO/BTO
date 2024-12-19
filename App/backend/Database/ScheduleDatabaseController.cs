@@ -1,4 +1,5 @@
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
@@ -33,6 +34,7 @@ namespace backend.Database
                 return false;
             }
         }
+
         public async Task<bool> RemoveTour(int tourID)
         {
             try
@@ -52,8 +54,8 @@ namespace backend.Database
                 _logger.LogError($"Error in RemoveTour: {ex.Message}");
                 return false;
             }
-            
         }
+
         public async Task<Tour?> GetTour(int tourID)
         {
             Tour? foundTour = await _context.Tours.FirstOrDefaultAsync(t => t.ID == tourID);
@@ -63,6 +65,7 @@ namespace backend.Database
             }
             return foundTour;
         }
+
         public async Task<bool> UpdateTourInfo(Tour tour)
         {
             if (!await _context.Tours.AnyAsync(t => t.ID == tour.ID))
@@ -83,6 +86,7 @@ namespace backend.Database
             }
             return false;
         }
+
         public async Task<Tour[]> GetAllTours()
         {
             try
@@ -95,6 +99,7 @@ namespace backend.Database
                 return [];
             }
         }
+
         public async Task<bool> AddFair(Fair fair)
         {
             try
@@ -114,6 +119,7 @@ namespace backend.Database
                 return false;
             }
         }
+
         public async Task<bool> RemoveFair(int fairID)
         {
             try
@@ -133,8 +139,8 @@ namespace backend.Database
                 _logger.LogError($"Error in RemoveFair: {ex.Message}");
                 return false;
             }
-
         }
+
         public async Task<Fair?> GetFair(int fairID)
         {
             Fair? foundFair = await _context.Fairs.FirstOrDefaultAsync(t => t.ID == fairID);
@@ -144,6 +150,7 @@ namespace backend.Database
             }
             return foundFair;
         }
+
         public async Task<bool> UpdateFairInfo(Fair fair)
         {
             if (!await _context.Fairs.AnyAsync(f => f.ID == fair.ID))
@@ -164,6 +171,7 @@ namespace backend.Database
             }
             return false;
         }
+
         public async Task<Fair[]> GetAllFairs()
         {
             try
@@ -176,13 +184,14 @@ namespace backend.Database
                 return [];
             }
         }
+
         public async Task<bool> AddSchedule(Schedule schedule)
         {
             try
             {
-                if(await _context.Schedules.AnyAsync(s => s.weekID == schedule.weekID)) 
+                if (await _context.Schedules.AnyAsync(s => s.ID == schedule.ID))
                 {
-                    _logger.LogError($"Can't add schedule, weekID {schedule.weekID} already exist.");
+                    _logger.LogError($"Can't add schedule, weekID {schedule.ID} already exist.");
                     return false;
                 }
                 await _context.Schedules.AddAsync(schedule);
@@ -195,11 +204,12 @@ namespace backend.Database
                 return false;
             }
         }
+
         public async Task<Schedule?> GetScheduleAtWeek(int weekID)
         {
             try
             {
-                return await _context.Schedules.SingleAsync(s => s.weekID == weekID);
+                return await _context.Schedules.SingleAsync(s => s.ID == weekID);
             }
             catch (Exception ex)
             {
@@ -207,9 +217,10 @@ namespace backend.Database
                 return null;
             }
         }
+
         public async Task<bool> UpdateSchedule(Schedule schedule)
         {
-            if (!await _context.Schedules.AnyAsync(s => s.weekID == schedule.weekID))
+            if (!await _context.Schedules.AnyAsync(s => s.ID == schedule.ID))
             {
                 return false;
             }
@@ -233,6 +244,7 @@ namespace backend.Database
 
             return await _context.Tours.Where(t => ScheduledTourIDs.Contains(t.ID)).ToArrayAsync();
         }
+
         public async Task<Tour[]> GetAlternativeTours(Schedule schedule, TimeBlock timeBlock)
         {
             int[] ScheduledTourIDs = [.. timeBlock.AlternativeTours.Values];

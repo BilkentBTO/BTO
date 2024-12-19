@@ -3,13 +3,10 @@ using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
-
 namespace backend.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-
+    [Route("api/schedule")]
     public class ScheduleController : ControllerBase
     {
         private readonly ScheduleDatabaseController _controller;
@@ -20,7 +17,7 @@ namespace backend.Server.Controllers
         }
 
         #region TOUR
-        [HttpPost]
+        [HttpPost("tour")]
         public async Task<ActionResult> AddTour([FromBody] Tour tour)
         {
             if (!ModelState.IsValid)
@@ -32,7 +29,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("tour")]
         public async Task<ActionResult> RemoveTour(int tourID)
         {
             if (!ModelState.IsValid)
@@ -44,7 +41,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("tour")]
         public async Task<ActionResult> GetTourByID(int tourID)
         {
             if (!ModelState.IsValid)
@@ -57,7 +54,7 @@ namespace backend.Server.Controllers
             return Ok(tour);
         }
 
-        [HttpPut]
+        [HttpPut("tour")]
         public async Task<ActionResult> UpdateTour(Tour tour)
         {
             if (!ModelState.IsValid)
@@ -69,7 +66,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("tours")]
         public async Task<ActionResult> GetAllTours()
         {
             if (!ModelState.IsValid)
@@ -85,7 +82,7 @@ namespace backend.Server.Controllers
         #endregion
 
         #region FAIR
-        [HttpPost]
+        [HttpPost("fair")]
         public async Task<ActionResult> AddFair([FromBody] Fair fair)
         {
             if (!ModelState.IsValid)
@@ -97,7 +94,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("fair")]
         public async Task<ActionResult> RemoveFair(int fairID)
         {
             if (!ModelState.IsValid)
@@ -109,7 +106,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("fair")]
         public async Task<ActionResult> GetFairByID(int fairID)
         {
             if (!ModelState.IsValid)
@@ -122,7 +119,7 @@ namespace backend.Server.Controllers
             return Ok(fair);
         }
 
-        [HttpPut]
+        [HttpPut("fair")]
         public async Task<ActionResult> UpdateFair(Fair fair)
         {
             if (!ModelState.IsValid)
@@ -133,7 +130,8 @@ namespace backend.Server.Controllers
 
             return Ok();
         }
-        [HttpGet]
+
+        [HttpGet("fairs")]
         public async Task<ActionResult> GetAllFairs()
         {
             if (!ModelState.IsValid)
@@ -147,7 +145,6 @@ namespace backend.Server.Controllers
         }
 
         #endregion
-
 
         #region SCHEDULE
         // WILL BE IMPLEMENTED AFTER CHANGING HOW TIMEBLOCK & SCHEDULES WORK

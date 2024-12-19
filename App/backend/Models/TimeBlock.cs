@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    
     public class Schedule
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; }
 
-        private readonly int TimeBlockCount = Convert.ToInt32((END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES));
- 
+        private readonly int TimeBlockCount = Convert.ToInt32(
+            (END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES)
+        );
+
         public TimeBlock[,] TimeBlocks;
 
         public Schedule()
@@ -38,6 +38,7 @@ namespace backend.Models
             return true;
         }
     }
+
     public class TimeBlock
     {
         private const byte MAX_TOURS_PER_BLOCK = 3;

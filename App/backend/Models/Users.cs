@@ -90,8 +90,10 @@ namespace backend.Models
     {
         public bool IsCandidate { get; private set; }
         public Availability Schedule { get; private set; }
+
         public Guide(string Name, string Surname, string Mail, bool isCandidate = false)
-            : base(Name, Surname, Mail) {
+            : base(Name, Surname, Mail)
+        {
             IsCandidate = isCandidate;
             Schedule = new Availability();
         }
