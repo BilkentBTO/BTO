@@ -9,15 +9,12 @@ namespace backend.Models
     {
         [Key]
         public int Id { get; set; }
-        private readonly int TimeBlockCount = Convert.ToInt32(
-            (END_HOURS - START_HOURS) * (MINUTES_PER_HOUR / TIME_INTERVAL_MINUTES)
-        );
 
-        private bool[,] Data;
+        private bool[] Data;
 
         public Availability()
         {
-            Data = new bool[DAYS, TimeBlockCount];
+            Data = new bool[TimeBlocksPerDay];
         }
     }
 
