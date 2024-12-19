@@ -23,6 +23,7 @@
 }
 
 .innerGuide button {
+    border:0;
     border-radius: 5px; /* Rounded corners for buttons */
     color: white; /* Button text color */
     background-color: rgb(30, 30, 100); /* Button background color */
