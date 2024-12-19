@@ -50,7 +50,7 @@ function SuccessInvite() {
           );
         }
 
-        const responseData = await response.json();
+        const responseData = await response.text();
 
         console.log("Registration successful:", responseData);
         setApiResponse(responseData);
