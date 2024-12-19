@@ -81,7 +81,7 @@ function LoginPage() {
       <div className="loginSection">
         <img
           src={returnButton}
-          className="returnButton"
+          className="returnLoginButton"
           onClick={goBack}
           alt="Go Back"
         />
