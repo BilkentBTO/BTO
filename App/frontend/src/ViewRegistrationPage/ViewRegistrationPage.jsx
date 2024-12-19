@@ -1,13 +1,13 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
-import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import "./ViewRegistrationPage.css";
-import { useNavigate } from "react-router-dom";
 
 function ViewRegistrationPage() {
   const location = useLocation(); // Get the state passed via navigation
-  const registrationData = location.state?.registrationData || {}; // Access the data passed to this page
+  const navigate = useNavigate();
+
+  const registrationData = location.state?.registrationData || {};
 
   // Destructure API response data with fallback values
   const {
@@ -22,15 +22,29 @@ function ViewRegistrationPage() {
     superVisorPhoneNumber,
     superVisorMailAddress,
     notes,
+    state,
   } = registrationData;
 
   const schoolName = school?.schoolName || "N/A"; // Access schoolName safely
-  useEffect(() => {
-    document.title = "View Tour Registration - BTO"; // Set the tab title
-    console.log("RegData: ", registrationData);
-  }, []);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    document.title = "View Tour Registration - BTO";
+    console.log("RegData: ", registrationData);
+  }, [registrationData]);
+
+  // Helper function to map state numbers to status text
+  const getStateText = (stateValue) => {
+    switch (stateValue) {
+      case 0:
+        return "Pending";
+      case 1:
+        return "Accepted";
+      case 2:
+        return "Rejected";
+      default:
+        return "Unknown";
+    }
+  };
 
   const handleCancelClick = () => {
     navigate("/");
@@ -45,7 +59,6 @@ function ViewRegistrationPage() {
       <HeaderGlobal name={"YOUR TOUR REGISTRATION"} />
       <div className="viewRegistrationPage">
         <div className="viewRegistrationInfo">
-          {/* Registration Information */}
           <p className="viewRegistrationCode">
             <span className="viewLabel">Registration Code:</span>{" "}
             {registrationCode || "N/A"}
@@ -90,11 +103,10 @@ function ViewRegistrationPage() {
           <p className="viewNotes">
             <span className="viewLabel">Notes:</span> {notes || "N/A"}
           </p>
-          <p className="viewSupervisorMail">
-            <span className="viewLabel">State:</span> Approved
+          <p className="viewState">
+            <span className="viewLabel">State:</span> {getStateText(state)}
           </p>
 
-          {/* Buttons */}
           <div className="viewButtonSection">
             <button
               className="viewCodeCancelButton"
@@ -106,9 +118,6 @@ function ViewRegistrationPage() {
               Back
             </button>
           </div>
-        </div>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
         </div>
       </div>
     </div>

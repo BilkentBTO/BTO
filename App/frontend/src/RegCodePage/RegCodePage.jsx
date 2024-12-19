@@ -23,7 +23,7 @@ function RegCodePage() {
     setIsLoading(true); // Show loading state
     try {
       const response = await fetch(
-        `api/Registration/GetRegistration?Code=${registrationCode}`
+        `api/Registration/tour/GetRegistration?Code=${registrationCode}`
       );
 
       if (!response.ok) {
