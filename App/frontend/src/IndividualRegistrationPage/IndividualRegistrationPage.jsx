@@ -102,20 +102,11 @@ function IndividualRegistrationPage() {
             value={formData.notes}
             onChange={(value) => handleChange("notes", value)}
           />
-
-          {/* Submit Button */}
-          <button onClick={handleSubmit} className="submitButton">
-            Continue
-          </button>
-        </div>
-
-        <div className="contactSection">
-          <p className="contactInfo"></p>
         </div>
       </div>
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
+      <button onClick={handleSubmit} className="submitButton">
+        Continue
+      </button>
     </div>
   );
 }

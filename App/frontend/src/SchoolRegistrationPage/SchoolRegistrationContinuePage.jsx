@@ -96,16 +96,11 @@ function SchoolRegistrationContinuePage() {
             value={formData.notes}
             onChange={(value) => handleChange("notes", value)}
           />
-
-          {/* Submit Button */}
-          <button onClick={handleSubmit} className="submitButton">
-            Submit
-          </button>
         </div>
       </div>
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
+      <button onClick={handleSubmit} className="submitButton">
+        Submit
+      </button>
     </div>
   );
 }

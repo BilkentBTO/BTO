@@ -14,7 +14,151 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public async Task<string> AddRegistration(RegistrationRequest request)
+        public async Task<Registration?> GetGeneralRegistration(string Code)
+        {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return null;
+            }
+
+            var type = Code[0];
+            switch (type)
+            {
+                case 'T':
+                    return await _context
+                        .TourRegistrations.Include(r => r.School)
+                        .Include(r => r.PreferredVisitTime)
+                        .SingleOrDefaultAsync(r => r.Code == Code);
+                case 'F':
+                    return await _context
+                        .FairRegistrations.Include(r => r.School)
+                        .SingleOrDefaultAsync(r => r.Code == Code);
+                case 'I':
+                    return await _context
+                        .IndividualRegistrations.Include(r => r.PreferredVisitTime)
+                        .SingleOrDefaultAsync(r => r.Code == Code);
+                default:
+                    return null;
+            }
+        }
+
+        public async Task<string> AddTourRegistration(TourRegistrationRequest request)
+        {
+            try
+            {
+                var exists = _context.TourRegistrations.Any(r =>
+                    r.SchoolCode == request.SchoolCode
+                );
+                if (exists)
+                {
+                    return "";
+                }
+                var school = await _context.Schools.FirstOrDefaultAsync(s =>
+                    s.SchoolCode == request.SchoolCode
+                );
+
+                if (school == null)
+                {
+                    Console.WriteLine($"Error: School not found: '{request.SchoolCode}'");
+                    return "";
+                }
+
+                var registration = new TourRegistration
+                {
+                    CityName = request.CityName,
+                    SchoolCode = request.SchoolCode,
+                    DateOfVisit = request.DateOfVisit,
+                    PreferredVisitTime = request.PreferredVisitTime,
+                    NumberOfVisitors = request.NumberOfVisitors,
+                    SuperVisorName = request.SuperVisorName,
+                    SuperVisorDuty = request.SuperVisorDuty,
+                    SuperVisorPhoneNumber = request.SuperVisorPhoneNumber,
+                    SuperVisorMailAddress = request.SuperVisorMailAddress,
+                    Notes = request.Notes,
+                    State = RegistrationState.Pending,
+                };
+
+                registration.GenerateCode();
+                registration.FillSchool(school);
+
+                _context.TourRegistrations.Add(registration);
+
+                var result = await _context.SaveChangesAsync();
+
+                if (registration.Code == null)
+                {
+                    return "";
+                }
+
+                return registration.Code;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding registration: {ex.Message}");
+                return "";
+            }
+        }
+
+        public async Task<TourRegistration?> GetTourRegistration(string Code)
+        {
+            return await _context
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<List<TourRegistration>> GetAllTourRegistrations()
+        {
+            return await _context
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
+                .ToListAsync();
+        }
+
+        public async Task<List<TourRegistration>> GetAllTourRegistrationsFiltered(
+            RegistrationState state
+        )
+        {
+            return await _context
+                .TourRegistrations.Where(r => r.State == state)
+                .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
+                .Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .ToListAsync();
+        }
+
+        public async Task<bool> AcceptTourRegistration(string Code)
+        {
+            var registration = await _context.TourRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Accepted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RejectTourRegistration(string Code)
+        {
+            var registration = await _context.TourRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Rejected;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<string> AddFairRegistration(FairRegistrationRequest request)
         {
             try
             {
@@ -28,13 +172,11 @@ namespace backend.Database
                     return "";
                 }
 
-                var registration = new Registration
+                var registration = new FairRegistration
                 {
                     CityName = request.CityName,
                     SchoolCode = request.SchoolCode,
                     DateOfVisit = request.DateOfVisit,
-                    PrefferedVisitTime = request.PreferredVisitTime,
-                    NumberOfVisitors = request.NumberOfVisitors,
                     SuperVisorName = request.SuperVisorName,
                     SuperVisorDuty = request.SuperVisorDuty,
                     SuperVisorPhoneNumber = request.SuperVisorPhoneNumber,
@@ -46,10 +188,14 @@ namespace backend.Database
                 registration.GenerateCode();
                 registration.FillSchool(school);
 
-                _context.Registrations.Add(registration);
+                _context.FairRegistrations.Add(registration);
 
                 var result = await _context.SaveChangesAsync();
 
+                if (registration.Code == null)
+                {
+                    return "";
+                }
                 return registration.Code;
             }
             catch (Exception ex)
@@ -59,26 +205,35 @@ namespace backend.Database
             }
         }
 
-        public async Task<Registration?> GetRegistration(string Code)
+        public async Task<List<FairRegistration>> GetAllFairRegistrations()
         {
             return await _context
-                .Registrations.Include(r => r.School)
-                .Include(r => r.PrefferedVisitTime)
-                .SingleOrDefaultAsync(r => r.Code == Code);
-        }
-
-        public async Task<List<Registration>> GetAllRegistrations()
-        {
-            return await _context
-                .Registrations.OrderBy(r => r.School.Priority)
+                .FairRegistrations.OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
-                .Include(r => r.PrefferedVisitTime)
                 .ToListAsync();
         }
 
-        public async Task<bool> AcceptRegistration(string Code)
+        public async Task<List<FairRegistration>> GetAllFairRegistrationsFiltered(
+            RegistrationState state
+        )
         {
-            var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+            return await _context
+                .FairRegistrations.Where(r => r.State == state)
+                .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
+                .Include(r => r.School)
+                .ToListAsync();
+        }
+
+        public async Task<FairRegistration?> GetFairRegistration(string Code)
+        {
+            return await _context
+                .FairRegistrations.Include(r => r.School)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<bool> AcceptFairRegistration(string Code)
+        {
+            var registration = await _context.FairRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -91,9 +246,94 @@ namespace backend.Database
             return true;
         }
 
-        public async Task<bool> RejectRegistration(string Code)
+        public async Task<bool> RejectFairRegistration(string Code)
         {
-            var registration = await _context.Registrations.SingleOrDefaultAsync(r =>
+            var registration = await _context.FairRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Rejected;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<string> AddIndividualRegistration(IndividualRegistrationRequest request)
+        {
+            try
+            {
+                var registration = new IndividualRegistration
+                {
+                    DateOfVisit = request.DateOfVisit,
+                    IndividualName = request.IndividualName,
+                    IndividualMajorCode = request.IndividualPreferredMajorCode,
+                    IndividualPhoneNumber = request.IndividualPhoneNumber,
+                    IndividualMailAddress = request.IndividualMailAddress,
+                    Notes = request.Notes,
+                    State = RegistrationState.Pending,
+                };
+
+                registration.GenerateCode();
+
+                _context.IndividualRegistrations.Add(registration);
+
+                var result = await _context.SaveChangesAsync();
+                if (registration.Code == null)
+                {
+                    return "";
+                }
+                return registration.Code;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding registration: {ex.Message}");
+                return "";
+            }
+        }
+
+        public async Task<List<IndividualRegistration>> GetAllIndividualRegistrations()
+        {
+            return await _context
+                .IndividualRegistrations.OrderBy(static r => r.IndividualName)
+                .ToListAsync();
+        }
+
+        public async Task<List<IndividualRegistration>> GetAllIndividualRegistrationsFiltered(
+            RegistrationState state
+        )
+        {
+            return await _context
+                .IndividualRegistrations.Where(r => r.State == state)
+                .OrderBy(r => r.IndividualName)
+                .ToListAsync();
+        }
+
+        public async Task<IndividualRegistration?> GetIndividualRegistration(string Code)
+        {
+            return await _context.IndividualRegistrations.SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<bool> AcceptIndividualRegistration(string Code)
+        {
+            var registration = await _context.IndividualRegistrations.SingleOrDefaultAsync(r =>
+                r.Code == Code
+            );
+
+            if (registration == null)
+            {
+                return false;
+            }
+            registration.State = RegistrationState.Accepted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RejectIndividualRegistration(string Code)
+        {
+            var registration = await _context.IndividualRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
 
@@ -130,7 +370,7 @@ namespace backend.Database
                 c.name.Equals(cityName, StringComparison.OrdinalIgnoreCase)
             );
 
-            if (cityCode == null)
+            if (cityCode.Equals(default))
             {
                 return new List<SchoolSuggestion>();
             }
@@ -138,6 +378,7 @@ namespace backend.Database
             var result = await _context
                 .Schools.Where(s =>
                     s.CityCode == cityCode.cityCode
+                    && s.SchoolName != null
                     && s.SchoolName.ToLower().Contains(query.ToLower())
                 )
                 .Distinct()
@@ -162,7 +403,8 @@ namespace backend.Database
 
             return await _context
                 .Schools.Where(s =>
-                    EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
+                    s.SchoolName != null
+                    && EF.Functions.Like(s.SchoolName.ToLower(), $"{query.ToLower()}%")
                 )
                 .Select(s => s.SchoolName)
                 .Distinct()
@@ -170,7 +412,7 @@ namespace backend.Database
                 .ToListAsync();
         }
 
-        public async Task<School> GetSchoolByName(string name)
+        public async Task<School?> GetSchoolByName(string name)
         {
             return await _context.Schools.SingleOrDefaultAsync(s => s.SchoolName == name);
         }
@@ -180,14 +422,19 @@ namespace backend.Database
             return await _context.Users.OrderBy(c => c.Name).ToListAsync();
         }
 
-        public async Task<User> GetUserAsync(int id)
+        public async Task<User?> GetUserAsync(int id)
         {
-            return await _context.Users.SingleOrDefaultAsync(c => c.id == id);
+            return await _context.Users.SingleOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<List<User>> GetUserFilteredAsync(UserType id)
+        {
+            return await _context.Users.Where(u => u.UserType == id).ToListAsync();
         }
 
         public async Task<User?> InsertUserAsync(User user)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.id == user.id);
+            bool userExists = await _context.Users.AnyAsync(u => u.Id == user.Id);
             if (userExists)
             {
                 return null;
@@ -208,7 +455,7 @@ namespace backend.Database
 
         public async Task<bool> UpdateUserAsync(User user)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.id == user.id);
+            bool userExists = await _context.Users.AnyAsync(u => u.Id == user.Id);
             if (!userExists)
             {
                 return false;
@@ -229,14 +476,18 @@ namespace backend.Database
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.id == id);
+            bool userExists = await _context.Users.AnyAsync(u => u.Id == id);
             if (!userExists)
             {
                 return false;
             }
 
-            var user = await _context.Users.SingleOrDefaultAsync(c => c.id == id);
+            var user = await _context.Users.SingleOrDefaultAsync(c => c.Id == id);
 
+            if (user == null)
+            {
+                return false;
+            }
             _ = _context.Remove(user);
 
             try
@@ -254,6 +505,10 @@ namespace backend.Database
         {
             try
             {
+                if (request.Name == null || request.Surname == null || request.Mail == null)
+                {
+                    return false;
+                }
                 var user = new User(request.Name, request.Surname, request.Mail)
                 {
                     BilkentID = request.BilkentID,

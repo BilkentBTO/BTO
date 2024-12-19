@@ -67,7 +67,7 @@ function SuccessSchoolReg() {
 
     const registerSchool = async () => {
       try {
-        const response = await fetch("/api/Registration/Register", {
+        const response = await fetch("/api/Registration/tour/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -162,6 +162,7 @@ const styles = {
     color: "#007bff",
   },
   response: {
+    fontFamily: "Arial",
     fontSize: "1.2rem",
     color: "#333",
     background: "#fff",
@@ -198,6 +199,7 @@ const styles = {
     zIndex: 1000,
   },
   popupContent: {
+    fontFamily: "Arial",
     backgroundColor: "white",
     padding: "20px",
     borderRadius: "8px",

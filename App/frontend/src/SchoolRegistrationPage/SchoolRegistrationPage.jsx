@@ -181,16 +181,11 @@ function SchoolRegistrationPage() {
             value={formData.visitorCount}
             onChange={(value) => handleChange("visitorCount", value)}
           />
-
-          {/* Submit Button */}
-          <button onClick={handleSubmit} className="submitButton">
-            Continue
-          </button>
         </div>
       </div>
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
+      <button onClick={handleSubmit} className="submitButton">
+        Continue
+      </button>
     </div>
   );
 }

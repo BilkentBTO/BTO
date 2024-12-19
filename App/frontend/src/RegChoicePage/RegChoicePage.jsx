@@ -11,6 +11,7 @@ function RegChoicePage() {
   return (
     <div className="regChoicePage">
       <HeaderGlobal name={"REGISTRATION FORM"} />
+      <p className="filler">REGISTRATION TYPE</p>
       <div className="buttonRegChoiceSection">
         <MainRegButton name="SCHOOL REGISTRATION" link="/schoolRegistration" />
         <MainRegButton

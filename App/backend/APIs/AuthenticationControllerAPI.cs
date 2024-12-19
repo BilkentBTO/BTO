@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace backend.Server.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("/api/credential")]
     public class CredentialController : ControllerBase
     {
         private readonly CredentialDatabaseController _controller;

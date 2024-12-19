@@ -10,20 +10,30 @@ namespace backend.Database
     {
         public DbSet<User> Users { get; set; }
         public DbSet<School> Schools { get; set; }
-        public DbSet<Registration> Registrations { get; set; }
+        public DbSet<TourRegistration> TourRegistrations { get; set; }
+        public DbSet<FairRegistration> FairRegistrations { get; set; }
+        public DbSet<IndividualRegistration> IndividualRegistrations { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(u => u.id);
+            modelBuilder.Entity<User>().HasKey(u => u.Id);
 
             modelBuilder.Entity<School>().HasKey(s => s.SchoolName);
 
-            modelBuilder.Entity<Registration>().HasKey(r => r.Code);
+            modelBuilder.Entity<TourRegistration>().HasKey(r => r.Code);
 
-            modelBuilder.Entity<Registration>().HasIndex(r => r.Code).IsUnique();
+            modelBuilder.Entity<TourRegistration>().HasIndex(r => r.Code).IsUnique();
+
+            modelBuilder.Entity<FairRegistration>().HasKey(r => r.Code);
+
+            modelBuilder.Entity<FairRegistration>().HasIndex(r => r.Code).IsUnique();
+
+            modelBuilder.Entity<IndividualRegistration>().HasKey(r => r.Code);
+
+            modelBuilder.Entity<IndividualRegistration>().HasIndex(r => r.Code).IsUnique();
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Server.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("/api/user")]
     public class UserController : ControllerBase
     {
         private readonly SystemDatabaseController _controller;
@@ -44,29 +44,41 @@ namespace backend.Server.Controllers
         [ProducesResponseType(typeof(List<User>), 404)]
         public async Task<ActionResult> GetAllUsers()
         {
-            var customers = await _controller.GetUsersAsync();
-            if (customers == null)
+            var users = await _controller.GetUsersAsync();
+            if (users == null)
             {
                 return NotFound();
             }
-            return Ok(customers);
+            return Ok(users);
         }
 
-        /*
-        [HttpGet("{id}")]
+        [HttpGet("filter/{userType}")]
         [Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(List<User>), 200)]
         [ProducesResponseType(typeof(List<User>), 404)]
-        public async Task<ActionResult> GetAllUsersFiltered()
+        public async Task<ActionResult> GetAllUsersFiltered(UserType userType)
         {
-            var customers = await _controller.GetUsersAsync();
-            if (customers == null)
+            var users = await _controller.GetUserFilteredAsync(userType);
+            if (users == null)
             {
                 return NotFound();
             }
-            return Ok(customers);
+            return Ok(users);
         }
-        */
+
+        [HttpGet("requests")]
+        [ProducesResponseType(typeof(List<User>), 200)]
+        [ProducesResponseType(typeof(List<User>), 404)]
+        public async Task<ActionResult> GetAllUserRequests()
+        {
+            var userType = UserType.Pending;
+            var users = await _controller.GetUserFilteredAsync(userType);
+            if (users == null)
+            {
+                return NotFound();
+            }
+            return Ok(users);
+        }
 
         [HttpGet("{id}", Name = "GetUsersRoute")]
         [Authorize(Policy = "Admin&Coordinator")]
@@ -97,7 +109,7 @@ namespace backend.Server.Controllers
             {
                 return BadRequest("Unable to insert user");
             }
-            return CreatedAtRoute("GetUsersRoute", new { id = newUser.id }, newUser);
+            return CreatedAtRoute("GetUsersRoute", new { id = newUser.Id }, newUser);
         }
 
         [HttpPut("{id}")]

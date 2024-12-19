@@ -77,38 +77,40 @@ function UserPage({ username }) {
   return (
     <div>
       <HeaderGlobal name={"Profile Page"} />
-      <div className="profileSection">
-        <img className="profileImage" src={profileImage} alt="Profile" />
-        <table className="profileTable">
-          <tbody>
-            <tr>
-              <th>Name</th>
-              <td>{name}</td>
-            </tr>
-            <tr>
-              <th>Surname</th>
-              <td>{name}</td>
-            </tr>
-            <tr>
-              <th>Username</th>
-              <td>{name}</td>
-            </tr>
-            <tr>
-              <th>Role</th>
-              <td>{role}</td>
-            </tr>
-            <tr>
-              <th>Email</th>
-              <td>{email}</td>
-            </tr>
-          </tbody>
-        </table>
-        <button className="profileBackButton" onClick={handleBack}>
-          Back
-        </button>
-        <button className="profileLogoutButton" onClick={handleLogout}>
-          Logout
-        </button>
+      <div className="profileBackground">
+        <div className="profileSection">
+          <img className="profileImage" src={profileImage} alt="Profile" />
+          <table className="profileTable">
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <td>{name}</td>
+              </tr>
+              <tr>
+                <th>Surname</th>
+                <td>{name}</td>
+              </tr>
+              <tr>
+                <th>Username</th>
+                <td>{name}</td>
+              </tr>
+              <tr>
+                <th>Role</th>
+                <td>{role}</td>
+              </tr>
+              <tr>
+                <th>Email</th>
+                <td>{email}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button className="profileBackButton" onClick={handleBack}>
+            Back
+          </button>
+          <button className="profileLogoutButton" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
       <div className="contactSection">
         <p className="contactInfo"></p>

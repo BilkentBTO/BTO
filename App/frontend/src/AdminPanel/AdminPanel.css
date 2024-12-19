@@ -1,56 +1,40 @@
 .buttonAdminPanelSection {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Creates a 2x2 grid */
-    gap: 20px; /* Sets the gap between grid items */
-    margin: 0 auto; /* Centers the grid horizontally */
-    margin-top: 70px;
+    display: grid; /* Use a grid layout */
+    grid-template-columns: repeat(2, 1fr); /* Creates two columns */
+    gap: 50px; /* Adds spacing between buttons */
+    justify-content: center; /* Centers the grid horizontally */
+    align-items: center; /* Centers the grid vertically */
+    width: 80%; /* Adjusts the width of the button container */
+    margin: 0 auto; /* Horizontally centers the section within its parent */
+    box-sizing: border-box; /* Ensures padding is included in width/height */
+}
+
+.innerAdmin {
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("../assets/bilkentPanelImage.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
     justify-content: center;
     align-items: center;
-    width: 80%;
-    height: 60%;
-    padding: 20px; /* Adds padding around the entire section */
-    border-radius: 10px; /* Rounds the edges of the grid container */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
-
+    height: 80vh;
 }
 
-.adminPanel{
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-}
-.buttonAdminPanelSection button{
-    width: 80%;
-    height: auto;
-}
-
-.buttonAdminPanel {
-    background-color: rgb(100, 100, 200); /* Light background color for the panel */
-    border-radius: 5px; /* Rounded corners for each panel */
-    width: auto;
-    height: auto;
-    padding: 20px; /* Adds spacing inside each panel */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    text-align: center; /* Centers the text inside each panel */
-    font-family: Arial, Helvetica, sans-serif; /* Font for buttons */
-    color: white; /* White text for contrast */
-    font-size: 1.2rem; /* Font size for readability */
-    cursor: pointer; /* Changes cursor to pointer on hover */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effects */
+.buttonAdminPanelSection button {
+    border:0;
+    border-radius: 5px; /* Rounded corners for buttons */
+    color: white; /* Button text color */
+    background-color: rgb(30, 30, 100); /* Button background color */
+    font-family: Arial, sans-serif; /* Button font */
+    font-size: x-large; /* Large font size */
+    font-weight: bold;
+    width: 100%; /* Button width */
+    height: 15vh; /* Button height */
+    padding: 5%;
 }
 
-.buttonAdminPanel:hover {
-    transform: translateY(-5px); /* Lifts the button slightly */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Adds a stronger shadow */
-}
-
-.lastAdminItem {
-    background-color: rgb(0, 30, 120); /* Background color for the last item */
-    color: white; /* White text color */
-    border-radius: 5px; /* Rounded corners for the last guide item */
-    padding: 15px; /* Adds padding inside the item */
-    text-align: center; /* Centers the text inside the item */
-    font-size: 1.1rem; /* Adjusts font size for readability */
-    font-family: Arial, Helvetica, sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow for emphasis */
+.buttonAdminPanelSection button:hover {
+    background-color: rgb(19, 19, 70);
 }

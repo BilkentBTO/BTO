@@ -1,0 +1,43 @@
+.successJoinPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures header and contact section stay in place */
+  height: 100vh; /* Full height of the viewport */
+  width: 100%; /* Full width */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  }
+  
+  .successMessage {
+    margin-bottom: 350px;
+    font-family: "Arial";
+    text-align: center;
+    justify-self: center;
+    align-self: center;
+    background-color: #e6f7ff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .successMessage h2 {
+    color: #008cba;
+  }
+  
+  .returnButton {
+    margin-top: 610px;
+    margin-left: 370px;
+    width: 200px;
+    background-color:  rgb(30, 30, 100);
+    color: rgb(255, 255, 255); 
+    padding: 10px 20px;
+    border: none;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  
+  .returnButton:hover {
+    background-color: #080055;
+  }

@@ -17,9 +17,50 @@ function JoinConfirmation() {
     navigate("/joinBTO", { state: { formData } });
   };
 
-  const confirmReg = () => {
-    console.log("Registration Confirmed:", formData);
-    navigate("/successJoin", { state: { formData } });
+  const handleSubmit = async () => {
+    if (
+      !formData.name ||
+      !formData.surname ||
+      !formData.bilkentID ||
+      !formData.majorCode ||
+      !formData.currentYear ||
+      !formData.mail
+    ) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
+
+    // Build the request body with correct key names
+    const payload = {
+      Name: formData.name, // Correct capitalization
+      Surname: formData.surname,
+      bilkentID: parseInt(formData.bilkentID, 10),
+      majorCode: formData.majorCode,
+      currentYear: parseInt(formData.currentYear, 10), // Ensure it's a number
+      Mail: formData.mail, // Correct capitalization
+    };
+
+    try {
+      console.log("Payload being sent: ", JSON.stringify(payload));
+      const response = await fetch("/api/User/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload), // Send fixed payload
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+        throw new Error(errorData.title || "Failed to register user.");
+      }
+
+      // Navigate to success page
+      console.log("Registration successful");
+      navigate("/successJoin", { state: { formData } });
+    } catch (error) {
+      console.error("Error:", error.message);
+      alert(`Registration failed: ${error.message}`);
+    }
   };
 
   const handleConfirmClick = () => setShowPopup(true); // Show the popup
@@ -53,7 +94,15 @@ function JoinConfirmation() {
                 <p>Bilkent ID:</p>
               </div>
               <div className="info">
-                <p>{formData.id}</p>
+                <p>{formData.bilkentID}</p>
+              </div>
+            </div>
+            <div className="infoLogNote">
+              <div className="box">
+                <p>Email:</p>
+              </div>
+              <div className="info">
+                <p>{formData.mail}</p>
               </div>
             </div>
           </div>
@@ -64,7 +113,7 @@ function JoinConfirmation() {
                 <p>Major:</p>
               </div>
               <div className="info">
-                <p>{formData.major}</p>
+                <p>{formData.majorCode}</p>
               </div>
             </div>
             <div className="infoLog">
@@ -72,7 +121,7 @@ function JoinConfirmation() {
                 <p>Current Year:</p>
               </div>
               <div className="info">
-                <p>{formData.year}</p>
+                <p>{formData.currentYear}</p>
               </div>
             </div>
             <div className="buttonLayout">
@@ -88,22 +137,19 @@ function JoinConfirmation() {
             </div>
           </div>
         </div>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
-        </div>
       </div>
 
       {/* Confirmation Popup */}
       {showPopup && (
-        <div className="popupOverlay">
-          <div className="popupContent">
+        <div className="formPopupOverlay">
+          <div className="formPopupContent">
             <h2>Confirm Registration</h2>
             <p>Are you sure you want to confirm this registration?</p>
-            <div className="popupActions">
-              <button onClick={confirmReg} className="confirmButton">
-                Yes, Confirm
+            <div className="formPopupActions">
+              <button onClick={handleSubmit} className="formPopupConfirmButton">
+                Confirm
               </button>
-              <button onClick={closePopup} className="cancelButton">
+              <button onClick={closePopup} className="formPopupCancelButton">
                 Cancel
               </button>
             </div>

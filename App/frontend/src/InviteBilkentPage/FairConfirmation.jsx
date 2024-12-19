@@ -38,7 +38,7 @@ function FairConfirmation() {
 
   return (
     <div className="schoolRegistrationPage">
-      <HeaderGlobal name={"Confirmation Page"}></HeaderGlobal>
+      <HeaderGlobal name={"Confirmation Page"} />
       <div className="innerSchoolConfirmation">
         <div className="topInner">
           <div className="leftInner">
@@ -48,15 +48,15 @@ function FairConfirmation() {
                 <p>City:</p>
               </div>
               <div className="info">
-                <p>{formData.city}</p>
+                <p>{formData.cityName}</p>
               </div>
             </div>
             <div className="infoLog">
               <div className="box">
-                <p>School:</p>
+                <p>School Code:</p>
               </div>
               <div className="info">
-                <p>{formData.school}</p>
+                <p>{formData.schoolCode}</p>
               </div>
             </div>
             <div className="infoLogNote">
@@ -64,7 +64,7 @@ function FairConfirmation() {
                 <p>Notes:</p>
               </div>
               <div className="info">
-                <p>{formData.notes}</p>
+                <p>{formData.notes || "N/A"}</p>
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@ function FairConfirmation() {
                 <p>Supervisor Name:</p>
               </div>
               <div className="info">
-                <p>{formData.supervisorName}</p>
+                <p>{formData.superVisorName}</p>
               </div>
             </div>
             <div className="infoLog">
@@ -83,7 +83,7 @@ function FairConfirmation() {
                 <p>Supervisor Duty:</p>
               </div>
               <div className="info">
-                <p>{formData.supervisorDuty}</p>
+                <p>{formData.superVisorDuty}</p>
               </div>
             </div>
             <div className="infoLog">
@@ -91,7 +91,7 @@ function FairConfirmation() {
                 <p>Supervisor Phone:</p>
               </div>
               <div className="info">
-                <p>{formData.supervisorPhone}</p>
+                <p>{formData.superVisorPhoneNumber}</p>
               </div>
             </div>
             <div className="infoLog">
@@ -99,35 +99,35 @@ function FairConfirmation() {
                 <p>Supervisor Email:</p>
               </div>
               <div className="info">
-                <p>{formData.supervisorEmail}</p>
+                <p>{formData.superVisorMailAddress}</p>
               </div>
             </div>
             <div className="buttonLayout">
               <button className="formEditButton" onClick={handleEdit}>
                 Edit
               </button>
-              <button className="formEditButton" onClick={handleConfirmClick}>
+              <button
+                className="formConfirmButton"
+                onClick={handleConfirmClick}
+              >
                 Confirm
               </button>
             </div>
           </div>
         </div>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
-        </div>
       </div>
 
       {/* Confirmation Popup */}
       {showPopup && (
-        <div className="popupOverlay">
-          <div className="popupContent">
+        <div className="formPopupOverlay">
+          <div className="formPopupContent">
             <h2>Confirm Registration</h2>
             <p>Are you sure you want to confirm this registration?</p>
-            <div className="popupActions">
-              <button onClick={confirmReg} className="confirmButton">
-                Yes, Confirm
+            <div className="formPopupActions">
+              <button onClick={confirmReg} className="formPopupConfirmButton">
+                Confirm
               </button>
-              <button onClick={closePopup} className="cancelButton">
+              <button onClick={closePopup} className="formPopupCancelButton">
                 Cancel
               </button>
             </div>
