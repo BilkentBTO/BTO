@@ -39,27 +39,22 @@ function CoordinatorPanel() {
   return (
     <div className="coordinatorPanel">
       <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
-      <div className="buttonCoordinatorPanelSection">
-        <div className="buttonCoordinatorPanel">
+      <div className="innerCoordinator">
+        <div className="buttonCoordinatorPanelSection">
           <button onClick={handleListAllUsersClick}>List All Users</button>
-        </div>
-        <div className="buttonCoordinatorPanel">
+
           <button onClick={handleAssignGuideToFairsClick}>
             Assign Guide To Fairs
           </button>
-        </div>
-        <div className="buttonCoordinatorPanel">
+
           <button onClick={handleManageFairRequestsClick}>
             Manage Fair Requests
           </button>
-        </div>
-        <div className="buttonCoordinatorPanel">
+
           <button onClick={handleAddUserClick}>Add User</button>
-        </div>
-        <div className="buttonCoordinatorPanel">
+
           <button onClick={handleManageSurveysClick}>Manage Surveys</button>
-        </div>
-        <div className="buttonCoordinatorPanel">
+
           <button onClick={handleAccessAdvisorPanelClick}>
             Access to Advisor Panel
           </button>

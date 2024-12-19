@@ -22,28 +22,23 @@ function AdminPanel() {
     navigate("/coordinatorPanel");
   };
   return (
-    <div>
+    <div className="adminPanel">
       <HeaderPanelGlobal name={"ADMIN PANEL"} />
-      <div className="adminPanel">
+      <div className="innerAdmin">
         <div className="buttonAdminPanelSection">
-          <div className="buttonAdminPanel">
-            <button onClick={handleListCoordinatorsClick}>
-              List Coordinators
-            </button>
-          </div>
-          <div className="buttonAdminPanel">
-            <button onClick={handleAccessDataPanelClick}>
-              Access to Data Panel
-            </button>
-          </div>
-          <div className="buttonAdminPanel">
-            <button onClick={handleAddCoordinatorClick}>Add Coordinator</button>
-          </div>
-          <div className="buttonAdminPanel">
-            <button onClick={handleAccessCoordinatorPanelClick}>
-              Access to Coordinator Panel
-            </button>
-          </div>
+          <button onClick={handleListCoordinatorsClick}>
+            List Coordinators
+          </button>
+
+          <button onClick={handleAccessDataPanelClick}>
+            Access to Data Panel
+          </button>
+
+          <button onClick={handleAddCoordinatorClick}>Add Coordinator</button>
+
+          <button onClick={handleAccessCoordinatorPanelClick}>
+            Access to Coordinator Panel
+          </button>
         </div>
         <div className="contactSection">
           <p className="contactInfo"></p>
