@@ -1,9 +1,8 @@
 .regChoicePage {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Ensures header and contact section stay in place */
     height: 100vh; /* Full height of the viewport */
-    width: 100%; /* Full width */
+    width: 100vw; /* Full width */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -12,11 +11,20 @@
     url("../assets/bilkent_image.png");
 }
 .buttonRegChoiceSection {
+    margin-top: 5%;
     margin-left: 10%;
     margin-right: 10%;
-    margin-bottom: 386px;
     display: flex;
     justify-content: center; /* Centers buttons horizontally */
     align-content: center; /* Ensures buttons are vertically aligned in the section */
     gap: 75px; /* Adds space between the buttons */
+}
+
+.filler{
+    font-family: Arial, sans-serif;
+  color: rgb(30, 30, 100);
+  font-size: xx-large;
+  display: flex;
+  justify-content: center;
+  padding-top: 5%;
 }
