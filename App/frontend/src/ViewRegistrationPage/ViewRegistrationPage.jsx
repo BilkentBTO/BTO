@@ -4,32 +4,14 @@ import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import "./ViewRegistrationPage.css";
 
 function ViewRegistrationPage() {
-  const location = useLocation(); // Get the state passed via navigation
+  const location = useLocation();
   const navigate = useNavigate();
 
   const registrationData = location.state?.registrationData || {};
 
-  // Destructure API response data with fallback values
-  const {
-    code: registrationCode,
-    school,
-    cityName: city,
-    dateOfVisit,
-    prefferedVisitTime,
-    numberOfVisitors,
-    superVisorName,
-    superVisorDuty,
-    superVisorPhoneNumber,
-    superVisorMailAddress,
-    notes,
-    state,
-  } = registrationData;
-
-  const schoolName = school?.schoolName || "N/A"; // Access schoolName safely
-
   useEffect(() => {
-    document.title = "View Tour Registration - BTO";
-    console.log("RegData: ", registrationData);
+    document.title = "View Registration - BTO";
+    console.log("Registration Data:", registrationData);
   }, [registrationData]);
 
   // Helper function to map state numbers to status text
@@ -54,59 +36,152 @@ function ViewRegistrationPage() {
     navigate("/");
   };
 
+  // Render fields dynamically based on the type
+  const renderFields = () => {
+    switch (registrationData.type) {
+      case "Tour":
+        return (
+          <>
+            <p className="viewType">
+              <span className="viewLabel">Type:</span> {"School Tour"}
+            </p>
+            <p className="viewCode">
+              <span className="viewLabel">Code:</span>{" "}
+              {registrationData.code || "N/A"}
+            </p>
+            <p className="viewCity">
+              <span className="viewLabel">City:</span>{" "}
+              {registrationData.cityName || "N/A"}
+            </p>
+            <p className="viewSchoolName">
+              <span className="viewLabel">School Name:</span>{" "}
+              {registrationData.school?.schoolName || "N/A"}
+            </p>
+            <p className="viewVisitDate">
+              <span className="viewLabel">Date of Visit:</span>{" "}
+              {new Date(registrationData.dateOfVisit).toLocaleDateString() ||
+                "N/A"}
+            </p>
+            <p className="viewVisitorNum">
+              <span className="viewLabel">Number of Visitors:</span>{" "}
+              {registrationData.numberOfVisitors || "N/A"}
+            </p>
+            <p className="viewSupervisor">
+              <span className="viewLabel">Supervisor Name:</span>{" "}
+              {registrationData.superVisorName || "N/A"}
+            </p>
+            <p className="viewSupervisorMail">
+              <span className="viewLabel">Supervisor Email:</span>{" "}
+              {registrationData.superVisorMailAddress || "N/A"}
+            </p>
+            <p className="viewSupervisorPhone">
+              <span className="viewLabel">Supervisor Phone:</span>{" "}
+              {registrationData.superVisorPhoneNumber || "N/A"}
+            </p>
+            <p className="viewNotes">
+              <span className="viewLabel">Notes:</span>{" "}
+              {registrationData.notes || "N/A"}
+            </p>
+            <p className="viewState">
+              <span className="viewLabel">State:</span>{" "}
+              {getStateText(registrationData.state) || "N/A"}
+            </p>
+          </>
+        );
+      case "Fair":
+        return (
+          <>
+            <p className="viewType">
+              <span className="viewLabel">Type:</span> {"Fair Request"}
+            </p>
+            <p className="viewCity">
+              <span className="viewLabel">City:</span>{" "}
+              {registrationData.cityName || "N/A"}
+            </p>
+            <p className="viewSchoolName">
+              <span className="viewLabel">School Name:</span>{" "}
+              {registrationData.school?.schoolName || "N/A"}
+            </p>
+            <p className="viewVisitDate">
+              <span className="viewLabel">Date of Visit:</span>{" "}
+              {new Date(registrationData.dateOfVisit).toLocaleDateString() ||
+                "N/A"}
+            </p>
+            <p className="viewSupervisor">
+              <span className="viewLabel">Supervisor Name:</span>{" "}
+              {registrationData.superVisorName || "N/A"}
+            </p>
+            <p className="viewSupervisor">
+              <span className="viewLabel">Supervisor Duty:</span>{" "}
+              {registrationData.superVisorDuty || "N/A"}
+            </p>
+            <p className="viewSupervisorMail">
+              <span className="viewLabel">Supervisor Email:</span>{" "}
+              {registrationData.superVisorMailAddress || "N/A"}
+            </p>
+            <p className="viewSupervisorPhone">
+              <span className="viewLabel">Supervisor Phone:</span>{" "}
+              {registrationData.superVisorPhoneNumber || "N/A"}
+            </p>
+            <p className="viewNotes">
+              <span className="viewLabel">Notes:</span>{" "}
+              {registrationData.notes || "N/A"}
+            </p>
+            <p className="viewState">
+              <span className="viewLabel">State:</span>{" "}
+              {getStateText(registrationData.state) || "N/A"}
+            </p>
+          </>
+        );
+      case "Individual":
+        return (
+          <>
+            <p className="viewType">
+              <span className="viewLabel">Type:</span> {"Individual Tour"}
+            </p>
+            <p className="viewVisitDate">
+              <span className="viewLabel">Date of Visit:</span>{" "}
+              {new Date(registrationData.dateOfVisit).toLocaleDateString() ||
+                "N/A"}
+            </p>
+            <p className="viewVisitorNum">
+              <span className="viewLabel">Individual Name:</span>{" "}
+              {registrationData.individualName || "N/A"}
+            </p>
+            <p className="viewPreferredMajor">
+              <span className="viewLabel">Preferred Major:</span>{" "}
+              {registrationData.individualMajor?.name || "N/A"}
+            </p>
+            <p className="viewSupervisorPhoneNum">
+              <span className="viewLabel">Phone Number:</span>{" "}
+              {registrationData.individualPhoneNumber || "N/A"}
+            </p>
+            <p className="viewSupervisorMail">
+              <span className="viewLabel">Email Address:</span>{" "}
+              {registrationData.individualMailAddress || "N/A"}
+            </p>
+            <p className="viewNotes">
+              <span className="viewLabel">Notes:</span>{" "}
+              {registrationData.notes || "N/A"}
+            </p>
+            <p className="viewState">
+              <span className="viewLabel">State:</span>{" "}
+              {getStateText(registrationData.state) || "N/A"}
+            </p>
+          </>
+        );
+      default:
+        return <p>No valid registration data found.</p>;
+    }
+  };
+
   return (
     <div>
-      <HeaderGlobal name={"YOUR TOUR REGISTRATION"} />
+      <HeaderGlobal name={"VIEW REGISTRATION"} />
       <div className="viewRegistrationPage">
         <div className="viewRegistrationInfo">
-          <p className="viewRegistrationCode">
-            <span className="viewLabel">Registration Code:</span>{" "}
-            {registrationCode || "N/A"}
-          </p>
-          <p className="viewSchoolName">
-            <span className="viewLabel">School Name:</span>{" "}
-            {schoolName || "N/A"}
-          </p>
-          <p className="viewCity">
-            <span className="viewLabel">City:</span> {city || "N/A"}
-          </p>
-          <p className="viewVisitDate">
-            <span className="viewLabel">Date of Visit:</span>{" "}
-            {dateOfVisit ? new Date(dateOfVisit).toLocaleDateString() : "N/A"}
-          </p>
-          <p className="viewPreferedDate">
-            <span className="viewLabel">Preferred Time of Visit:</span>{" "}
-            {prefferedVisitTime?.startTime
-              ? new Date(prefferedVisitTime.startTime).toLocaleTimeString()
-              : "N/A"}
-          </p>
-          <p className="viewVisitorNum">
-            <span className="viewLabel">Number of Visitors:</span>{" "}
-            {numberOfVisitors || "N/A"}
-          </p>
-          <p className="viewSupervisor">
-            <span className="viewLabel">Supervisor Name:</span>{" "}
-            {superVisorName || "N/A"}
-          </p>
-          <p className="viewSupervisorDuty">
-            <span className="viewLabel">Supervisor Duty:</span>{" "}
-            {superVisorDuty || "N/A"}
-          </p>
-          <p className="viewSupervisorPhoneNum">
-            <span className="viewLabel">Supervisor Phone Number:</span>{" "}
-            {superVisorPhoneNumber || "N/A"}
-          </p>
-          <p className="viewSupervisorMail">
-            <span className="viewLabel">Supervisor Mail:</span>{" "}
-            {superVisorMailAddress || "N/A"}
-          </p>
-          <p className="viewNotes">
-            <span className="viewLabel">Notes:</span> {notes || "N/A"}
-          </p>
-          <p className="viewState">
-            <span className="viewLabel">State:</span> {getStateText(state)}
-          </p>
-
+          <h3>Registration Details</h3>
+          {renderFields()}
           <div className="viewButtonSection">
             <button
               className="viewCodeCancelButton"
