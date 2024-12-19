@@ -63,7 +63,7 @@ function EvaluateTourRequests() {
 
   const fetchTourRequests = async () => {
     try {
-      const response = await fetch("/api/Registration/GetAllRegistrations");
+      const response = await fetch("/api/register/tour/registrations");
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -77,7 +77,7 @@ function EvaluateTourRequests() {
   };
   const fetchAcceptedTourRequests = async () => {
     try {
-      const response = await fetch("/api/Registration/tour/registrations/1");
+      const response = await fetch("/api/register/tour/registrations/1");
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -90,7 +90,7 @@ function EvaluateTourRequests() {
   };
   const fetchRejectedTourRequests = async () => {
     try {
-      const response = await fetch("/api/Registration/tour/registrations/2");
+      const response = await fetch("/api/register/tour/registrations/2");
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -103,7 +103,7 @@ function EvaluateTourRequests() {
   };
   const fetchPendingTourRequests = async () => {
     try {
-      const response = await fetch("/api/Registration/tour/registrations/0");
+      const response = await fetch("/api/register/tour/registrations/0");
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -203,7 +203,7 @@ function EvaluateTourRequests() {
   const acceptPopup = async () => {
     const tourId = selectedRow.code; // Get the ID of the selected row
     try {
-      await fetch(`/api/Registration/tour/AcceptRegistration?Code=${tourId}`, {
+      await fetch(`/api/register/tour/accept?Code=${tourId}`, {
         method: "POST",
       });
       alert("Registration accepted!");
@@ -226,7 +226,7 @@ function EvaluateTourRequests() {
   const rejectPopup = async () => {
     const tourId = selectedRow.code;
     try {
-      await fetch(`/api/Registration/tour/RejectRegistration?Code=${tourId}`, {
+      await fetch(`/api/register/tour/reject?Code=${tourId}`, {
         method: "POST",
       });
       alert("Registration rejected!");

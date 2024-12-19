@@ -37,12 +37,12 @@ function JoinConfirmation() {
       bilkentID: parseInt(formData.bilkentID, 10),
       majorCode: formData.majorCode,
       currentYear: parseInt(formData.currentYear, 10), // Ensure it's a number
-      Mail: formData.mail, // Correct capitalization
+      Mail: formData.mail,
     };
 
     try {
       console.log("Payload being sent: ", JSON.stringify(payload));
-      const response = await fetch("/api/User/register", {
+      const response = await fetch("/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload), // Send fixed payload

@@ -1,62 +1,86 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
-import Table from "../GlobalClasses/Table"; // Import the Table component
-import { useNavigate } from "react-router-dom";
 
 const ManageTour = () => {
   const location = useLocation();
-  const { rowData } = location.state || {}; // Retrieve rowData from state
+  const { selectedTour } = location.state || {}; // Retrieve selectedTour from state
+  console.log("ROW DATA: ", selectedTour);
 
-  if (!rowData) {
+  if (!selectedTour) {
     return <p>No data available</p>;
   }
 
-  // Define headers for the table based on the rowData structure
-  const headers = [
-    "Tour ID",
-    "School",
-    "City",
-    "Date",
-    "Time",
-    "Number of Visitors",
-    "Supervisor",
-    "Supervisor Duty",
-    "Supervisor Phone Number",
-    "Supervisor Mail",
-    "Notes",
-  ];
-
   const navigate = useNavigate();
 
-  // Convert the rowData into an array of arrays for the table
-  const [data, setData] = useState([Object.values(rowData)]);
-  const [notes, setNotes] = useState(rowData.Notes || ""); // Track the updated notes
+  // Flatten and transform the `selectedTour` data
+  const data = {
+    "Tour ID": selectedTour.code || "N/A",
+    School: selectedTour.school?.schoolName || "N/A",
+    City: selectedTour.cityName || "N/A",
+    Date: new Date(selectedTour.dateOfVisit).toLocaleDateString() || "N/A",
+    Time: selectedTour.preferredVisitTime?.id || "N/A",
+    "Number of Visitors": selectedTour.numberOfVisitors || "N/A",
+    Supervisor: selectedTour.superVisorName || "N/A",
+    "Supervisor Duty": selectedTour.superVisorDuty || "N/A",
+    "Supervisor Phone Number": selectedTour.superVisorPhoneNumber || "N/A",
+    "Supervisor Mail": selectedTour.superVisorMailAddress || "N/A",
+    Notes: selectedTour.notes || "N/A",
+  };
+
+  const [notes, setNotes] = useState(selectedTour.notes || ""); // Track updated notes
 
   // Handle changes in the text area
   const handleNotesChange = (value) => {
-    setNotes(value); // Update notes state
+    setNotes(value);
   };
 
-  // Handle the submit button to update the notes in the data
+  // Handle the submit button to update the notes
   const handleSubmit = () => {
-    const updatedData = [...data];
-    updatedData[0][headers.indexOf("Notes")] = notes; // Update the "Notes" value
-    setData(updatedData); // Update the table data
     console.log("Updated Notes:", notes);
   };
 
   const handleCancel = () => {
-    /*
-      DELETE THE CANCELLED TOUR FROM THE LIST!!!!!!!!!!!!!!!!!!!!!
-    */
     navigate("/guidePanel/assignedTours");
   };
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>Manage Tour</h1>
-      <Table headers={headers} data={data} />
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          marginTop: "20px",
+        }}
+      >
+        <tbody>
+          {Object.entries(data).map(([key, value]) => (
+            <tr key={key}>
+              <td
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  fontWeight: "bold",
+                  width: "30%",
+                  backgroundColor: "#f0f0f0",
+                }}
+              >
+                {key}
+              </td>
+              <td
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  width: "70%",
+                }}
+              >
+                {value}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <div style={{ marginTop: "20px" }}>
         <h3>Update Notes</h3>
         <FormTextAreaGlobal
@@ -82,6 +106,7 @@ const ManageTour = () => {
           onClick={handleCancel}
           style={{
             marginTop: "10px",
+            marginLeft: "10px",
             padding: "10px 20px",
             backgroundColor: "red",
             color: "white",
