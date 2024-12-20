@@ -117,7 +117,11 @@ namespace backend.Database
         //TODO Rework
         public async Task<bool> UpdateTourInfo(Tour tour)
         {
-            if (!await _context.Tours.AnyAsync(t => t.ID == tour.ID))
+            if (
+                !await _context.Tours.AnyAsync(t =>
+                    t.TourRegistrationCode == tour.TourRegistrationCode
+                )
+            )
             {
                 return false;
             }
@@ -254,7 +258,11 @@ namespace backend.Database
         //TODO Rework
         public async Task<bool> UpdateFairInfo(Fair fair)
         {
-            if (!await _context.Fairs.AnyAsync(f => f.ID == fair.ID))
+            if (
+                !await _context.Fairs.AnyAsync(f =>
+                    f.FairRegistrationCode == fair.FairRegistrationCode
+                )
+            )
             {
                 return false;
             }

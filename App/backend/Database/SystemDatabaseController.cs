@@ -14,9 +14,9 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public async Task<ErrorTypes> AddGuideTourApplication(int TourID, int GuideUID)
+        public async Task<ErrorTypes> AddGuideTourApplication(string TourCode, int GuideUID)
         {
-            if (TourID < 0)
+            if (string.IsNullOrEmpty(TourCode))
             {
                 return ErrorTypes.InvalidTourID;
             }
@@ -26,7 +26,9 @@ namespace backend.Database
                 return ErrorTypes.InvalidUserID;
             }
 
-            Tour? Tour = await _SystemContext.Tours.SingleOrDefaultAsync(t => t.ID == TourID);
+            Tour? Tour = await _SystemContext.Tours.SingleOrDefaultAsync(t =>
+                t.TourRegistrationCode == TourCode
+            );
 
             if (Tour == null)
             {
@@ -100,10 +102,10 @@ namespace backend.Database
         {
             try
             {
-                var DoesSchoolExist = _SystemContext.Schools.Any(r =>
+                var SchoolExists = _SystemContext.Schools.Any(r =>
                     r.SchoolCode == request.SchoolCode
                 );
-                if (DoesSchoolExist)
+                if (!SchoolExists)
                 {
                     return "";
                 }

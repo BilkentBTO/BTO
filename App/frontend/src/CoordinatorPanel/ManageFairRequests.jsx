@@ -16,28 +16,32 @@ function ManageFairRequests() {
   ];
 
   const [selectedFair, setSelectedFair] = useState(null);
+  const [popupType, setPopupType] = useState(null); // "accept", "decline", or null
 
   const handleRowClick = (row) => {
     setSelectedFair(row);
+    setPopupType(null); // Ensure no popup is open initially
   };
 
   const closePopup = () => {
     setSelectedFair(null);
+    setPopupType(null);
   };
 
   const handleAccept = () => {
-    // Implement here
+    setPopupType("accept");
+    // Implement accept logic here
   };
 
   const handleDecline = () => {
-    // Implement here
+    setPopupType("decline");
+    // Implement decline logic here
   };
 
   return (
     <div className="assignGuideToFairsPage">
-      <GlobalSidebar />
       <div className="rightSideCoorFunction">
-        <HeaderPanelGlobal name={"Fair Requests"} />
+        <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
         <div>
           <h1 className="assignGuideToFairsHeading">Manage Fair Requests</h1>
           <TableWithButtons
@@ -60,6 +64,7 @@ function ManageFairRequests() {
             buttonName="Manage Fair"
           />
         </div>
+
         {selectedFair && (
           <div className="popup">
             <div className="popup-content">
@@ -69,15 +74,68 @@ function ManageFairRequests() {
               <p>Date of Visit: {selectedFair[2]}</p>
               <p>Notes: {selectedFair[3]}</p>
 
-              <button onClick={handleAccept} style={{ margin: "5px" }}>
-                Accept
-              </button>
-              <button onClick={handleDecline} style={{ margin: "5px" }}>
-                Decline
-              </button>
-              <button onClick={closePopup} style={{ margin: "5px" }}>
-                Close
-              </button>
+              <div className="popupActions">
+                <button
+                  className="popupButton"
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  onClick={handleAccept}
+                >
+                  Accept
+                </button>
+                <button
+                  className="popupButton"
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  onClick={handleDecline}
+                >
+                  Decline
+                </button>
+                <button
+                  className="popupButton closeButton"
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "grey",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  onClick={closePopup}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         )}
