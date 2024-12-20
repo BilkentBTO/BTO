@@ -87,6 +87,9 @@
     bottom: 10px;
     left: 10px;
 }
+.bottomSidebarSection .profileSidebarSection:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+}
 .bottomSidebarSection button{
     background-color: red;
     color: white;

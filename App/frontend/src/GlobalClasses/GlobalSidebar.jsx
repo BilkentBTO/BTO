@@ -39,6 +39,9 @@ function GlobalSidebar() {
       navigate("/login"); // Redirect to login if no token is found
     }
   }, [navigate]);
+  const handleProfileClick = () => {
+    navigate("/userPage"); // Navigate to UserPage
+  };
 
   const handleLogout = () => {
     console.log("Logout");
@@ -97,7 +100,7 @@ function GlobalSidebar() {
           ))}
         </ul>
       </div>
-      <div className="bottomSidebarSection">
+      <div className="bottomSidebarSection" onClick={handleProfileClick}>
         <div className="profileSidebarSection">
           <img src={profileImage}></img>
           <span>{username}</span>
