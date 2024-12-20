@@ -2,36 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backend.Database;
 using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    public class Schedule // updated to daily
+    public struct Availability
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; }
+        private int DailySchedule { get; set; }
 
-        public TimeBlock[] TimeBlocks;
-
-        public Schedule()
+        public readonly bool IsAvailableAt(int timeBlockID)
         {
-            TimeBlocks = new TimeBlock[TimeBlocksPerDay];
+            if (timeBlockID < 0 || timeBlockID >= TimeBlocksPerDay)
+                return false;
+
+            int mask = 1 << timeBlockID;
+            return (DailySchedule & mask) != 0;
         }
 
-        public bool AddTour(Tour tour, int entranceTimeBlockID)
+        public void SetAvailabilityAt(int timeBlockID, bool isAvailable)
         {
-            if (tour == null)
-                return false;
-            if (entranceTimeBlockID < 0 || entranceTimeBlockID >= TimeBlocks.Length)
-                return false;
+            if (timeBlockID < 0 || timeBlockID >= TimeBlocksPerDay)
+                return;
 
-            TimeBlock? SelectedTimeBlock = TimeBlocks[entranceTimeBlockID];
-            if (SelectedTimeBlock == null)
-                TimeBlocks[entranceTimeBlockID] = SelectedTimeBlock = new TimeBlock();
-
-            SelectedTimeBlock.AddTour(tour);
-            return true;
+            byte mask = (byte)(1 << timeBlockID);
+            DailySchedule = isAvailable ? (DailySchedule | mask) : (DailySchedule & ~mask);
         }
     }
 
@@ -40,9 +35,40 @@ namespace backend.Models
         private const byte MAX_TOURS_PER_BLOCK = 3;
         private const int PRIORITY_BIAS = 100;
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public static int GetID(DateTime day, int timeBlockIndex) =>
+            day.GetHashCode() * TimeBlocksPerDay + timeBlockIndex;
+
+        DateTime _day;
+
+        [Required]
+        DateTime Day
+        {
+            get => _day;
+            set
+            {
+                _day = new DateTime(value.Year, value.Month, value.Day);
+                ReCalculateID();
+            }
+        }
+        int _timeBlockIndex;
+
+        [Required]
+        int TimeBlockIndex
+        {
+            get => _timeBlockIndex;
+            set
+            {
+                if (value < 0 || value >= TimeBlocksPerDay)
+                    return;
+                _timeBlockIndex = value;
+                ReCalculateID();
+            }
+        }
+
         public int ID { get; set; }
+
+        private void ReCalculateID() => ID = GetID(Day, TimeBlockIndex);
+
         public int MaxStudentCount { get; private set; }
 
         // int, int = tourID, tourPriority

@@ -48,3 +48,8 @@
     width: 90%;
     max-width: 800px;
   }
+
+  .evaluateTourRequestsHeading{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 3%;
+  }

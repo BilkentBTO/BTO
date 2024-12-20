@@ -1,19 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
-    "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\backend.csproj": {}
-  },
-  "projects": {
-    "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\backend.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\backend.csproj",
-        "projectName": "backend",
-        "projectPath": "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\krmcd\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\obj\\",
-=======
     "/Users/boraakoguz/Development/BTO/App/backend/backend.csproj": {}
   },
   "projects": {
@@ -25,16 +12,9 @@
         "projectPath": "/Users/boraakoguz/Development/BTO/App/backend/backend.csproj",
         "packagesPath": "/Users/boraakoguz/.nuget/packages/",
         "outputPath": "/Users/boraakoguz/Development/BTO/App/backend/obj/",
->>>>>>> 8d29a6d14ea82c0a72138abff2bd9cd59ba4d50a
         "projectStyle": "PackageReference",
         "configFilePaths": [
-<<<<<<< HEAD
-          "C:\\Users\\krmcd\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
-=======
           "/Users/boraakoguz/.nuget/NuGet/NuGet.Config"
->>>>>>> 8d29a6d14ea82c0a72138abff2bd9cd59ba4d50a
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -52,14 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
-<<<<<<< HEAD
-=======
         },
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
->>>>>>> 8d29a6d14ea82c0a72138abff2bd9cd59ba4d50a
         }
       },
       "frameworks": {
@@ -73,6 +50,10 @@
             "CsvHelper": {
               "target": "Package",
               "version": "[33.0.1, )"
+            },
+            "Mailjet.Api": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -120,11 +101,7 @@
               "privateAssets": "all"
             }
           },
-<<<<<<< HEAD
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
-=======
           "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
->>>>>>> 8d29a6d14ea82c0a72138abff2bd9cd59ba4d50a
         }
       }
     }

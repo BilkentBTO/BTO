@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
+using BTO.Constrains;
+using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
@@ -89,13 +91,15 @@ namespace backend.Models
     public class Guide : User
     {
         public bool IsCandidate { get; private set; }
-        public Availability Schedule { get; private set; }
+
+        [Column(TypeName = "jsonb")]
+        public Availability[] Schedule { get; private set; }
 
         public Guide(string Name, string Surname, string Mail, bool isCandidate = false)
             : base(Name, Surname, Mail)
         {
             IsCandidate = isCandidate;
-            Schedule = new Availability();
+            Schedule = new Availability[TimeBlocksPerDay];
         }
     }
 

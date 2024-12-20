@@ -132,6 +132,7 @@ dist
 .pnp.*
 
 #MACOS
+.vs
 .vscode
 .DS_Store
 .DS_Store?

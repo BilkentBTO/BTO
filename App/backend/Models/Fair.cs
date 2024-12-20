@@ -1,31 +1,31 @@
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using CsvHelper;
+using Microsoft.Net.Http.Headers;
 
 namespace backend.Models
 {
-    public class Fair(School school, string name, DateTime time)
+    public class Fair()
     {
-        public readonly int ID = school.GetHashCode() + name.GetHashCode();
-        public readonly School School = school;
-        public readonly string Name = name;
-        public readonly DateTime Time = time;
-
-        private readonly List<Guide> AssignedGuides = [];
+        public int ID { get; set; }
+        public DateTime? Time { get; set; }
+        public readonly FairRegistration? RegistirationInfo;
+        private readonly List<int> AssignedGuideIDs = [];
         private readonly List<Comment> Comments = [];
-
-
 
         public bool AddGuide(Guide guide)
         {
-            if (AssignedGuides.Contains(guide))
+            if (AssignedGuideIDs.Contains(guide.Id))
                 return false;
-            AssignedGuides.Add(guide);
+            AssignedGuideIDs.Add(guide.Id);
             return true;
         }
 
-        public bool RemoveCandidateGuide(Guide guide) => AssignedGuides.Remove(guide);
+        public bool RemoveCandidateGuide(Guide guide) => AssignedGuideIDs.Remove(guide.Id);
 
-        public bool CandidateGuideAssigned(Guide guide) => AssignedGuides.Contains(guide);
+        public bool CandidateGuideAssigned(Guide guide) => AssignedGuideIDs.Contains(guide.Id);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 

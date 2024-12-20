@@ -1,86 +1,74 @@
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    public class Availability
-    {
-        [Key]
-        public int Id { get; set; }
-
-        private bool[] Data;
-
-        public Availability()
-        {
-            Data = new bool[TimeBlocksPerDay];
-        }
-    }
-
     public class Survey_temp { }
 
     [Serializable]
-    public class Comment(string comment)
+    public struct Comment(string comment)
     {
         public readonly int ID = comment.GetHashCode();
         public string Text = comment;
-    }
-
-    [Serializable]
-    public struct TourRegistirationInfo(School school, string mailAddress, ushort studenCount)
-    {
-        public readonly School School = school;
-        public string MailAddress = mailAddress;
-        public ushort StudentCount = studenCount;
     }
 
     public class Tour()
     {
         public int ID { get; set; }
         public DateTime Time { get; private set; }
-        public readonly TourRegistirationInfo RegistirationInfo;
 
-        private Guide? AssignedGuide;
-        private readonly List<Guide> AssignedCandidateGuides = [];
+        public string? TourRegistrationCode { get; set; }
+
+        [NotMapped]
+        public TourRegistration? TourRegistirationInfo { get; set; }
+
+        public int? AssignedGuideID { get; private set; }
+        private readonly List<int> AssignedCandidateGuideIDs = [];
 
         private Survey_temp? Survey;
         private readonly List<Comment> Comments = [];
 
-        public int Priority => RegistirationInfo.School.GetPriority();
+        public int Priority { get; set; }
 
         public void ChangeTime(DateTime time) => Time = time;
 
-        public bool HasGuide() => AssignedGuide != null;
+        public bool HasGuide() => AssignedGuideID != null;
 
-        public Guide? GetAssignedGuide() => AssignedGuide;
+        public void FillTourRegistrationInfo(TourRegistration registration)
+        {
+            this.TourRegistirationInfo = registration;
+        }
 
         public void AssignGuide(Guide guide)
         {
             if (HasGuide())
                 RemoveGuide();
-            AssignedGuide = guide;
+            AssignedGuideID = guide.Id;
             // MAIL GUIDE ASSIGNED
         }
 
         public void RemoveGuide()
         {
-            AssignedGuide = null;
+            AssignedGuideID = null;
             // MAIL GUIDE REMOVED
         }
 
         public bool AddCandidateGuide(Guide guide)
         {
             // if (!guide.isCandidate) return false; !!!!  IMPLEMENT FOR ALL OR CHECK IT IN TOURSYSTEM
-            if (AssignedCandidateGuides.Contains(guide))
+            if (AssignedCandidateGuideIDs.Contains(guide.Id))
                 return false;
-            AssignedCandidateGuides.Add(guide);
+            AssignedCandidateGuideIDs.Add(guide.Id);
             return true;
         }
 
-        public bool RemoveCandidateGuide(Guide guide) => AssignedCandidateGuides.Remove(guide);
+        public bool RemoveCandidateGuide(Guide guide) => AssignedCandidateGuideIDs.Remove(guide.Id);
 
-        public bool CandidateGuideAssigned(Guide guide) => AssignedCandidateGuides.Contains(guide);
+        public bool CandidateGuideAssigned(Guide guide) =>
+            AssignedCandidateGuideIDs.Contains(guide.Id);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 
