@@ -40,6 +40,7 @@ function ManageFairRequests() {
 
   return (
     <div className="assignGuideToFairsPage">
+      <GlobalSidebar />
       <div className="rightSideCoorFunction">
         <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
         <div>
@@ -66,13 +67,21 @@ function ManageFairRequests() {
         </div>
 
         {selectedFair && (
-          <div className="popup">
-            <div className="popup-content">
+          <div className="popupOverlay">
+            <div className="popupContent">
               <h2>Fair Information</h2>
-              <p>School Name: {selectedFair[0]}</p>
-              <p>City: {selectedFair[1]}</p>
-              <p>Date of Visit: {selectedFair[2]}</p>
-              <p>Notes: {selectedFair[3]}</p>
+              <p>
+                <strong>School Name:</strong> {selectedFair[0]}
+              </p>
+              <p>
+                <strong>City:</strong> {selectedFair[1]}
+              </p>
+              <p>
+                <strong>Date of Visit:</strong> {selectedFair[2]}
+              </p>
+              <p>
+                <strong>Notes:</strong> {selectedFair[3]}
+              </p>
 
               <div className="popupActions">
                 <button
