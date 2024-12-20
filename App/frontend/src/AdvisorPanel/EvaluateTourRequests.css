@@ -4,25 +4,12 @@
     flex-direction: column;
     height: 100vh; /* Full viewport height */
     overflow-y: auto; /* Enable vertical scrolling if content overflows */
-    padding: 20px;
     box-sizing: border-box;
   }
-  
-  /* Optional: Style for the table */
-  .noDataTable,
-  .popupTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  .noDataTable th,
-  .noDataTable td,
-  .popupTable th,
-  .popupTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+  .evaluateTourRequestPage{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
   }
   
   /* Optional: Style for scrollable popup */
@@ -38,18 +25,13 @@
     align-items: center;
     overflow: auto; /* Enable scrolling for the popup if it overflows */
   }
-  
-  .requestPopupContent {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-height: 90vh; /* Ensure popup doesn’t exceed viewport */
-    overflow-y: auto; /* Scrollable content inside popup */
-    width: 90%;
-    max-width: 800px;
-  }
 
   .evaluateTourRequestsHeading{
     font-family: Arial, Helvetica, sans-serif;
     margin-left: 3%;
+  }
+
+  .noDataText{
+    margin-left: 3%;
+    font-family: Arial, Helvetica, sans-serif;
   }

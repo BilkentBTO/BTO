@@ -9,6 +9,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .assignedToursHeading{
@@ -26,7 +27,8 @@
   
   .popupActions {
     display: flex;
-    justify-content: space-between;
+    justify-content:center;
+    gap: 20px;
     margin-top: 20px;
   }
   
@@ -34,5 +36,11 @@
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
+  }
+
+  .toursResponsibleByGuidesPage{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
   }
   

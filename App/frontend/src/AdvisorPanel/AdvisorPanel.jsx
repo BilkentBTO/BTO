@@ -1,6 +1,7 @@
 import "./AdvisorPanel.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import { useNavigate } from "react-router-dom";
+import profileImage from "../assets/profile_image.png";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -10,6 +11,7 @@ function AdvisorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(""); // State to hold the user's role
+  const [username, setUserName] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -24,6 +26,12 @@ function AdvisorPanel() {
           ] || decodedToken.role; // Use "role" if no namespace is used
         setUserRole(roleClaim || "User");
 
+        const nameClaim =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+          ];
+        setUserName(nameClaim || "Unknown");
+
         console.log("Decoded Token:", decodedToken);
         console.log("Role:", roleClaim);
       } catch (error) {
@@ -35,6 +43,12 @@ function AdvisorPanel() {
       navigate("/login"); // Redirect to login if no token is found
     }
   }, [navigate]);
+
+  const handleLogout = () => {
+    console.log("Logout");
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
 
   // Sidebar navigation based on role
   const sidebarOptions = {
@@ -75,8 +89,6 @@ function AdvisorPanel() {
     navigate("/advisorPanel/evaluateTourRequests");
   };
 
-  const handleAccessMessagePanelClick = () => {};
-
   const handleAccessGuidePanelClick = () => {
     console.log("Guide Panel button clicked");
     navigate("/guidePanel");
@@ -89,7 +101,6 @@ function AdvisorPanel() {
 
   return (
     <div className="advisorPanel">
-      <HeaderPanelGlobal name={"ADVISOR PANEL"} />
       <div className="innerAdvisor">
         <div className="leftSideAdvisor">
           <div className="sidebar">
@@ -105,12 +116,27 @@ function AdvisorPanel() {
                     marginBottom: "10px",
                     cursor: "pointer",
                     textAlign: "center",
+                    backgroundColor: location.pathname.startsWith(option.path)
+                      ? "#1e1e64"
+                      : "#3c3c82",
+                    color: location.pathname.startsWith(option.path)
+                      ? "white"
+                      : "white",
                   }}
                 >
                   {option.label}
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="bottomSidebarSection">
+            <div className="profileSidebarSection">
+              <img src={profileImage}></img>
+              <span>{username}</span>
+            </div>
+            <div className="logoutSidebarSection">
+              <button onClick={handleLogout}>LOGOUT</button>
+            </div>
           </div>
         </div>
         <div className="buttonAdvisorPanelSection">
@@ -120,10 +146,6 @@ function AdvisorPanel() {
 
           <button onClick={handleEvaluateTourRequestsClick}>
             Evaluate Tour Requests
-          </button>
-
-          <button onClick={handleAccessMessagePanelClick}>
-            Access Message Panel
           </button>
 
           <button onClick={handleResponsibleToursClick}>

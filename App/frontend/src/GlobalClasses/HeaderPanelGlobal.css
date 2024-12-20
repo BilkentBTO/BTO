@@ -3,7 +3,7 @@
     padding: 15px;
     max-height: 120px;
     display:flex; /* Enable Flexbox for horizontal layout */
-    justify-content: space-between; /* Space between the left and right sections */
+    justify-content: center; /* Space between the left and right sections */
     align-items: center;
 }
 
@@ -11,7 +11,6 @@
     display: flex;
     align-items: center; /* Vertically center the text within this container */
     justify-content: center; /* Horizontally center (useful for block-like elements) */
-    margin-right: 15%;
     font-family: 'Arial', sans-serif;
     height: 100%; /* Make it take full height of the header */
     color:white;

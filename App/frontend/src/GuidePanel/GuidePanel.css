@@ -11,7 +11,7 @@
 
 .innerGuide {
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-    url("../assets/bilkentPanelImage.png");
+    url("../assets/libraryBilkent.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-color: blueviolet;
@@ -22,7 +22,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 90vh;
+    height: 100vh;
 }
 
 .buttonGuidePanelSection button {
@@ -44,4 +44,62 @@
 .leftSideGuide{
     height: 100%;
     background-color: rgb(60, 60, 130);
+
 }
+.profileSidebarSection {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Add spacing between the image and the text */
+    height: 60px;
+    width: 250px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 8px; /* Add rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow for better visuals */
+}
+
+.profileSidebarSection img {
+    height: 100%;
+    width: 60px; /* Make the image square */
+    border-radius: 50%; /* Make the image circular */
+    object-fit: cover; /* Ensure the image scales correctly */
+    border: 2px solid white; /* Add a border around the image for better contrast */
+}
+
+.profileSidebarSection span {
+    margin: 0; /* Remove default margin */
+    color: white; /* Set text color */
+    font-size: 1.2rem; /* Adjust font size */
+    font-weight: bold; /* Make the text bold */
+    white-space: nowrap; /* Prevent text wrapping */
+    text-overflow: ellipsis; /* Add ellipsis if the text overflows */
+    overflow: hidden; /* Hide overflow text */
+    flex: 1; /* Allow the text to take up remaining space */
+}
+.bottomSidebarSection{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 270px;
+    position: absolute;
+    gap: 10px;
+    bottom: 10px;
+    left: 10px;
+}
+.bottomSidebarSection button{
+    background-color: red;
+    color: white;
+    height: 30px;
+    border-radius: 10px;
+    border: 0;
+    width: auto;
+}
+.leftSideGuideFunction{
+    height: 100%;
+    background-color: rgb(60, 60, 130);
+  
+  }
+  .rightSideGuideFunction{
+    width: 100%;
+  }

@@ -6,7 +6,11 @@
     width: 100%;
     box-sizing: border-box;
 }
-
+.editAvailableHours{
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
 .innerEditPage .rightInner{
     width: 50%;
     min-width: 600px; /* Prevent shrinking below 600px */
