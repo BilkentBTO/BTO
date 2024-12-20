@@ -72,9 +72,6 @@ function AssignedFairs() {
           <h1 className="assignedFairsHeading">Assigned Fairs</h1>
           <Table headers={headers} data={data} />
         </div>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
-        </div>
       </div>
     </div>
   );
