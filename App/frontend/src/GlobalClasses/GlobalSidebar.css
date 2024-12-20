@@ -7,7 +7,7 @@
     height: 60px;
     width: 250px;
     padding: 10px;
-    border: 2px solid black;
+    border: 2px solid rgb(255, 255, 255);
     border-radius: 8px; /* Add rounded corners */
 
 }
@@ -56,7 +56,7 @@
     width: 250px;
     padding: 10px;
     height: auto;
-    border: 2px solid black;
+    border: 2px solid rgb(255, 255, 255);
     opacity: 1;
   }
 .bottomSidebarSection .profileSidebarSection:hover{
