@@ -57,18 +57,34 @@ function ListCoordinatorsPage() {
           <div className="popupOverlay">
             <div className="popupContent">
               <h2>Coordinator Information</h2>
-              <p>
-                <strong>Name:</strong> {selectedCoordinator[0]}
-              </p>
-              <p>
-                <strong>Surname:</strong> {selectedCoordinator[1]}
-              </p>
-              <p>
-                <strong>Username:</strong> {selectedCoordinator[2]}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedCoordinator[3]}
-              </p>
+              <table className="popupTable">
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>Name</strong>
+                    </td>
+                    <td>{selectedCoordinator[0]}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Surname</strong>
+                    </td>
+                    <td>{selectedCoordinator[1]}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Username</strong>
+                    </td>
+                    <td>{selectedCoordinator[2]}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Email</strong>
+                    </td>
+                    <td>{selectedCoordinator[3]}</td>
+                  </tr>
+                </tbody>
+              </table>
               <div className="popupActions">
                 <button
                   style={{

@@ -359,22 +359,86 @@ function EvaluateTourRequests() {
                 </table>
                 {/* Conditional rendering for buttons */}
                 {selectedRow.state === 1 ? ( // Accepted rows
-                  <button style={buttonStyle} onClick={closePopup}>
+                  <button
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "grey",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={closePopup}
+                  >
                     Close
                   </button>
                 ) : (
                   // Pending rows
-                  <>
-                    <button style={buttonStyle} onClick={acceptPopup}>
+                  <div className="popupActions">
+                    <button
+                      style={{
+                        padding: "8px 16px",
+                        backgroundColor: "green",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        width: "100%",
+                        maxWidth: "120px",
+                        textAlign: "center",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onClick={acceptPopup}
+                    >
                       Approve
                     </button>
-                    <button style={buttonStyle} onClick={rejectPopup}>
+                    <button
+                      style={{
+                        padding: "8px 16px",
+                        backgroundColor: "red",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        width: "100%",
+                        maxWidth: "120px",
+                        textAlign: "center",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onClick={rejectPopup}
+                    >
                       Reject
                     </button>
-                    <button style={buttonStyle} onClick={closePopup}>
+                    <button
+                      style={{
+                        padding: "8px 16px",
+                        backgroundColor: "grey",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        width: "100%",
+                        maxWidth: "120px",
+                        textAlign: "center",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onClick={closePopup}
+                    >
                       Close
                     </button>
-                  </>
+                  </div>
                 )}
               </div>
             </div>

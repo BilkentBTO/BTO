@@ -123,26 +123,37 @@ function AssignedToursPage() {
                 <button
                   onClick={confirmRemove}
                   style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#dc3545",
+                    padding: "8px 16px",
+                    backgroundColor: "red",
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
                     cursor: "pointer",
-                    marginRight: "10px",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
                   }}
                 >
-                  Confirm
+                  Remove
                 </button>
                 <button
                   onClick={cancelRemove}
                   style={{
-                    padding: "10px 20px",
-                    backgroundColor: "#6c757d",
+                    padding: "8px 16px",
+                    backgroundColor: "grey",
                     color: "white",
                     border: "none",
                     borderRadius: "4px",
                     cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
                   }}
                 >
                   Cancel

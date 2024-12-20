@@ -118,7 +118,7 @@ function GuideRequests() {
       {popupVisible && selectedRow && (
         <div className="popupOverlay">
           <div className="popupContent">
-            <h2>Decision for Guide Request</h2>
+            <h2>Decision for Guide Tour Request</h2>
             <p>
               <strong>Guide:</strong> {selectedRow[0]}
             </p>

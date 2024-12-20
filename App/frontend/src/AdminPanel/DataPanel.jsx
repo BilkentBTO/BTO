@@ -73,23 +73,47 @@ function DataPanel() {
         {showPopup && (
           <div className="popupOverlay">
             <div className="popupContent">
-              <h2>{popupContent.school}</h2>
-              <p>
-                <strong>Location:</strong> {popupContent.location}
-              </p>
-              <p>
-                <strong>Student Number:</strong> {popupContent.studentNumber}
-              </p>
-              <p>
-                <strong>Students Sent to Bilkent:</strong>{" "}
-                {popupContent.sentToBilkent}
-              </p>
-              <p>
-                <strong>YKS Rating:</strong> {popupContent.yksRating}
-              </p>
-              <p>
-                <strong>Relation Status:</strong> {popupContent.relationStatus}
-              </p>
+              <h2>Details for {popupContent.school}</h2>
+              <table className="popupTable">
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>School</strong>
+                    </td>
+                    <td>{popupContent.school}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Location</strong>
+                    </td>
+                    <td>{popupContent.location}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Student Number</strong>
+                    </td>
+                    <td>{popupContent.studentNumber}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Students Sent to Bilkent</strong>
+                    </td>
+                    <td>{popupContent.sentToBilkent}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>YKS Rating</strong>
+                    </td>
+                    <td>{popupContent.yksRating}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Relation Status</strong>
+                    </td>
+                    <td>{popupContent.relationStatus}</td>
+                  </tr>
+                </tbody>
+              </table>
               <button
                 onClick={closePopup}
                 style={{
