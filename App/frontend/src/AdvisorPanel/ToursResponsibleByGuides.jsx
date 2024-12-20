@@ -36,12 +36,17 @@ function ToursResponsibleByGuides() {
   };
 
   const buttonStyle = {
-    padding: "5px 10px",
-    backgroundColor: "blue",
+    padding: "8px 16px",
+    backgroundColor: "#1e1e64",
     color: "white",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
   const buttonName = "Edit";

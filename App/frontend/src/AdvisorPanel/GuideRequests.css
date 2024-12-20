@@ -19,3 +19,8 @@
     width: 400px;
     text-align: center;
   }
+
+  .guideRequestsHeading{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 3%;
+  }
