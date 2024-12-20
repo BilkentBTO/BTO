@@ -175,9 +175,6 @@ function ResponsibleTours() {
           <h1 className="responsibleToursHeading">Responsible Tours</h1>
           <Table headers={headers} data={data} />
         </div>
-        <div className="contactSection">
-          <p className="contactInfo"></p>
-        </div>
       </div>
     </div>
   );
