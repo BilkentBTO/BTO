@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static BTO.Constrains.TimeConstrains;
+using backend.Database;
 
 namespace backend.Models
 {
@@ -28,43 +29,37 @@ namespace backend.Models
             DailySchedule = isAvailable ? (DailySchedule | mask) : (DailySchedule & ~mask);
         }
     }
-    public class Schedule
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; }
-
-        public TimeBlock[] TimeBlocks;
-
-        public Schedule()
-        {
-            TimeBlocks = new TimeBlock[TimeBlocksPerDay];
-        }
-
-        public bool AddTour(Tour tour, int entranceTimeBlockID)
-        {
-            if (tour == null)
-                return false;
-            if (entranceTimeBlockID < 0 || entranceTimeBlockID >= TimeBlocks.Length)
-                return false;
-
-            TimeBlock? SelectedTimeBlock = TimeBlocks[entranceTimeBlockID];
-            if (SelectedTimeBlock == null)
-                TimeBlocks[entranceTimeBlockID] = SelectedTimeBlock = new TimeBlock();
-
-            SelectedTimeBlock.AddTour(tour);
-            return true;
-        }
-    }
 
     public class TimeBlock
     {
         private const byte MAX_TOURS_PER_BLOCK = 3;
         private const int PRIORITY_BIAS = 100;
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        DateTime _day;
+        [Required] DateTime Day
+        {
+            get => _day;
+            set
+            {
+                _day = value;
+                ReCalculateID();
+            }
+        }
+        int _timeBlockIndex;
+        [Required] int TimeBlockIndex
+        {
+            get => _timeBlockIndex;
+            set
+            {
+                if (value < 0 || value >= TimeBlocksPerDay)
+                    return;
+                _timeBlockIndex = value;
+                ReCalculateID();
+            }
+        }
+
         public int ID { get; set; }
+        private void ReCalculateID() => ID = Day.GetHashCode() * TimeBlocksPerDay + TimeBlockIndex;
         public int MaxStudentCount { get; private set; }
 
         // int, int = tourID, tourPriority
