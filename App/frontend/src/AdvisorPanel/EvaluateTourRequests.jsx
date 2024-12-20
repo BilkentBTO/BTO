@@ -384,7 +384,7 @@ function EvaluateTourRequests() {
               buttonName="Decide"
             />
           ) : (
-            renderNoDataTable(headers, "No Pending Tour Requests")
+            <p className="noDataText">No Pending Tour Requests</p>
           )}
 
           {/* Accepted Requests */}
@@ -404,7 +404,7 @@ function EvaluateTourRequests() {
               buttonName="View"
             />
           ) : (
-            renderNoDataTable(headers, "No Accepted Tour Requests")
+            <p className="noDataText">No Accepted Tour Requests</p>
           )}
 
           {/* Rejected Requests */}
@@ -424,7 +424,7 @@ function EvaluateTourRequests() {
               buttonName="Delete"
             />
           ) : (
-            renderNoDataTable(headers, "No Rejected Tour Requests")
+            <p className="noDataText">No Rejected Tour Requests</p>
           )}
 
           {/* Popup */}
