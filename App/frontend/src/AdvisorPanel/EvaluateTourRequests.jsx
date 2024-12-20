@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./EvaluateTourRequests.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
+import profileImage from "../assets/profile_image.png";
+import { jwtDecode } from "jwt-decode";
 
 function renderNoDataTable(headers, message = "No Available Data") {
   return (
@@ -24,6 +26,7 @@ function renderNoDataTable(headers, message = "No Available Data") {
     </table>
   );
 }
+
 function EvaluateTourRequests() {
   const [headers] = useState(["Tour ID", "School", "State"]);
   const [popupHeaders] = useState([
@@ -63,6 +66,69 @@ function EvaluateTourRequests() {
     maxWidth: "120px",
     textAlign: "center",
     transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+  const navigate = useNavigate();
+  const [username, setUserName] = useState("");
+  const [userRole, setUserRole] = useState(""); // State to hold the user's role
+
+  // Simulate fetching the user's role from an API or global state
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    console.log("TOKEN: ", token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // Decode the token
+        // Extract the role claim (adjust based on your JWT structure)
+        const roleClaim =
+          decodedToken[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ] || decodedToken.role; // Use "role" if no namespace is used
+        setUserRole(roleClaim || "User");
+
+        const nameClaim =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+          ];
+        setUserName(nameClaim || "Unknown");
+
+        console.log("Decoded Token:", decodedToken);
+        console.log("Role:", roleClaim);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        navigate("/login"); // Redirect to login if token is invalid
+      }
+    } else {
+      console.log("No token found");
+      navigate("/login"); // Redirect to login if no token is found
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    console.log("Logout");
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
+
+  const navigateToSection = (path) => {
+    navigate(path);
+  };
+  const sidebarOptions = {
+    Admin: [
+      { label: "Admin Panel", path: "/adminPanel" },
+      { label: "Coordinator Panel", path: "/coordinatorPanel" },
+      { label: "Advisor Panel", path: "/advisorPanel" },
+      { label: "Guide Panel", path: "/guidePanel" },
+    ],
+    Coordinator: [
+      { label: "Coordinator Panel", path: "/coordinatorPanel" },
+      { label: "Advisor Panel", path: "/advisorPanel" },
+      { label: "Guide Panel", path: "/guidePanel" },
+    ],
+    Advisor: [
+      { label: "Advisor Panel", path: "/advisorPanel" },
+      { label: "Guide Panel", path: "/guidePanel" },
+    ],
+    Guide: [{ label: "Guide Panel", path: "/guidePanel" }],
   };
 
   const fetchTourRequests = async () => {
@@ -262,113 +328,156 @@ function EvaluateTourRequests() {
   };
 
   return (
-    <div>
-      <HeaderPanelGlobal name={"EVALUATE TOUR REQUESTS"} />
-      <div className="evaluateTourRequests">
-        {/* Pending Requests */}
-        <h1 className="evaluateTourRequestsHeading">Pending Tour Requests</h1>
-        {pendingData.length > 0 ? (
-          <TableWithButtons
-            headers={headers}
-            data={pendingData.map((item) => [
-              item.code,
-              item.school?.schoolName || "N/A",
-              "Pending",
-            ])}
-            onButtonClick={handleRowClick}
-            buttonStyle={buttonStyle}
-            buttonName="Decide"
-          />
-        ) : (
-          renderNoDataTable(headers, "No Pending Tour Requests")
-        )}
+    <div className="evaluateTourRequestPage">
+      <div className="leftSideAdvisorFunction">
+        <div className="sidebar">
+          <h3>Navigation</h3>
+          <ul>
+            {sidebarOptions[userRole]?.map((option, index) => (
+              <li
+                key={index}
+                onClick={() => navigateToSection(option.path)}
+                style={{
+                  border: "1px solid white",
+                  padding: "10px",
+                  marginBottom: "10px",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  backgroundColor: location.pathname.startsWith(option.path)
+                    ? "#1e1e64"
+                    : "#3c3c82",
+                  color: location.pathname.startsWith(option.path)
+                    ? "white"
+                    : "white",
+                }}
+              >
+                {option.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="bottomSidebarSection">
+          <div className="profileSidebarSection">
+            <img src={profileImage}></img>
+            <span>{username}</span>
+          </div>
+          <div className="logoutSidebarSection">
+            <button onClick={handleLogout}>LOGOUT</button>
+          </div>
+        </div>
+      </div>
+      <div className="rightSideAdvisorFunction">
+        <div className="evaluateTourRequests">
+          <HeaderPanelGlobal name={"EVALUATE TOUR REQUESTS"} />
+          {/* Pending Requests */}
+          <h1 className="evaluateTourRequestsHeading">Pending Tour Requests</h1>
+          {pendingData.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={pendingData.map((item) => [
+                item.code,
+                item.school?.schoolName || "N/A",
+                "Pending",
+              ])}
+              onButtonClick={handleRowClick}
+              buttonStyle={buttonStyle}
+              buttonName="Decide"
+            />
+          ) : (
+            renderNoDataTable(headers, "No Pending Tour Requests")
+          )}
 
-        {/* Accepted Requests */}
-        <h1 className="evaluateTourRequestsHeading">Accepted Tour Requests</h1>
-        {acceptedData.length > 0 ? (
-          <TableWithButtons
-            headers={headers}
-            data={acceptedData.map((item) => [
-              item.code,
-              item.school?.schoolName || "N/A",
-              "Accepted",
-            ])}
-            onButtonClick={handleAcceptedRowClick}
-            buttonStyle={buttonStyle}
-            buttonName="View"
-          />
-        ) : (
-          renderNoDataTable(headers, "No Accepted Tour Requests")
-        )}
+          {/* Accepted Requests */}
+          <h1 className="evaluateTourRequestsHeading">
+            Accepted Tour Requests
+          </h1>
+          {acceptedData.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={acceptedData.map((item) => [
+                item.code,
+                item.school?.schoolName || "N/A",
+                "Accepted",
+              ])}
+              onButtonClick={handleAcceptedRowClick}
+              buttonStyle={buttonStyle}
+              buttonName="View"
+            />
+          ) : (
+            renderNoDataTable(headers, "No Accepted Tour Requests")
+          )}
 
-        {/* Rejected Requests */}
-        <h1 className="evaluateTourRequestsHeading">Rejected Tour Requests</h1>
-        {rejectedData.length > 0 ? (
-          <TableWithButtons
-            headers={headers}
-            data={rejectedData.map((item) => [
-              item.code,
-              item.school?.schoolName || "N/A",
-              "Rejected",
-            ])}
-            onButtonClick={(row) => handleDelete(row[0])}
-            buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
-            buttonName="Delete"
-          />
-        ) : (
-          renderNoDataTable(headers, "No Rejected Tour Requests")
-        )}
+          {/* Rejected Requests */}
+          <h1 className="evaluateTourRequestsHeading">
+            Rejected Tour Requests
+          </h1>
+          {rejectedData.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={rejectedData.map((item) => [
+                item.code,
+                item.school?.schoolName || "N/A",
+                "Rejected",
+              ])}
+              onButtonClick={(row) => handleDelete(row[0])}
+              buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
+              buttonName="Delete"
+            />
+          ) : (
+            renderNoDataTable(headers, "No Rejected Tour Requests")
+          )}
 
-        {/* Popup */}
-        {/* Popup */}
-        {popupVisible && selectedRow && (
-          <div className="requestPopupOverlay">
-            <div className="requestPopupContent">
-              <h2>Tour Details</h2>
-              <table className="popupTable">
-                <tbody>
-                  {popupHeaders.map((header, index) => {
-                    const keyPath = headerKeyMap[header]; // Match header to object key
-                    const value = keyPath
-                      .split(".")
-                      .reduce(
-                        (acc, key) => (acc && acc[key] ? acc[key] : "N/A"),
-                        selectedRow
+          {/* Popup */}
+          {/* Popup */}
+          {popupVisible && selectedRow && (
+            <div className="requestPopupOverlay">
+              <div className="requestPopupContent">
+                <h2>Tour Details</h2>
+                <table className="popupTable">
+                  <tbody>
+                    {popupHeaders.map((header, index) => {
+                      const keyPath = headerKeyMap[header]; // Match header to object key
+                      const value = keyPath
+                        .split(".")
+                        .reduce(
+                          (acc, key) => (acc && acc[key] ? acc[key] : "N/A"),
+                          selectedRow
+                        );
+
+                      return (
+                        <tr key={index}>
+                          <td>
+                            <strong>{header}:</strong>
+                          </td>
+                          <td>{value}</td>
+                        </tr>
                       );
-
-                    return (
-                      <tr key={index}>
-                        <td>
-                          <strong>{header}:</strong>
-                        </td>
-                        <td>{value}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-              {/* Conditional rendering for buttons */}
-              {selectedRow.state === 1 ? ( // Accepted rows
-                <button style={buttonStyle} onClick={closePopup}>
-                  Close
-                </button>
-              ) : (
-                // Pending rows
-                <>
-                  <button style={buttonStyle} onClick={acceptPopup}>
-                    Approve
-                  </button>
-                  <button style={buttonStyle} onClick={rejectPopup}>
-                    Reject
-                  </button>
+                    })}
+                  </tbody>
+                </table>
+                {/* Conditional rendering for buttons */}
+                {selectedRow.state === 1 ? ( // Accepted rows
                   <button style={buttonStyle} onClick={closePopup}>
                     Close
                   </button>
-                </>
-              )}
+                ) : (
+                  // Pending rows
+                  <>
+                    <button style={buttonStyle} onClick={acceptPopup}>
+                      Approve
+                    </button>
+                    <button style={buttonStyle} onClick={rejectPopup}>
+                      Reject
+                    </button>
+                    <button style={buttonStyle} onClick={closePopup}>
+                      Close
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
