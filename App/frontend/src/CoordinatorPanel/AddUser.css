@@ -8,12 +8,13 @@
   }
   
   .innerAddUserPage {
-    background-color: white;
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    width: 100%;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px; /* Rounded corners for the form */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+    max-width: 500px; /* Limit the width of the form */
+    width: 100%; /* Make it responsive */
   }
   
   .userForm {
