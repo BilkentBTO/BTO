@@ -9,6 +9,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .assignedToursHeading{

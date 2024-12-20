@@ -8,23 +8,6 @@
     box-sizing: border-box;
   }
   
-  /* Optional: Style for the table */
-  .noDataTable,
-  .popupTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  .noDataTable th,
-  .noDataTable td,
-  .popupTable th,
-  .popupTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  
   /* Optional: Style for scrollable popup */
   .requestPopupOverlay {
     position: fixed;
@@ -37,16 +20,6 @@
     justify-content: center;
     align-items: center;
     overflow: auto; /* Enable scrolling for the popup if it overflows */
-  }
-  
-  .requestPopupContent {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-height: 90vh; /* Ensure popup doesn’t exceed viewport */
-    overflow-y: auto; /* Scrollable content inside popup */
-    width: 90%;
-    max-width: 800px;
   }
 
   .evaluateTourRequestsHeading{

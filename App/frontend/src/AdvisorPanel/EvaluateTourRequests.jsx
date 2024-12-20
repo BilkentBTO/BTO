@@ -267,63 +267,53 @@ function EvaluateTourRequests() {
       <div className="evaluateTourRequests">
         {/* Pending Requests */}
         <h1 className="evaluateTourRequestsHeading">Pending Tour Requests</h1>
-        {pendingData.length > 0 ? (
-          <TableWithButtons
-            headers={headers}
-            data={pendingData.map((item) => [
-              item.code,
-              item.school?.schoolName || "N/A",
-              "Pending",
-            ])}
-            onButtonClick={handleRowClick}
-            buttonStyle={buttonStyle}
-            buttonName="Decide"
-          />
-        ) : (
-          renderNoDataTable(headers, "No Pending Tour Requests")
-        )}
+
+        <TableWithButtons
+          headers={headers}
+          data={pendingData.map((item) => [
+            item.code,
+            item.school?.schoolName || "N/A",
+            "Pending",
+          ])}
+          onButtonClick={handleRowClick}
+          buttonStyle={buttonStyle}
+          buttonName="Decide"
+        />
 
         {/* Accepted Requests */}
         <h1 className="evaluateTourRequestsHeading">Accepted Tour Requests</h1>
-        {acceptedData.length > 0 ? (
-          <TableWithButtons
-            headers={headers}
-            data={acceptedData.map((item) => [
-              item.code,
-              item.school?.schoolName || "N/A",
-              "Accepted",
-            ])}
-            onButtonClick={handleAcceptedRowClick}
-            buttonStyle={buttonStyle}
-            buttonName="View"
-          />
-        ) : (
-          renderNoDataTable(headers, "No Accepted Tour Requests")
-        )}
+
+        <TableWithButtons
+          headers={headers}
+          data={acceptedData.map((item) => [
+            item.code,
+            item.school?.schoolName || "N/A",
+            "Accepted",
+          ])}
+          onButtonClick={handleAcceptedRowClick}
+          buttonStyle={buttonStyle}
+          buttonName="View"
+        />
 
         {/* Rejected Requests */}
         <h1 className="evaluateTourRequestsHeading">Rejected Tour Requests</h1>
-        {rejectedData.length > 0 ? (
-          <TableWithButtons
-            headers={headers}
-            data={rejectedData.map((item) => [
-              item.code,
-              item.school?.schoolName || "N/A",
-              "Rejected",
-            ])}
-            onButtonClick={(row) => handleDelete(row[0])}
-            buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
-            buttonName="Delete"
-          />
-        ) : (
-          renderNoDataTable(headers, "No Rejected Tour Requests")
-        )}
+
+        <TableWithButtons
+          headers={headers}
+          data={rejectedData.map((item) => [
+            item.code,
+            item.school?.schoolName || "N/A",
+            "Rejected",
+          ])}
+          onButtonClick={(row) => handleDelete(row[0])}
+          buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
+          buttonName="Delete"
+        />
 
         {/* Popup */}
-        {/* Popup */}
         {popupVisible && selectedRow && (
-          <div className="requestPopupOverlay">
-            <div className="requestPopupContent">
+          <div className="popupOverlay">
+            <div className="popupContent">
               <h2>Tour Details</h2>
               <table className="popupTable">
                 <tbody>

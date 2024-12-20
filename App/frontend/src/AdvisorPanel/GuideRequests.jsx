@@ -15,6 +15,48 @@ function GuideRequests() {
     ["egeertem", "Tour 98", "Decision Waiting"],
   ];
 
+  const buttonStyleApprove = {
+    padding: "8px 16px",
+    backgroundColor: "green",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+
+  const buttonStyleDeny = {
+    padding: "8px 16px",
+    backgroundColor: "red",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+
+  const buttonStyleReturn = {
+    padding: "8px 16px",
+    backgroundColor: "grey",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    width: "100%",
+    maxWidth: "120px",
+    textAlign: "center",
+    transition: "background-color 0.3s ease, transform 0.2s ease",
+  };
+
   const buttonStyle = {
     padding: "8px 16px",
     backgroundColor: "#1e1e64",
@@ -70,8 +112,8 @@ function GuideRequests() {
         />
       </div>
       {popupVisible && selectedRow && (
-        <div className="requestPopupOverlay">
-          <div className="requestPopupContent">
+        <div className="popupOverlay">
+          <div className="popupContent">
             <h2>Decision for Guide Request</h2>
             <p>
               <strong>Guide:</strong> {selectedRow[0]}
@@ -79,32 +121,25 @@ function GuideRequests() {
             <p>
               <strong>Tour:</strong> {selectedRow[1]}
             </p>
-            <div className="requestPopupButtons">
+            <div className="popupActions">
               <button
                 className="requestPopupButton"
                 onClick={approve}
-                style={{ margin: "5px" }}
+                style={buttonStyleApprove}
               >
                 Approve
               </button>
               <button
                 className="requestPopupButton"
                 onClick={deny}
-                style={{ margin: "5px" }}
+                style={buttonStyleDeny}
               >
                 Deny
               </button>
               <button
                 className="requestPopupButton"
-                onClick={proposeDate}
-                style={{ margin: "5px" }}
-              >
-                Propose Another Day
-              </button>
-              <button
-                className="requestPopupButton"
                 onClick={closePopup}
-                style={{ margin: "5px" }}
+                style={buttonStyleReturn}
               >
                 Return
               </button>
