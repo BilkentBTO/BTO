@@ -8,10 +8,10 @@ namespace backend.Database
         private readonly SystemDbContext _context;
         private readonly ILogger _logger;
 
-        public ScheduleDatabaseController(SystemDbContext context, ILogger logger)
+        public ScheduleDatabaseController(SystemDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
         public async Task<bool> AddTour(Tour tour)
