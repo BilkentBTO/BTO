@@ -126,7 +126,6 @@ namespace backend.Database
             };
             Tour sampleTour1 = new Tour
             {
-                ID = 0,
                 Time = sampleTourRegistration1.DateOfVisit,
                 TourRegistrationCode = sampleTourRegistration1.Code,
                 TourRegistirationInfo = sampleTourRegistration1,

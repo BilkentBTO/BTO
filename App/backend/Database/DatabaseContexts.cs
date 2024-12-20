@@ -52,9 +52,9 @@ namespace backend.Database
 
             modelBuilder.Entity<TimeBlock>().HasKey(t => t.ID);
 
-            modelBuilder.Entity<Tour>().HasKey(t => t.ID);
+            modelBuilder.Entity<Tour>().HasKey(t => t.TourRegistrationCode);
 
-            modelBuilder.Entity<Fair>().HasKey(f => f.ID);
+            modelBuilder.Entity<Fair>().HasKey(f => f.FairRegistrationCode);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);

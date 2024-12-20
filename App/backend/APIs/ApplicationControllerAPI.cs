@@ -27,13 +27,13 @@ namespace backend.Server.Controllers
             {
                 return BadRequest(new { message = "Invalid User ID.", errors = ModelState });
             }
-            if (request.TourID < 0)
+            if (string.IsNullOrEmpty(request.TourCode))
             {
                 return BadRequest(new { message = "Invalid Tour ID.", errors = ModelState });
             }
 
             var result = await _controller.AddGuideTourApplication(
-                request.TourID,
+                request.TourCode,
                 request.GuideUID
             );
             if (result == ErrorTypes.TourNotFound)

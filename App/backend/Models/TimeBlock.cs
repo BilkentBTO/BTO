@@ -71,46 +71,79 @@ namespace backend.Models
 
         public int MaxStudentCount { get; private set; }
 
-        // int, int = tourID, tourPriority
-        public readonly SortedList<int, int> ScheduledTours = new(MAX_TOURS_PER_BLOCK);
-        public readonly SortedList<int, int> AlternativeTours = [];
+        public readonly List<KeyValuePair<string, int>> ScheduledTours = new(MAX_TOURS_PER_BLOCK);
+        public readonly List<KeyValuePair<string, int>> AlternativeTours = [];
 
         public int ToursCount => ScheduledTours.Count + AlternativeTours.Count;
 
         public void AddTour(Tour tour)
         {
+            if (string.IsNullOrEmpty(tour.TourRegistrationCode))
+            {
+                return;
+            }
+
             if (ScheduledTours.Count == MaxStudentCount)
             {
-                int leastPriorityScheduled = ScheduledTours.GetValueAtIndex(0);
-                if (leastPriorityScheduled + PRIORITY_BIAS < tour.Priority)
+                var leastPriorityScheduled = ScheduledTours.OrderBy(t => t.Value).First();
+                if (leastPriorityScheduled.Value + PRIORITY_BIAS < tour.Priority)
                 {
-                    int leastPriorityTour = ScheduledTours.GetKeyAtIndex(0);
-                    ScheduledTours.RemoveAt(0);
-                    ScheduledTours.Add(tour.ID, tour.Priority);
+                    ScheduledTours.Remove(leastPriorityScheduled);
+
+                    ScheduledTours.Add(
+                        new KeyValuePair<string, int>(tour.TourRegistrationCode, tour.Priority)
+                    );
 
                     // MAIL leastPriorityTour CANCEL
                 }
                 else
-                    AlternativeTours.Add(tour.ID, tour.Priority);
+                    AlternativeTours.Add(
+                        new KeyValuePair<string, int>(tour.TourRegistrationCode, tour.Priority)
+                    );
             }
             else
             {
-                ScheduledTours.Add(tour.ID, tour.Priority);
+                ScheduledTours.Add(
+                    new KeyValuePair<string, int>(tour.TourRegistrationCode, tour.Priority)
+                );
                 // MAIL tour ACCEPTED
             }
+            ScheduledTours.Sort((a, b) => a.Value.CompareTo(b.Value));
         }
 
         public void AcceptAlternativeTour(Tour scheduledTour, Tour acceptedTour)
         {
             if (
-                ScheduledTours.ContainsKey(scheduledTour.ID)
-                && AlternativeTours.ContainsKey(acceptedTour.ID)
+                string.IsNullOrEmpty(acceptedTour.TourRegistrationCode)
+                || string.IsNullOrEmpty(scheduledTour.TourRegistrationCode)
             )
             {
-                AlternativeTours.Remove(acceptedTour.ID);
-                ScheduledTours.Remove(scheduledTour.ID);
+                return;
+            }
+            var scheduledTourEntry = ScheduledTours.FirstOrDefault(t =>
+                t.Key == scheduledTour.TourRegistrationCode
+            );
+            var acceptedTourEntry = AlternativeTours.FirstOrDefault(t =>
+                t.Key == acceptedTour.TourRegistrationCode
+            );
 
-                ScheduledTours.Add(acceptedTour.ID, acceptedTour.Priority);
+            if (
+                !scheduledTourEntry.Equals(default(KeyValuePair<string, int>))
+                && !acceptedTourEntry.Equals(default(KeyValuePair<string, int>))
+            )
+            {
+                AlternativeTours.Remove(acceptedTourEntry);
+
+                ScheduledTours.Remove(scheduledTourEntry);
+
+                ScheduledTours.Add(
+                    new KeyValuePair<string, int>(
+                        acceptedTour.TourRegistrationCode,
+                        acceptedTour.Priority
+                    )
+                );
+
+                ScheduledTours.Sort((a, b) => a.Value.CompareTo(b.Value));
 
                 // MAIL scheduledTour CANCELLED acceptedTour ACCEPTED
             }
@@ -118,15 +151,32 @@ namespace backend.Models
 
         public void RemoveTour(Tour tour)
         {
-            if (AlternativeTours.Remove(tour.ID))
-                return;
-
-            if (ScheduledTours.Remove(tour.ID) && AlternativeTours.Count != 0)
+            var alternativeTourEntry = AlternativeTours.FirstOrDefault(t =>
+                t.Key == tour.TourRegistrationCode
+            );
+            if (!alternativeTourEntry.Equals(default(KeyValuePair<string, int>)))
             {
-                int lastIndex = AlternativeTours.Count - 1;
-                KeyValuePair<int, int> nextPriorityTour = AlternativeTours.ElementAt(lastIndex);
-                AlternativeTours.RemoveAt(lastIndex);
-                ScheduledTours.Add(nextPriorityTour.Key, nextPriorityTour.Value);
+                AlternativeTours.Remove(alternativeTourEntry);
+                return;
+            }
+
+            var scheduledTourEntry = ScheduledTours.FirstOrDefault(t =>
+                t.Key == tour.TourRegistrationCode
+            );
+
+            if (!scheduledTourEntry.Equals(default(KeyValuePair<string, int>)))
+            {
+                ScheduledTours.Remove(scheduledTourEntry);
+
+                if (AlternativeTours.Count != 0)
+                {
+                    var nextPriorityTour = AlternativeTours.OrderByDescending(t => t.Value).First();
+
+                    AlternativeTours.Remove(nextPriorityTour);
+                    ScheduledTours.Add(nextPriorityTour);
+
+                    ScheduledTours.Sort((a, b) => a.Value.CompareTo(b.Value));
+                }
             }
         }
     }

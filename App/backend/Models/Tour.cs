@@ -17,7 +17,6 @@ namespace backend.Models
 
     public class Tour()
     {
-        public int ID { get; set; }
         public DateTime Time { get; set; }
 
         public string? TourRegistrationCode { get; set; }
