@@ -78,6 +78,27 @@ namespace backend.Database
             }
         }
 
+        public async Task<bool> CancelGeneralRegistration(string Code)
+        {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return false;
+            }
+
+            var type = Code[0];
+            switch (type)
+            {
+                case 'T':
+                    return await CancelTourRegistration(Code);
+                case 'F':
+                    return await CancelFairRegistration(Code);
+                case 'I':
+                    return await CancelIndividualRegistration(Code);
+                default:
+                    return false;
+            }
+        }
+
         public async Task<string> AddTourRegistration(TourRegistrationRequest request)
         {
             try
@@ -141,6 +162,25 @@ namespace backend.Database
                 .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
                 .SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<bool> CancelTourRegistration(string Code)
+        {
+            var tourRegistration = await _SystemContext
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+
+            if (tourRegistration == null)
+            {
+                return false;
+            }
+
+            _SystemContext.TourRegistrations.Remove(tourRegistration);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
@@ -267,6 +307,24 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
+        public async Task<bool> CancelFairRegistration(string Code)
+        {
+            var fairRegistration = await _SystemContext
+                .FairRegistrations.Include(r => r.School)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+
+            if (fairRegistration == null)
+            {
+                return false;
+            }
+
+            _SystemContext.FairRegistrations.Remove(fairRegistration);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<bool> AcceptFairRegistration(string Code)
         {
             var registration = await _SystemContext.FairRegistrations.SingleOrDefaultAsync(r =>
@@ -352,6 +410,25 @@ namespace backend.Database
             return await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
+        }
+
+        public async Task<bool> CancelIndividualRegistration(string Code)
+        {
+            var individualRegistration =
+                await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
+                    r.Code == Code
+                );
+
+            if (individualRegistration == null)
+            {
+                return false;
+            }
+
+            _SystemContext.IndividualRegistrations.Remove(individualRegistration);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> AcceptIndividualRegistration(string Code)
