@@ -1,6 +1,6 @@
 using System.Collections;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using CsvHelper;
 using Microsoft.Net.Http.Headers;
@@ -12,7 +12,7 @@ namespace backend.Models
         public int ID { get; set; }
         public DateTime? Time { get; set; }
         public readonly FairRegistration? RegistirationInfo;
-        private readonly List<Guide> AssignedGuides = [];
+        private readonly List<int> AssignedGuideIDs = [];
         private readonly List<Comment> Comments = [];
 
         public bool AddGuide(Guide guide)

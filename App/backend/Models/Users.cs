@@ -1,6 +1,6 @@
-using BTO.Constrains;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
+using BTO.Constrains;
 using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
@@ -88,7 +88,6 @@ namespace backend.Models
         public UserType UserType { get; set; }
     }
 
-    
     public class Guide : User
     {
         public bool IsCandidate { get; private set; }
