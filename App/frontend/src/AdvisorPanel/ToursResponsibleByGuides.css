@@ -37,4 +37,10 @@
     font-weight: bold;
     margin-bottom: 5px;
   }
+
+  .toursResponsibleByGuidesPage{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
   
