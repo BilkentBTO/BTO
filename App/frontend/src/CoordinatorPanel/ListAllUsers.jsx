@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ListAllUsers.css";
+import profileImage from "../assets/profile_image.png";
+import { jwtDecode } from "jwt-decode";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function ListAllUsers() {
   const headers = ["Name", "Surname", "Username", "User Type"];
@@ -70,98 +74,101 @@ function ListAllUsers() {
   };
 
   return (
-    <div className="listAllUsers">
-      <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
-      <div>
-        <h1 className="listAllUsersHeading">List All Users</h1>
-        <TableWithButtons
-          headers={headers}
-          data={data}
-          onButtonClick={(row) => handleRowClick(row)}
-          buttonStyle={buttonStyle}
-          buttonName="Manage"
-        />
-      </div>
-
-      {/* Main User Info Popup */}
-      {selectedUser && !showManageAdvisorPopup && (
-        <div className="popup">
-          <h2>User Information</h2>
-          <p>
-            <strong>Name:</strong> {selectedUser[0]}
-          </p>
-          <p>
-            <strong>Surname:</strong> {selectedUser[1]}
-          </p>
-          <p>
-            <strong>Username:</strong> {selectedUser[2]}
-          </p>
-          <p>
-            <strong>User Type:</strong> {selectedUser[3]}
-          </p>
-          <div className="popupButtons">
-            <button
-              style={buttonStyle}
-              onClick={() => alert(`Deleted user: ${selectedUser[2]}`)}
-            >
-              Delete User
-            </button>
-            {selectedUser[3] === "Advisor" && (
-              <button style={buttonStyle} onClick={handleManageAdvisor}>
-                Manage Advisor
-              </button>
-            )}
-            {selectedUser[3] === "Candidate Guide" && (
-              <button style={buttonStyle} onClick={handlePromoteUser}>
-                Promote
-              </button>
-            )}
-            <button className="closeButton" onClick={handleClosePopup}>
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Manage Advisor Popup */}
-      {showManageAdvisorPopup && (
-        <div className="popup">
-          <h2>Manage Advisor</h2>
-          <p>
-            <strong>Name:</strong> {selectedUser[0]}
-          </p>
-          <p>
-            <strong>Surname:</strong> {selectedUser[1]}
-          </p>
-          <p>
-            <strong>Username:</strong> {selectedUser[2]}
-          </p>
-
-          {/* Date Input for Task Assignment */}
-          <FormInputGlobal
-            question="Task Date*"
-            type="date"
-            value={formData.taskDate}
-            onChange={handleDateChange}
-            dateFilter={dateFilter}
+    <div className="listAllUsersPage">
+      <GlobalSidebar />
+      <div className="rightSideCoorFunction">
+        <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
+        <div>
+          <h1 className="listAllUsersHeading">List All Users</h1>
+          <TableWithButtons
+            headers={headers}
+            data={data}
+            onButtonClick={(row) => handleRowClick(row)}
+            buttonStyle={buttonStyle}
+            buttonName="Manage"
           />
-
-          <div className="popupButtons">
-            <button
-              style={buttonStyle}
-              onClick={handleAssignDateClick}
-              disabled={!formData.taskDate}
-            >
-              Assign
-            </button>
-            <button style={buttonStyle} onClick={handleCloseManageAdvisorPopup}>
-              Close
-            </button>
-          </div>
         </div>
-      )}
-      <div className="contactSection">
-        <p className="contactInfo"></p>
+
+        {/* Main User Info Popup */}
+        {selectedUser && !showManageAdvisorPopup && (
+          <div className="popup">
+            <h2>User Information</h2>
+            <p>
+              <strong>Name:</strong> {selectedUser[0]}
+            </p>
+            <p>
+              <strong>Surname:</strong> {selectedUser[1]}
+            </p>
+            <p>
+              <strong>Username:</strong> {selectedUser[2]}
+            </p>
+            <p>
+              <strong>User Type:</strong> {selectedUser[3]}
+            </p>
+            <div className="popupButtons">
+              <button
+                style={buttonStyle}
+                onClick={() => alert(`Deleted user: ${selectedUser[2]}`)}
+              >
+                Delete User
+              </button>
+              {selectedUser[3] === "Advisor" && (
+                <button style={buttonStyle} onClick={handleManageAdvisor}>
+                  Manage Advisor
+                </button>
+              )}
+              {selectedUser[3] === "Candidate Guide" && (
+                <button style={buttonStyle} onClick={handlePromoteUser}>
+                  Promote
+                </button>
+              )}
+              <button className="closeButton" onClick={handleClosePopup}>
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Manage Advisor Popup */}
+        {showManageAdvisorPopup && (
+          <div className="popup">
+            <h2>Manage Advisor</h2>
+            <p>
+              <strong>Name:</strong> {selectedUser[0]}
+            </p>
+            <p>
+              <strong>Surname:</strong> {selectedUser[1]}
+            </p>
+            <p>
+              <strong>Username:</strong> {selectedUser[2]}
+            </p>
+
+            {/* Date Input for Task Assignment */}
+            <FormInputGlobal
+              question="Task Date*"
+              type="date"
+              value={formData.taskDate}
+              onChange={handleDateChange}
+              dateFilter={dateFilter}
+            />
+
+            <div className="popupButtons">
+              <button
+                style={buttonStyle}
+                onClick={handleAssignDateClick}
+                disabled={!formData.taskDate}
+              >
+                Assign
+              </button>
+              <button
+                style={buttonStyle}
+                onClick={handleCloseManageAdvisorPopup}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

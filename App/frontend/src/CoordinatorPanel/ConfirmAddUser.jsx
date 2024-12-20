@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ConfirmAddUser.css"; // Create or reuse a similar CSS file
+import { jwtDecode } from "jwt-decode";
+import profileImage from "../assets/profile_image.png";
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function ConfirmAddUser() {
   const location = useLocation();
@@ -30,82 +33,88 @@ function ConfirmAddUser() {
   const closePopup = () => setShowPopup(false);
 
   return (
-    <div className="confirmAddUserPage">
-      <HeaderGlobal name="User Confirmation Page" />
-      <div className="innerUserConfirmation">
-        <div className="topInner">
-          <div className="leftInner">
-            {/* User Details */}
-            <div className="infoLog">
-              <div className="box">
-                <p>Role:</p>
+    <div className="confirmAddUser">
+      <GlobalSidebar />
+      <div className="rightSideCoorFunction">
+        <HeaderGlobal name="User Confirmation Page" />
+
+        <div className="confirmAddUserPage">
+          <div className="innerUserConfirmation">
+            <div className="topInner">
+              <div className="leftInner">
+                {/* User Details */}
+                <div className="infoLog">
+                  <div className="box">
+                    <p>Role:</p>
+                  </div>
+                  <div className="info">
+                    <p>{formData.role}</p>
+                  </div>
+                </div>
+                <div className="infoLog">
+                  <div className="box">
+                    <p>Name:</p>
+                  </div>
+                  <div className="info">
+                    <p>{formData.name}</p>
+                  </div>
+                </div>
+                <div className="infoLog">
+                  <div className="box">
+                    <p>Surname:</p>
+                  </div>
+                  <div className="info">
+                    <p>{formData.surname}</p>
+                  </div>
+                </div>
+                <div className="infoLog">
+                  <div className="box">
+                    <p>Username:</p>
+                  </div>
+                  <div className="info">
+                    <p>{formData.username}</p>
+                  </div>
+                </div>
+                <div className="infoLog">
+                  <div className="box">
+                    <p>Email:</p>
+                  </div>
+                  <div className="info">
+                    <p>{formData.email}</p>
+                  </div>
+                </div>
               </div>
-              <div className="info">
-                <p>{formData.role}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Name:</p>
-              </div>
-              <div className="info">
-                <p>{formData.name}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Surname:</p>
-              </div>
-              <div className="info">
-                <p>{formData.surname}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Username:</p>
-              </div>
-              <div className="info">
-                <p>{formData.username}</p>
-              </div>
-            </div>
-            <div className="infoLog">
-              <div className="box">
-                <p>Email:</p>
-              </div>
-              <div className="info">
-                <p>{formData.email}</p>
+
+              <div className="buttonLayout">
+                <button onClick={handleEdit} className="editButton">
+                  Edit
+                </button>
+                <button onClick={handleConfirmClick} className="confirmButton">
+                  Confirm
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="buttonLayout">
-            <button onClick={handleEdit} className="editButton">
-              Edit
-            </button>
-            <button onClick={handleConfirmClick} className="confirmButton">
-              Confirm
-            </button>
-          </div>
+          {/* Confirmation Popup */}
+          {showPopup && (
+            <div className="popupOverlay">
+              <div className="popupContent">
+                <h2>Confirm User Addition</h2>
+                <p>Are you sure you want to add this user?</p>
+                <div className="popupActions">
+                  <button onClick={confirmAdd} className="confirmButton">
+                    Yes, Confirm
+                  </button>
+                  <button onClick={closePopup} className="cancelButton">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Confirmation Popup */}
-      {showPopup && (
-        <div className="popupOverlay">
-          <div className="popupContent">
-            <h2>Confirm User Addition</h2>
-            <p>Are you sure you want to add this user?</p>
-            <div className="popupActions">
-              <button onClick={confirmAdd} className="confirmButton">
-                Yes, Confirm
-              </button>
-              <button onClick={closePopup} className="cancelButton">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

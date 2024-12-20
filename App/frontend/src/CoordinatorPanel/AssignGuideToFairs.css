@@ -2,3 +2,8 @@
     font-family: Arial, sans-serif;
     margin-left: 3%;
 }
+.assignGuideToFairs{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}

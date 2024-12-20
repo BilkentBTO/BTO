@@ -3,7 +3,11 @@
     justify-content: center;
     align-items: center;
   }
-  
+  .addCoordinator{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
   /* Inner container for the form */
   .innerAddCoordinatorPage {
     padding: 30px;

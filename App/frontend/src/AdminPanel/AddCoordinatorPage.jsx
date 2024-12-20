@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./AddCoordinatorPage.css"; // Create this CSS file for custom styles
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AddCoordinator() {
   const navigate = useNavigate();
@@ -51,39 +52,47 @@ function AddCoordinator() {
   }, []);
 
   return (
-    <div className="addCoordinatorPage">
-      <HeaderPanelGlobal name="ADMIN PANEL" />
-      <div className="innerAddCoordinatorPage">
-        <div className="coordinatorForm">
-          <FormInputGlobal
-            question="Name*"
-            type="text"
-            value={formData.name}
-            onChange={(value) => handleChange("name", value)}
-          />
-          <FormInputGlobal
-            question="Surname*"
-            type="text"
-            value={formData.surname}
-            onChange={(value) => handleChange("surname", value)}
-          />
-          <FormInputGlobal
-            question="Username*"
-            type="text"
-            value={formData.username}
-            onChange={(value) => handleChange("username", value)}
-          />
-          <FormInputGlobal
-            question="Email*"
-            type="email"
-            value={formData.email}
-            onChange={(value) => handleChange("email", value)}
-          />
+    <div className="addCoordinator">
+      <GlobalSidebar />
+      <div className="rightSideAdminFunction">
+        <HeaderPanelGlobal name="ADMIN PANEL" />
+        <div className="addCoordinatorPage">
+          <div className="innerAddCoordinatorPage">
+            <div className="coordinatorForm">
+              <FormInputGlobal
+                question="Name*"
+                type="text"
+                value={formData.name}
+                onChange={(value) => handleChange("name", value)}
+              />
+              <FormInputGlobal
+                question="Surname*"
+                type="text"
+                value={formData.surname}
+                onChange={(value) => handleChange("surname", value)}
+              />
+              <FormInputGlobal
+                question="Username*"
+                type="text"
+                value={formData.username}
+                onChange={(value) => handleChange("username", value)}
+              />
+              <FormInputGlobal
+                question="Email*"
+                type="email"
+                value={formData.email}
+                onChange={(value) => handleChange("email", value)}
+              />
 
-          {/* Submit Button */}
-          <button onClick={handleSubmit} className="addCoordinatorSubmitButton">
-            Add Coordinator
-          </button>
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit}
+                className="addCoordinatorSubmitButton"
+              >
+                Add Coordinator
+              </button>
+            </div>
+          </div>{" "}
         </div>
       </div>
     </div>
