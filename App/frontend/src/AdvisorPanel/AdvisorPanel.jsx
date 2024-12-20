@@ -89,8 +89,6 @@ function AdvisorPanel() {
     navigate("/advisorPanel/evaluateTourRequests");
   };
 
-  const handleAccessMessagePanelClick = () => {};
-
   const handleAccessGuidePanelClick = () => {
     console.log("Guide Panel button clicked");
     navigate("/guidePanel");
@@ -142,10 +140,6 @@ function AdvisorPanel() {
 
           <button onClick={handleEvaluateTourRequestsClick}>
             Evaluate Tour Requests
-          </button>
-
-          <button onClick={handleAccessMessagePanelClick}>
-            Access Message Panel
           </button>
 
           <button onClick={handleResponsibleToursClick}>
