@@ -6,7 +6,29 @@ using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    public class Schedule // updated to daily
+
+    public struct Availability()
+    {
+        private int DailySchedule = 0;
+
+        public readonly bool IsAvailableAt(int timeBlockID)
+        {
+            if (timeBlockID < 0 || timeBlockID >= TimeBlocksPerDay)
+                return false;
+
+            int mask = 1 << timeBlockID;
+            return (DailySchedule & mask) != 0;
+        }
+        public void SetAvailabilityAt(int timeBlockID, bool isAvailable)
+        {
+            if (timeBlockID < 0 || timeBlockID >= TimeBlocksPerDay)
+                return;
+
+            byte mask = (byte)(1 << timeBlockID);
+            DailySchedule = isAvailable ? (DailySchedule | mask) : (DailySchedule & ~mask);
+        }
+    }
+    public class Schedule
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

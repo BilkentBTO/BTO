@@ -102,8 +102,6 @@ namespace backend.Database
             modelBuilder.Entity<Tour>().HasKey(t => t.ID);
 
             modelBuilder.Entity<Fair>().HasKey(f => f.ID);
-
-            modelBuilder.Entity<Availability>().HasKey(a => a.Id);
         }
     }
 

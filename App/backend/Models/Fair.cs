@@ -10,22 +10,22 @@ namespace backend.Models
         public readonly string Name = name;
         public readonly DateTime Time = time;
 
-        private readonly List<Guide> AssignedGuides = [];
+        private readonly List<int> AssignedGuideIDs = [];
         private readonly List<Comment> Comments = [];
 
 
 
         public bool AddGuide(Guide guide)
         {
-            if (AssignedGuides.Contains(guide))
+            if (AssignedGuideIDs.Contains(guide.Id))
                 return false;
-            AssignedGuides.Add(guide);
+            AssignedGuideIDs.Add(guide.Id);
             return true;
         }
 
-        public bool RemoveCandidateGuide(Guide guide) => AssignedGuides.Remove(guide);
+        public bool RemoveCandidateGuide(Guide guide) => AssignedGuideIDs.Remove(guide.Id);
 
-        public bool CandidateGuideAssigned(Guide guide) => AssignedGuides.Contains(guide);
+        public bool CandidateGuideAssigned(Guide guide) => AssignedGuideIDs.Contains(guide.Id);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 
