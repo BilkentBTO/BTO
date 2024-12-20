@@ -6,13 +6,13 @@ import "./AvailableToursPage.css";
 
 function AvailableToursPage() {
   const navigate = useNavigate();
-  const [data, setData] = useState([]); // State to hold fetched data
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false); // Popup visibility state
+  const [selectedTour, setSelectedTour] = useState(null); // Selected tour data
 
-  // Table headers (only the required columns)
   const headers = ["Tour ID", "Date", "School", "Number of Visitors"];
 
-  // Fetch tours data from the API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,11 +21,11 @@ function AvailableToursPage() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const apiData = await response.json();
-        setData(apiData); // Set the API response to the state
+        setData(apiData);
       } catch (error) {
         console.error("Error fetching tours data:", error.message);
       } finally {
-        setIsLoading(false); // Stop the loading indicator
+        setIsLoading(false);
       }
     };
 
@@ -33,13 +33,20 @@ function AvailableToursPage() {
   }, []);
 
   const handleRowClick = (rowData) => {
-    // Find the full data for the clicked row
-    const selectedTour = data.find((item) => item.code === rowData[0]);
-    console.log("SELECTED TOUR: ", selectedTour);
-    // Navigate to the detailed tour management page
-    navigate("/guidePanel/assignedTours/applyTour", {
-      state: { selectedTour },
-    });
+    const selectedTourData = data.find((item) => item.code === rowData[0]);
+    setSelectedTour(selectedTourData); // Track the clicked tour
+    setShowPopup(true); // Show popup
+  };
+
+  const handleApply = () => {
+    console.log("Applied:", selectedTour);
+    setShowPopup(false);
+    // IMPLEMENT !!!!!!!!!!!!!
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setSelectedTour(null); // Clear selection
   };
 
   const buttonStyle = {
@@ -73,18 +80,115 @@ function AvailableToursPage() {
               new Date(item.dateOfVisit).toLocaleDateString() || "N/A", // Date
               item.school?.schoolName || "N/A", // School
               item.numberOfVisitors || "N/A", // Number of Visitors
-            ])} // Map the required data to the table rows
+            ])}
             onButtonClick={handleRowClick}
-            buttonStyle={buttonStyle} // Pass custom button style
+            buttonStyle={buttonStyle}
             buttonName={buttonName}
           />
         ) : (
           <p>No available tours found.</p>
         )}
       </div>
-      <div className="contactSection">
-        <p className="contactInfo"></p>
-      </div>
+
+      {/* Custom Popup */}
+      {showPopup && (
+        <div className="popupOverlay">
+          <div className="popupContent">
+            <h3>Tour Details</h3>
+            {selectedTour ? (
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginTop: "20px",
+                }}
+              >
+                <tbody>
+                  {Object.entries({
+                    "Tour ID": selectedTour.code || "N/A",
+                    School: selectedTour.school?.schoolName || "N/A",
+                    City: selectedTour.cityName || "N/A",
+                    Date:
+                      new Date(selectedTour.dateOfVisit).toLocaleDateString() ||
+                      "N/A",
+                    Time: selectedTour.preferredVisitTime?.id || "N/A",
+                    "Number of Visitors":
+                      selectedTour.numberOfVisitors || "N/A",
+                    Supervisor: selectedTour.superVisorName || "N/A",
+                    "Supervisor Duty": selectedTour.superVisorDuty || "N/A",
+                    "Supervisor Phone Number":
+                      selectedTour.superVisorPhoneNumber || "N/A",
+                    "Supervisor Mail":
+                      selectedTour.superVisorMailAddress || "N/A",
+                    Notes: selectedTour.notes || "N/A",
+                  }).map(([key, value]) => (
+                    <tr key={key}>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "10px",
+                          fontWeight: "bold",
+                          backgroundColor: "#f0f0f0",
+                        }}
+                      >
+                        {key}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "10px",
+                        }}
+                      >
+                        {value}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No details available.</p>
+            )}
+            <div className="popupActions">
+              <button
+                onClick={handleApply}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "green",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  width: "100%",
+                  maxWidth: "120px",
+                  textAlign: "center",
+                  transition: "background-color 0.3s ease, transform 0.2s ease",
+                }}
+              >
+                Apply
+              </button>
+              <button
+                onClick={closePopup}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "grey",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  width: "100%",
+                  maxWidth: "120px",
+                  textAlign: "center",
+                  transition: "background-color 0.3s ease, transform 0.2s ease",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
