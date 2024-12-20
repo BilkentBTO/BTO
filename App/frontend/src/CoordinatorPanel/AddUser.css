@@ -6,7 +6,11 @@
     background-color: #f9f9f9;
     min-height: 100vh;
   }
-  
+  .addUser{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
   .innerAddUserPage {
     padding: 30px;
     justify-content: center;

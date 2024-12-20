@@ -7,7 +7,11 @@
   background-color: #f9f9f9;
   min-height: 100vh;
   }
-  
+  .addCoordinator{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
   /* Inner container for the form */
   .innerAddCoordinatorPage {
     padding: 30px;

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./DataPanel.css"; // Reuse the existing styles
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function DataPanel() {
   const headers = [
@@ -54,61 +55,64 @@ function DataPanel() {
 
   return (
     <div className="dataPanel">
-      <HeaderPanelGlobal name={"DATA PANEL"} />
-      <div>
-        <h1 className="dataPanelHeading">School Data</h1>
-        <TableWithButtons
-          headers={headers}
-          data={data}
-          onButtonClick={(row) => handleRowClick(row)} // Pass the correct row data
-          buttonStyle={buttonStyle}
-          buttonName="Details"
-        />
-      </div>
-
-      {/* Popup Component */}
-      {showPopup && (
-        <div className="popupOverlay">
-          <div className="popupContent">
-            <h2>{popupContent.school}</h2>
-            <p>
-              <strong>Location:</strong> {popupContent.location}
-            </p>
-            <p>
-              <strong>Student Number:</strong> {popupContent.studentNumber}
-            </p>
-            <p>
-              <strong>Students Sent to Bilkent:</strong>{" "}
-              {popupContent.sentToBilkent}
-            </p>
-            <p>
-              <strong>YKS Rating:</strong> {popupContent.yksRating}
-            </p>
-            <p>
-              <strong>Relation Status:</strong> {popupContent.relationStatus}
-            </p>
-            <button
-              onClick={closePopup}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: "red",
-                marginTop: "20px",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "14px",
-                width: "100%",
-                maxWidth: "120px",
-                textAlign: "center",
-                transition: "background-color 0.3s ease, transform 0.2s ease",
-              }}
-            >
-              Close
-            </button>
-          </div>
+      <GlobalSidebar />
+      <div className="rightSideAdminFunction">
+        <HeaderPanelGlobal name={"DATA PANEL"} />
+        <div>
+          <h1 className="dataPanelHeading">School Data</h1>
+          <TableWithButtons
+            headers={headers}
+            data={data}
+            onButtonClick={(row) => handleRowClick(row)} // Pass the correct row data
+            buttonStyle={buttonStyle}
+            buttonName="Details"
+          />
         </div>
-      )}
+
+        {/* Popup Component */}
+        {showPopup && (
+          <div className="popupOverlay">
+            <div className="popupContent">
+              <h2>{popupContent.school}</h2>
+              <p>
+                <strong>Location:</strong> {popupContent.location}
+              </p>
+              <p>
+                <strong>Student Number:</strong> {popupContent.studentNumber}
+              </p>
+              <p>
+                <strong>Students Sent to Bilkent:</strong>{" "}
+                {popupContent.sentToBilkent}
+              </p>
+              <p>
+                <strong>YKS Rating:</strong> {popupContent.yksRating}
+              </p>
+              <p>
+                <strong>Relation Status:</strong> {popupContent.relationStatus}
+              </p>
+              <button
+                onClick={closePopup}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "red",
+                  marginTop: "20px",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  width: "100%",
+                  maxWidth: "120px",
+                  textAlign: "center",
+                  transition: "background-color 0.3s ease, transform 0.2s ease",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
