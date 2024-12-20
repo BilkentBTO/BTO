@@ -17,43 +17,44 @@ namespace backend.Server.Controllers
         }
 
         #region TOUR
-        [HttpPost("tour")]
-        public async Task<ActionResult> AddTour([FromBody] Tour tour)
+        [HttpPost("tour/{tourCode}")]
+        public async Task<ActionResult> AddTour(string tourCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _controller.AddTour(tour))
+            if (!await _controller.AddTour(tourCode))
                 return BadRequest("Unable to add tour.");
 
             return Ok();
         }
 
-        [HttpDelete("tour")]
-        public async Task<ActionResult> RemoveTour(int tourID)
+        [HttpDelete("tour/{tourCode}")]
+        public async Task<ActionResult> RemoveTour(string tourCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _controller.RemoveTour(tourID))
+            if (!await _controller.RemoveTour(tourCode))
                 return NotFound("Unable to remove tour.");
 
             return Ok();
         }
 
-        [HttpGet("tour")]
-        public async Task<ActionResult> GetTourByID(int tourID)
+        [HttpGet("tour/{tourCode}")]
+        public async Task<ActionResult> GetTourByCode(string tourCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             Tour? tour;
-            if ((tour = await _controller.GetTour(tourID)) == null)
+            if ((tour = await _controller.GetTour(tourCode)) == null)
                 return NotFound("Unable to get tour by ID.");
 
             return Ok(tour);
         }
 
+        //TODO REWORK
         [HttpPut("tour")]
         public async Task<ActionResult> UpdateTour(Tour tour)
         {
@@ -72,7 +73,7 @@ namespace backend.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Tour[] tours;
+            List<Tour> tours;
             if ((tours = await _controller.GetAllTours()) == null)
                 return BadRequest("Unable to get all tours.");
 
@@ -82,43 +83,44 @@ namespace backend.Server.Controllers
         #endregion
 
         #region FAIR
-        [HttpPost("fair")]
-        public async Task<ActionResult> AddFair([FromBody] Fair fair)
+        [HttpPost("fair/{fairCode}")]
+        public async Task<ActionResult> AddFair(string fairCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _controller.AddFair(fair))
+            if (!await _controller.AddFair(fairCode))
                 return BadRequest("Unable to add fair.");
 
             return Ok();
         }
 
-        [HttpDelete("fair")]
-        public async Task<ActionResult> RemoveFair(int fairID)
+        [HttpDelete("fair/{fairCode}")]
+        public async Task<ActionResult> RemoveFair(string fairCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _controller.RemoveFair(fairID))
+            if (!await _controller.RemoveFair(fairCode))
                 return NotFound("Unable to remove fair.");
 
             return Ok();
         }
 
-        [HttpGet("fair")]
-        public async Task<ActionResult> GetFairByID(int fairID)
+        [HttpGet("fair/{fairCode}")]
+        public async Task<ActionResult> GetFairByCode(string fairCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             Fair? fair;
-            if ((fair = await _controller.GetFair(fairID)) == null)
+            if ((fair = await _controller.GetFair(fairCode)) == null)
                 return NotFound("Unable to get fair by ID.");
 
             return Ok(fair);
         }
 
+        //TODO Rework
         [HttpPut("fair")]
         public async Task<ActionResult> UpdateFair(Fair fair)
         {
@@ -137,7 +139,7 @@ namespace backend.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Fair[] fairs;
+            List<Fair> fairs;
             if ((fairs = await _controller.GetAllFairs()) == null)
                 return BadRequest("Unable to get all fairs.");
 

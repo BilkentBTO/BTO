@@ -1,6 +1,6 @@
 using backend.Models;
-using Microsoft.EntityFrameworkCore;
 using BTO.Constrains;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
@@ -15,17 +15,44 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public async Task<bool> AddTour(Tour tour)
+        public async Task<bool> AddTour(string tourCode)
         {
             try
             {
-                if (await _context.Tours.AnyAsync(t => t.ID == tour.ID))
+                if (await _context.Tours.AnyAsync(t => t.TourRegistrationCode == tourCode))
                 {
-                    _logger.LogError($"Can't add tour, tourID {tour.ID} already exist.");
+                    _logger.LogError($"Can't add tour, tour with code {tourCode} already exist.");
+                    return false;
+                }
+                bool tourRegistrationExists = await _context.TourRegistrations.AnyAsync(t =>
+                    t.Code == tourCode
+                );
+                if (!tourRegistrationExists)
+                {
+                    return false;
+                }
+                TourRegistration? TourRegistration = await _context
+                    .TourRegistrations.Include(r => r.School)
+                    .Include(r => r.PreferredVisitTime)
+                    .FirstOrDefaultAsync(t => t.Code == tourCode);
+
+                if (TourRegistration == null)
+                {
+                    return false;
+                }
+                if (TourRegistration.School == null)
+                {
                     return false;
                 }
 
-                await _context.Tours.AddAsync(tour);
+                Tour newTour = new Tour
+                {
+                    TourRegistrationCode = tourCode,
+                    TourRegistirationInfo = TourRegistration,
+                    Priority = TourRegistration.School.Priority,
+                };
+
+                await _context.Tours.AddAsync(newTour);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -36,14 +63,18 @@ namespace backend.Database
             }
         }
 
-        public async Task<bool> RemoveTour(int tourID)
+        public async Task<bool> RemoveTour(string tourCode)
         {
             try
             {
-                Tour? tourToRemove = await _context.Tours.FirstOrDefaultAsync(t => t.ID == tourID);
+                Tour? tourToRemove = await _context.Tours.FirstOrDefaultAsync(t =>
+                    t.TourRegistrationCode == tourCode
+                );
                 if (tourToRemove == null)
                 {
-                    _logger.LogError($"Can't remove tour, tourID {tourID} does not exist.");
+                    _logger.LogError(
+                        $"Can't remove tour, tour with code {tourCode} does not exist."
+                    );
                     return false;
                 }
                 _context.Tours.Remove(tourToRemove);
@@ -57,16 +88,33 @@ namespace backend.Database
             }
         }
 
-        public async Task<Tour?> GetTour(int tourID)
+        public async Task<Tour?> GetTour(string tourCode)
         {
-            Tour? foundTour = await _context.Tours.FirstOrDefaultAsync(t => t.ID == tourID);
+            if (string.IsNullOrEmpty(tourCode))
+            {
+                return null;
+            }
+            Tour? foundTour = await _context.Tours.FirstOrDefaultAsync(t =>
+                t.TourRegistrationCode == tourCode
+            );
             if (foundTour == null)
             {
-                _logger.LogError($"Can't find tour, tourID {tourID} does not exist.");
+                _logger.LogError($"Can't get tour, tour with code {tourCode} does not exist.");
+                return null;
             }
+            TourRegistration? TourRegistration = await _context
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .FirstOrDefaultAsync(t => t.Code == tourCode);
+            if (TourRegistration == null)
+            {
+                return null;
+            }
+            foundTour.FillTourRegistrationInfo(TourRegistration);
             return foundTour;
         }
 
+        //TODO Rework
         public async Task<bool> UpdateTourInfo(Tour tour)
         {
             if (!await _context.Tours.AnyAsync(t => t.ID == tour.ID))
@@ -88,29 +136,73 @@ namespace backend.Database
             return false;
         }
 
-        public async Task<Tour[]> GetAllTours()
+        public async Task<List<Tour>> GetAllTours()
         {
             try
             {
-                return await _context.Tours.ToArrayAsync();
+                var allTours = await _context.Tours.ToListAsync();
+                for (int i = allTours.Count - 1; i >= 0; i--)
+                {
+                    var tour = allTours[i];
+
+                    var tourRegistration = await _context
+                        .TourRegistrations.Include(r => r.School)
+                        .Include(r => r.PreferredVisitTime)
+                        .FirstOrDefaultAsync(r => r.Code == tour.TourRegistrationCode);
+
+                    if (tourRegistration == null)
+                    {
+                        allTours.RemoveAt(i);
+                    }
+                    else
+                    {
+                        tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+                }
+                return allTours;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GeAllTours: {ex.Message}");
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
                 return [];
             }
         }
 
-        public async Task<bool> AddFair(Fair fair)
+        public async Task<bool> AddFair(string fairCode)
         {
             try
             {
-                if (await _context.Fairs.AnyAsync(f => f.ID == fair.ID))
+                if (await _context.Fairs.AnyAsync(f => f.FairRegistrationCode == fairCode))
                 {
-                    _logger.LogError($"Can't add fair, fairID {fair.ID} already exist.");
+                    _logger.LogError($"Can't add fair, fair with code {fairCode} already exist.");
                     return false;
                 }
-                await _context.Fairs.AddAsync(fair);
+                bool fairRegistrationExists = await _context.FairRegistrations.AnyAsync(f =>
+                    f.Code == fairCode
+                );
+                if (!fairRegistrationExists)
+                {
+                    return false;
+                }
+                FairRegistration? FairRegistration =
+                    await _context.FairRegistrations.FirstOrDefaultAsync(f => f.Code == fairCode);
+
+                if (FairRegistration == null)
+                {
+                    return false;
+                }
+                if (FairRegistration.School == null)
+                {
+                    return false;
+                }
+
+                Fair newFair = new Fair
+                {
+                    FairRegistrationCode = fairCode,
+                    FairRegistirationInfo = FairRegistration,
+                };
+
+                await _context.Fairs.AddAsync(newFair);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -121,14 +213,18 @@ namespace backend.Database
             }
         }
 
-        public async Task<bool> RemoveFair(int fairID)
+        public async Task<bool> RemoveFair(string fairCode)
         {
             try
             {
-                Fair? fairToRemove = await _context.Fairs.FirstOrDefaultAsync(f => f.ID == fairID);
+                Fair? fairToRemove = await _context.Fairs.FirstOrDefaultAsync(f =>
+                    f.FairRegistrationCode == fairCode
+                );
                 if (fairToRemove == null)
                 {
-                    _logger.LogError($"Can't remove fair, fairID {fairID} does not exist.");
+                    _logger.LogError(
+                        $"Can't remove fair, fair with code {fairCode} does not exist."
+                    );
                     return false;
                 }
                 _context.Fairs.Remove(fairToRemove);
@@ -142,16 +238,20 @@ namespace backend.Database
             }
         }
 
-        public async Task<Fair?> GetFair(int fairID)
+        public async Task<Fair?> GetFair(string fairCode)
         {
-            Fair? foundFair = await _context.Fairs.FirstOrDefaultAsync(t => t.ID == fairID);
+            Fair? foundFair = await _context.Fairs.FirstOrDefaultAsync(f =>
+                f.FairRegistrationCode == fairCode
+            );
             if (foundFair == null)
             {
-                _logger.LogError($"Can't find fair, fairID {fairID} does not exist.");
+                _logger.LogError($"Can't find fair, fair with code {fairCode} does not exist.");
+                return null;
             }
             return foundFair;
         }
 
+        //TODO Rework
         public async Task<bool> UpdateFairInfo(Fair fair)
         {
             if (!await _context.Fairs.AnyAsync(f => f.ID == fair.ID))
@@ -173,15 +273,33 @@ namespace backend.Database
             }
         }
 
-        public async Task<Fair[]> GetAllFairs()
+        public async Task<List<Fair>> GetAllFairs()
         {
             try
             {
-                return await _context.Fairs.ToArrayAsync();
+                var allFairs = await _context.Fairs.ToListAsync();
+                for (int i = allFairs.Count - 1; i >= 0; i--)
+                {
+                    var fair = allFairs[i];
+
+                    var fairRegistration = await _context
+                        .FairRegistrations.Include(r => r.School)
+                        .FirstOrDefaultAsync(r => r.Code == fair.FairRegistrationCode);
+
+                    if (fairRegistration == null)
+                    {
+                        allFairs.RemoveAt(i);
+                    }
+                    else
+                    {
+                        fair.FillFairRegistrationInfo(fairRegistration);
+                    }
+                }
+                return allFairs;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GeAllFairs: {ex.Message}");
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
                 return [];
             }
         }
@@ -192,7 +310,9 @@ namespace backend.Database
             {
                 if (await _context.Schedule.AnyAsync(t => t.ID == tb.ID))
                 {
-                    _logger.LogError($"Can't add timeblock, time block, timeID {tb.ID} already exist.");
+                    _logger.LogError(
+                        $"Can't add timeblock, time block, timeID {tb.ID} already exist."
+                    );
                     return false;
                 }
                 await _context.Schedule.AddAsync(tb);
@@ -205,6 +325,7 @@ namespace backend.Database
                 return false;
             }
         }
+
         public async Task<bool> TimeBlockExists(int timeID)
         {
             try
@@ -217,6 +338,7 @@ namespace backend.Database
                 return false;
             }
         }
+
         public async Task<bool> TimeBlockExists(DateTime day, int timeBlockIndex)
         {
             if (timeBlockIndex < 0 || timeBlockIndex >= TimeConstrains.TimeBlocksPerDay)
@@ -224,6 +346,7 @@ namespace backend.Database
             day = new DateTime(day.Year, day.Month, day.Day);
             return await TimeBlockExists(TimeBlock.GetID(day, timeBlockIndex));
         }
+
         public async Task<TimeBlock?> GetTimeBlock(int timeID)
         {
             TimeBlock? foundTB = await _context.Schedule.FirstOrDefaultAsync(t => t.ID == timeID);
@@ -233,6 +356,7 @@ namespace backend.Database
             }
             return foundTB;
         }
+
         public async Task<TimeBlock?> GetTimeBlock(DateTime day, int timeBlockIndex)
         {
             if (timeBlockIndex < 0 || timeBlockIndex >= TimeConstrains.TimeBlocksPerDay)
@@ -240,6 +364,7 @@ namespace backend.Database
             day = new DateTime(day.Year, day.Month, day.Day);
             return await GetTimeBlock(TimeBlock.GetID(day, timeBlockIndex));
         }
+
         public async Task<bool> UpdateTimeBlock(TimeBlock timeBlock)
         {
             if (!await _context.Schedule.AnyAsync(t => t.ID == timeBlock.ID))

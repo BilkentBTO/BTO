@@ -100,7 +100,7 @@ namespace backend.Database
         {
             try
             {
-                var DoesSchoolExist = _SystemContext.TourRegistrations.Any(r =>
+                var DoesSchoolExist = _SystemContext.Schools.Any(r =>
                     r.SchoolCode == request.SchoolCode
                 );
                 if (DoesSchoolExist)

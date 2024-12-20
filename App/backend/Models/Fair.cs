@@ -11,7 +11,10 @@ namespace backend.Models
     {
         public int ID { get; set; }
         public DateTime? Time { get; set; }
-        public readonly FairRegistration? RegistirationInfo;
+        public string? FairRegistrationCode { get; set; }
+
+        [NotMapped]
+        public FairRegistration? FairRegistirationInfo { get; set; }
         private readonly List<int> AssignedGuideIDs = [];
         private readonly List<Comment> Comments = [];
 
@@ -21,6 +24,11 @@ namespace backend.Models
                 return false;
             AssignedGuideIDs.Add(guide.Id);
             return true;
+        }
+
+        public void FillFairRegistrationInfo(FairRegistration registration)
+        {
+            this.FairRegistirationInfo = registration;
         }
 
         public bool RemoveCandidateGuide(Guide guide) => AssignedGuideIDs.Remove(guide.Id);

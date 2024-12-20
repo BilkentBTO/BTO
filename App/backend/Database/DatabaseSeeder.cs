@@ -106,7 +106,32 @@ namespace backend.Database
 
         public async Task InsertTourSampleData(SystemDbContext db)
         {
-            List<Tour> tours = new List<Tour> { new Tour(), new Tour() };
+            var sampleTourRegistration1 = new TourRegistration
+            {
+                Code = "T-Ankara4531",
+                CityName = "Ankara",
+                SchoolCode = 3438,
+                DateOfVisit = DateTime.SpecifyKind(
+                    DateTime.Parse("2024-12-20T16:34:45.327Z"),
+                    DateTimeKind.Utc
+                ),
+                PreferredVisitTime = new TimeBlock(),
+                NumberOfVisitors = 21,
+                SuperVisorName = "Ahmet Yavuz",
+                SuperVisorDuty = "Rehber",
+                SuperVisorPhoneNumber = "05359594521",
+                SuperVisorMailAddress = "mehmetyavuz@gmail.com",
+                Notes = "İstek kabulunde telefonla arar mısınız?",
+                State = RegistrationState.Accepted,
+            };
+            Tour sampleTour1 = new Tour
+            {
+                ID = 0,
+                Time = sampleTourRegistration1.DateOfVisit,
+                TourRegistrationCode = sampleTourRegistration1.Code,
+                TourRegistirationInfo = sampleTourRegistration1,
+            };
+            List<Tour> tours = new List<Tour> { sampleTour1 };
 
             db.Tours.AddRange(tours);
             try
