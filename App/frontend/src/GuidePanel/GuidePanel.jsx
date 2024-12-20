@@ -1,5 +1,5 @@
 import "./GuidePanel.css";
-import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
+import profileImage from "../assets/profile_image.png";
 import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 function GuidePanel() {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(""); // State to hold the user's role
+  const [username, setUserName] = useState("");
 
   // Simulate fetching the user's role from an API or global state
   useEffect(() => {
@@ -23,6 +24,12 @@ function GuidePanel() {
           ] || decodedToken.role; // Use "role" if no namespace is used
         setUserRole(roleClaim || "User");
 
+        const nameClaim =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+          ];
+        setUserName(nameClaim || "Unknown");
+
         console.log("Decoded Token:", decodedToken);
         console.log("Role:", roleClaim);
       } catch (error) {
@@ -34,6 +41,12 @@ function GuidePanel() {
       navigate("/login"); // Redirect to login if no token is found
     }
   }, [navigate]);
+
+  const handleLogout = () => {
+    console.log("Logout");
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
 
   // Sidebar navigation based on role
   const sidebarOptions = {
@@ -78,7 +91,6 @@ function GuidePanel() {
 
   return (
     <div className="guidePanel">
-      <HeaderPanelGlobal name={"GUIDE PANEL"} />
       <div className="innerGuide">
         {/* Sidebar */}
         <div className="leftSideGuide">
@@ -95,12 +107,25 @@ function GuidePanel() {
                     marginBottom: "10px",
                     cursor: "pointer",
                     textAlign: "center",
+                    backgroundColor:
+                      location.pathname === option.path ? "#1e1e64" : "aqua", // Highlight the current page
+                    color:
+                      location.pathname === option.path ? "white" : "black",
                   }}
                 >
                   {option.label}
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="bottomSidebarSection">
+            <div className="profileSidebarSection">
+              <img src={profileImage}></img>
+              <span>{username}</span>
+            </div>
+            <div className="logoutSidebarSection">
+              <button onClick={handleLogout}>LOGOUT</button>
+            </div>
           </div>
         </div>
 

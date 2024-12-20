@@ -11,18 +11,18 @@ COPY . .
 RUN dotnet publish backend.csproj -c Debug -o /app
 
 
-RUN apt-get update \
-    && apt-get install -y unzip curl \
-    && if [ ! -d "/vsdbg" ]; then \
-        curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; \
-    fi
+#RUN apt-get update \
+#    && apt-get install -y unzip curl \
+#    && if [ ! -d "/vsdbg" ]; then \
+#        curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; \
+#    fi
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
 WORKDIR /app
 
 COPY --from=build /app .
-COPY --from=build /vsdbg /vsdbg
+#COPY --from=build /vsdbg /vsdbg
 
 EXPOSE 80
 EXPOSE 9229
