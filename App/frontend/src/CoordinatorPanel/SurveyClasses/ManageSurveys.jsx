@@ -62,7 +62,23 @@ function ManageSurveys() {
       <div className="surveyPanel">
         {/* Create Survey Button */}
         <div className="createSurveySection">
-          <button onClick={handleCreateSurvey} className="createSurveyButton">
+          <button
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "green",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: "14px",
+              width: "100%",
+              maxWidth: "120px",
+              textAlign: "center",
+              transition: "background-color 0.3s ease, transform 0.2s ease",
+            }}
+            onClick={handleCreateSurvey}
+            className="createSurveyButton"
+          >
             Create Survey
           </button>
         </div>
@@ -76,7 +92,7 @@ function ManageSurveys() {
           buttonName="Manage"
           buttonStyle={{
             padding: "8px 16px",
-            backgroundColor: "green",
+            backgroundColor: "#1e1e64",
             color: "white",
             border: "none",
             borderRadius: "4px",
@@ -102,11 +118,42 @@ function ManageSurveys() {
                 className="popupInput"
               />
               <div className="popupActions">
-                <button onClick={handleAddSurvey} className="confirmButton">
+                <button
+                  onClick={handleAddSurvey}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  className="confirmButton"
+                >
                   Add Survey
                 </button>
                 <button
                   onClick={() => setShowCreatePopup(false)}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
                   className="cancelButton"
                 >
                   Cancel
@@ -124,23 +171,78 @@ function ManageSurveys() {
               <p>Here you can manage the survey details.</p>
               <div className="popupActions">
                 <button
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
                   onClick={() => alert(`Starting ${selectedSurvey[0]}`)}
-                  className="confirmButton"
                 >
                   Start
                 </button>
                 <button
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#1e1e64",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
                   onClick={() => alert(`Editing ${selectedSurvey[0]}`)}
-                  className="confirmButton"
                 >
                   Edit
                 </button>
-                <button onClick={handleDeleteSurvey} className="deleteButton">
+                <button
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  onClick={handleDeleteSurvey}
+                >
                   Delete
                 </button>
                 <button
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "grey",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
                   onClick={handleCloseManagePopup}
-                  className="closeButton"
                 >
                   Close
                 </button>

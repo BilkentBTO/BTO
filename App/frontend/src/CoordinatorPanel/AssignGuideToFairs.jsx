@@ -31,7 +31,7 @@ function AssignGuideToFairs() {
   };
 
   const handleDismissGuide = () => {
-    setPopupType("dismiss");
+    // IMPLEMENT !!!!!!!
   };
 
   const handleAssignGuide = () => {
@@ -39,15 +39,12 @@ function AssignGuideToFairs() {
   };
 
   const handleClosePopup = () => {
-    setPopupType(null);
     setSelectedFair(null);
-  };
-
-  const handleClosePopupContent = () => {
     setPopupType(null);
   };
 
   const handleConfirm = () => {
+    // IMPLEMENT !!!!!!!!!!!!!
     alert(`Confirmed action with guide: ${dropdownValue}`);
     setPopupType(null);
   };
@@ -79,64 +76,138 @@ function AssignGuideToFairs() {
       </div>
 
       {selectedFair && (
-        <div className="popup">
-          {popupType === null && (
-            <div className="popup-content">
-              <h2>Fair Information</h2>
-              <p>School Name: {selectedFair[0]}</p>
-              <p>City: {selectedFair[1]}</p>
-              <p>Date of Visit: {selectedFair[2]}</p>
-              <button onClick={handleDismissGuide} style={{ margin: "5px" }}>
-                Dismiss Guide
-              </button>
-              <button onClick={handleAssignGuide} style={{ margin: "5px" }}>
-                Assign Guide
-              </button>
-              <button onClick={handleClosePopup} style={{ margin: "5px" }}>
-                Close
-              </button>
-            </div>
-          )}
+        <div className="popupOverlay">
+          <div className="popupContent">
+            {popupType === null && (
+              <>
+                <h2>Fair Information</h2>
+                <p>
+                  <strong>School Name:</strong> {selectedFair[0]}
+                </p>
+                <p>
+                  <strong>City:</strong> {selectedFair[1]}
+                </p>
+                <p>
+                  <strong>Date of Visit:</strong> {selectedFair[2]}
+                </p>
+                <div className="popupActions">
+                  <button
+                    className="popupButton"
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "red",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={handleDismissGuide}
+                  >
+                    Dismiss Guide
+                  </button>
+                  <button
+                    className="popupButton"
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "green",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={handleAssignGuide}
+                  >
+                    Assign Guide
+                  </button>
+                  <button
+                    className="popupButton closeButton"
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "grey",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={handleClosePopup}
+                  >
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
 
-          {popupType === "dismiss" && (
-            <div className="popup-content">
-              <h2>Dismiss Guide</h2>
-              <FormDropDownGlobal
-                arr={guides}
-                question="Select a guide to dismiss"
-                onChange={(value) => setDropdownValue(value)}
-              />
-              <button onClick={handleConfirm} style={{ margin: "5px" }}>
-                Confirm
-              </button>
-              <button
-                onClick={handleClosePopupContent}
-                style={{ margin: "5px" }}
-              >
-                Close
-              </button>
-            </div>
-          )}
-
-          {popupType === "assign" && (
-            <div className="popup-content">
-              <h2>Assign Guide</h2>
-              <FormDropDownGlobal
-                arr={allGuides}
-                question="Select a guide to assign"
-                onChange={(value) => setDropdownValue(value)}
-              />
-              <button onClick={handleConfirm} style={{ margin: "5px" }}>
-                Assign
-              </button>
-              <button
-                onClick={handleClosePopupContent}
-                style={{ margin: "5px" }}
-              >
-                Close
-              </button>
-            </div>
-          )}
+            {popupType === "assign" && (
+              <>
+                <h2>Assign Guide</h2>
+                <FormDropDownGlobal
+                  arr={allGuides}
+                  question="Select a guide to assign"
+                  onChange={(value) => setDropdownValue(value)}
+                />
+                <div className="popupActions">
+                  <button
+                    className="popupButton"
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "green",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={handleConfirm}
+                  >
+                    Assign
+                  </button>
+                  <button
+                    className="popupButton closeButton"
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "grey",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={handleClosePopup}
+                  >
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
       <div className="contactSection">
