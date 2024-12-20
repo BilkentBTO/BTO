@@ -116,6 +116,12 @@ function AdvisorPanel() {
                     marginBottom: "10px",
                     cursor: "pointer",
                     textAlign: "center",
+                    backgroundColor: location.pathname.startsWith(option.path)
+                      ? "#1e1e64"
+                      : "#3c3c82",
+                    color: location.pathname.startsWith(option.path)
+                      ? "white"
+                      : "white",
                   }}
                 >
                   {option.label}

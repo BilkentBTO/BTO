@@ -292,9 +292,12 @@ function EditAvailableHoursPage() {
                   marginBottom: "10px",
                   cursor: "pointer",
                   textAlign: "center",
-                  backgroundColor:
-                    location.pathname === option.path ? "#1e1e64" : "aqua", // Highlight the current page
-                  color: location.pathname === option.path ? "white" : "black",
+                  backgroundColor: location.pathname.startsWith(option.path)
+                    ? "#1e1e64"
+                    : "#3c3c82",
+                  color: location.pathname.startsWith(option.path)
+                    ? "white"
+                    : "white",
                 }}
               >
                 {option.label}

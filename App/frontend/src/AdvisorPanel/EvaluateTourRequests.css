@@ -4,8 +4,12 @@
     flex-direction: column;
     height: 100vh; /* Full viewport height */
     overflow-y: auto; /* Enable vertical scrolling if content overflows */
-    padding: 20px;
     box-sizing: border-box;
+  }
+  .evaluateTourRequestPage{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
   }
   
   /* Optional: Style for scrollable popup */
