@@ -1,5 +1,6 @@
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using static BTO.Constrains.TimeConstrains;
 
@@ -27,19 +28,15 @@ namespace backend.Models
         public string Text = comment;
     }
 
-    [Serializable]
-    public struct TourRegistirationInfo(School school, string mailAddress, ushort studenCount)
-    {
-        public readonly School School = school;
-        public string MailAddress = mailAddress;
-        public ushort StudentCount = studenCount;
-    }
-
     public class Tour()
     {
         public int ID { get; set; }
         public DateTime Time { get; private set; }
-        public readonly TourRegistirationInfo RegistirationInfo;
+
+        public string? TourRegistrationCode { get; set; }
+
+        [NotMapped]
+        public TourRegistration? TourRegistirationInfo { get; set; }
 
         private Guide? AssignedGuide;
         private readonly List<Guide> AssignedCandidateGuides = [];
@@ -47,13 +44,18 @@ namespace backend.Models
         private Survey_temp? Survey;
         private readonly List<Comment> Comments = [];
 
-        public int Priority => RegistirationInfo.School.GetPriority();
+        public int Priority { get; set; }
 
         public void ChangeTime(DateTime time) => Time = time;
 
         public bool HasGuide() => AssignedGuide != null;
 
         public Guide? GetAssignedGuide() => AssignedGuide;
+
+        public void FillTourRegistrationInfo(TourRegistration registration)
+        {
+            this.TourRegistirationInfo = registration;
+        }
 
         public void AssignGuide(Guide guide)
         {

@@ -1,19 +1,17 @@
 using System.Collections;
 using System.Linq;
+using CsvHelper;
+using Microsoft.Net.Http.Headers;
 
 namespace backend.Models
 {
-    public class Fair(School school, string name, DateTime time)
+    public class Fair()
     {
-        public readonly int ID = school.GetHashCode() + name.GetHashCode();
-        public readonly School School = school;
-        public readonly string Name = name;
-        public readonly DateTime Time = time;
-
+        public int ID { get; set; }
+        public DateTime? Time { get; set; }
+        public readonly FairRegistration? RegistirationInfo;
         private readonly List<Guide> AssignedGuides = [];
         private readonly List<Comment> Comments = [];
-
-
 
         public bool AddGuide(Guide guide)
         {

@@ -5,10 +5,10 @@ namespace backend.Database
 {
     public class ScheduleDatabaseController
     {
-        private readonly ScheduleDbContext _context;
+        private readonly SystemDbContext _context;
         private readonly ILogger _logger;
 
-        public ScheduleDatabaseController(ScheduleDbContext context, ILogger logger)
+        public ScheduleDatabaseController(SystemDbContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;

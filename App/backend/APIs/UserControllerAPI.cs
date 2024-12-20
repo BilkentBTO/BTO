@@ -53,7 +53,7 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet("filter/{userType}")]
-        [Authorize(Policy = "Admin&Coordinator")]
+        //[Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(List<User>), 200)]
         [ProducesResponseType(typeof(List<User>), 404)]
         public async Task<ActionResult> GetAllUsersFiltered(UserType userType)

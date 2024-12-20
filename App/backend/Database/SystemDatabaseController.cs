@@ -6,49 +6,46 @@ namespace backend.Database
     public class SystemDatabaseController
     {
         private readonly SystemDbContext _SystemContext;
-        private readonly ScheduleDbContext _ScheduleContext;
         private readonly ILogger _logger;
 
-        public SystemDatabaseController(
-            SystemDbContext SystemContext,
-            ScheduleDbContext ScheduleContext,
-            ILoggerFactory loggerFactory
-        )
+        public SystemDatabaseController(SystemDbContext SystemContext, ILoggerFactory loggerFactory)
         {
             _SystemContext = SystemContext;
-            _ScheduleContext = ScheduleContext;
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        /*
-        public async Task<bool> AddGuideTourApplication(int TourID, int GuideUID)
+        public async Task<ErrorTypes> AddGuideTourApplication(int TourID, int GuideUID)
         {
-            if (TourID < 0 || GuideUID < 0)
+            if (TourID < 0)
             {
-                return false;
+                return ErrorTypes.InvalidTourID;
             }
 
-            Tour? Tour = await _ScheduleContext
-                .Tours.Include(t => t.School)
-                .SingleOrDefaultAsync(t => t.ID == TourID);
+            if (GuideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            Tour? Tour = await _SystemContext.Tours.SingleOrDefaultAsync(t => t.ID == TourID);
 
             if (Tour == null)
             {
-                return false;
+                return ErrorTypes.TourNotFound;
             }
 
-            User? Guide = await _SystemContext.Users.SingleOrDefaultAsync(u => u.Id == GuideUID);
+            User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.Id == GuideUID);
 
-            if (Guide == null || Guide.UserType != UserType.Guide)
+            if (user == null || user.UserType != UserType.Guide)
             {
-                return false;
+                return ErrorTypes.UserNotFound;
             }
-            
 
-            Tour.AssignGuide(Guide);
+            Guide foundGuide = (Guide)user;
 
-            
-        }*/
+            Tour.AssignGuide(foundGuide);
+
+            return ErrorTypes.Success;
+        }
 
         public async Task<Registration?> GetGeneralRegistration(string Code)
         {

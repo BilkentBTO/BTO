@@ -8,12 +8,22 @@ namespace backend.Database
 {
     public class SystemDbContext : DbContext
     {
+        //Users
         public DbSet<User> Users { get; set; }
+
+        //Registration
         public DbSet<School> Schools { get; set; }
         public DbSet<TourRegistration> TourRegistrations { get; set; }
         public DbSet<FairRegistration> FairRegistrations { get; set; }
         public DbSet<IndividualRegistration> IndividualRegistrations { get; set; }
+
+        //Guide Applications
         public DbSet<GuideTourApplication> GuideTourApplication { get; set; }
+
+        //Scheduling
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<Tour> Tours { get; set; }
+        public DbSet<Fair> Fairs { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
@@ -39,6 +49,16 @@ namespace backend.Database
             modelBuilder.Entity<GuideTourApplication>().HasKey(r => r.Code);
 
             modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.Code).IsUnique();
+
+            modelBuilder.Entity<TimeBlock>().HasKey(t => t.ID);
+
+            modelBuilder.Entity<Schedule>().HasKey(s => s.ID);
+
+            modelBuilder.Entity<Tour>().HasKey(t => t.ID);
+
+            modelBuilder.Entity<Fair>().HasKey(f => f.ID);
+
+            modelBuilder.Entity<Availability>().HasKey(a => a.Id);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
@@ -83,27 +103,6 @@ namespace backend.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Credential>().HasKey(c => c.Username);
-        }
-    }
-
-    public class ScheduleDbContext : DbContext
-    {
-        public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<Tour> Tours { get; set; }
-        public DbSet<Fair> Fairs { get; set; }
-
-        public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options)
-            : base(options) { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<TimeBlock>().HasKey(s => s.ID);
-
-            modelBuilder.Entity<Tour>().HasKey(t => t.ID);
-
-            modelBuilder.Entity<Fair>().HasKey(f => f.ID);
-
-            modelBuilder.Entity<Availability>().HasKey(a => a.Id);
         }
     }
 
