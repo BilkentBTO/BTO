@@ -27,7 +27,7 @@ import SuccessJoin from "./JoinBTOPage/SuccessJoin";
 import JoinConfirmation from "./JoinBTOPage/JoinConfirmation";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import UserPage from "./UserPage/UserPage";
-import ManageTour from "./GuidePanel/ManageTour";
+
 import AvailableToursPage from "./GuidePanel/AvailableToursPage";
 import EditAvailableHoursPage from "./GuidePanel/EditAvailableHoursPage";
 import ToursResponsibleByGuides from "./AdvisorPanel/ToursResponsibleByGuides";
@@ -47,6 +47,7 @@ import ConfirmAddUser from "./CoordinatorPanel/ConfirmAddUser";
 import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
 import ManageSurveys from "./CoordinatorPanel/SurveyClasses/ManageSurveys";
 import CreateSurvey from "./CoordinatorPanel/SurveyClasses/CreateSurvey";
+import ApplyToTourPage from "./GuidePanel/ApplyToTourPage";
 
 function App() {
   //UserPage has problems!!!!!!!!!!!!
@@ -139,12 +140,12 @@ function App() {
         }
       />
       <Route
-        path="/guidePanel/assignedTours/manageTour"
+        path="/guidePanel/assignedTours/applyTour"
         element={
           <RoleProtectedRoute
             allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
-            <ManageTour />
+            <ApplyToTourPage />
           </RoleProtectedRoute>
         }
       />

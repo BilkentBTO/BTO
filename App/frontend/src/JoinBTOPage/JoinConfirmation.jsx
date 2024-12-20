@@ -70,8 +70,8 @@ function JoinConfirmation() {
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"Confirmation Page"} />
       <div className="innerSchoolConfirmation">
-        <div className="topInner">
-          <div className="leftInner">
+        <div className="topInnerSchool">
+          <div className="leftInnerSchool">
             {/* Left Section */}
             <div className="infoLog">
               <div className="box">
@@ -106,7 +106,7 @@ function JoinConfirmation() {
               </div>
             </div>
           </div>
-          <div className="rightInner">
+          <div className="rightInnerSchool">
             {/* Right Section */}
             <div className="infoLog">
               <div className="box">
