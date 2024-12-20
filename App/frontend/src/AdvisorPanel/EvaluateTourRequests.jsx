@@ -259,7 +259,7 @@ function EvaluateTourRequests() {
 
   return (
     <div>
-      <HeaderPanelGlobal name={"ADVISOR PANEL"} />
+      <HeaderPanelGlobal name={"EVALUATE TOUR REQUESTS"} />
       <div className="evaluateTourRequests">
         {/* Pending Requests */}
         <h1 className="evaluateTourRequestsHeading">Pending Tour Requests</h1>

@@ -1,6 +1,7 @@
 import "./AdvisorPanel.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import { useNavigate } from "react-router-dom";
+import profileImage from "../assets/profile_image.png";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -10,6 +11,7 @@ function AdvisorPanel() {
   //TEMPORARY VALUES !!!!!!!!!!!!!!
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(""); // State to hold the user's role
+  const [username, setUserName] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -24,6 +26,12 @@ function AdvisorPanel() {
           ] || decodedToken.role; // Use "role" if no namespace is used
         setUserRole(roleClaim || "User");
 
+        const nameClaim =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+          ];
+        setUserName(nameClaim || "Unknown");
+
         console.log("Decoded Token:", decodedToken);
         console.log("Role:", roleClaim);
       } catch (error) {
@@ -35,6 +43,12 @@ function AdvisorPanel() {
       navigate("/login"); // Redirect to login if no token is found
     }
   }, [navigate]);
+
+  const handleLogout = () => {
+    console.log("Logout");
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
 
   // Sidebar navigation based on role
   const sidebarOptions = {
@@ -89,7 +103,6 @@ function AdvisorPanel() {
 
   return (
     <div className="advisorPanel">
-      <HeaderPanelGlobal name={"ADVISOR PANEL"} />
       <div className="innerAdvisor">
         <div className="leftSideAdvisor">
           <div className="sidebar">
@@ -111,6 +124,15 @@ function AdvisorPanel() {
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="bottomSidebarSection">
+            <div className="profileSidebarSection">
+              <img src={profileImage}></img>
+              <span>{username}</span>
+            </div>
+            <div className="logoutSidebarSection">
+              <button onClick={handleLogout}>LOGOUT</button>
+            </div>
           </div>
         </div>
         <div className="buttonAdvisorPanelSection">

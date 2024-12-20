@@ -44,7 +44,8 @@
     background-color: rgb(60, 60, 130);
 }
 .sidebar {
-  font-family: Arial, Helvetica, sans-serif;
+    border-radius: 30px;
+    font-family: Arial, Helvetica, sans-serif;
     width: 250px;
     background-color: rgb(60, 60, 130);
     color: white;
