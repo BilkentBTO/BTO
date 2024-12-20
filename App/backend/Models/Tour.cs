@@ -6,8 +6,6 @@ using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    
-
     public class Survey_temp { }
 
     [Serializable]
@@ -36,8 +34,6 @@ namespace backend.Models
         public int Priority { get; set; }
 
         public void ChangeTime(DateTime time) => Time = time;
-
-        public bool HasGuide() => AssignedGuide != null;
 
         public bool HasGuide() => AssignedGuideID != null;
 
@@ -71,7 +67,8 @@ namespace backend.Models
 
         public bool RemoveCandidateGuide(Guide guide) => AssignedCandidateGuideIDs.Remove(guide.Id);
 
-        public bool CandidateGuideAssigned(Guide guide) => AssignedCandidateGuideIDs.Contains(guide.Id);
+        public bool CandidateGuideAssigned(Guide guide) =>
+            AssignedCandidateGuideIDs.Contains(guide.Id);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 

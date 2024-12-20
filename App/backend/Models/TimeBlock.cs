@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static BTO.Constrains.TimeConstrains;
 using backend.Database;
+using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-
     public struct Availability()
     {
         private int DailySchedule = 0;
@@ -20,6 +19,7 @@ namespace backend.Models
             int mask = 1 << timeBlockID;
             return (DailySchedule & mask) != 0;
         }
+
         public void SetAvailabilityAt(int timeBlockID, bool isAvailable)
         {
             if (timeBlockID < 0 || timeBlockID >= TimeBlocksPerDay)
@@ -38,7 +38,9 @@ namespace backend.Models
         public static int GetID(DateTime day, int timeBlockIndex) => day.GetHashCode() * TimeBlocksPerDay + timeBlockIndex;
 
         DateTime _day;
-        [Required] DateTime Day
+
+        [Required]
+        DateTime Day
         {
             get => _day;
             set
@@ -48,7 +50,9 @@ namespace backend.Models
             }
         }
         int _timeBlockIndex;
-        [Required] int TimeBlockIndex
+
+        [Required]
+        int TimeBlockIndex
         {
             get => _timeBlockIndex;
             set
