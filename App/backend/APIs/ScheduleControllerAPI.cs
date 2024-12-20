@@ -36,7 +36,7 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
 
             if (!await _controller.RemoveTour(tourID))
-                return NotFound();
+                return NotFound("Unable to remove tour.");
 
             return Ok();
         }
@@ -49,7 +49,7 @@ namespace backend.Server.Controllers
 
             Tour? tour;
             if ((tour = await _controller.GetTour(tourID)) == null)
-                return NotFound();
+                return NotFound("Unable to get tour by ID.");
 
             return Ok(tour);
         }
@@ -61,7 +61,7 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
 
             if (!await _controller.UpdateTourInfo(tour))
-                return BadRequest();
+                return BadRequest("Unable to update tour.");
 
             return Ok();
         }
@@ -74,7 +74,7 @@ namespace backend.Server.Controllers
 
             Tour[] tours;
             if ((tours = await _controller.GetAllTours()) == null)
-                return BadRequest();
+                return BadRequest("Unable to get all tours.");
 
             return Ok(tours);
         }
@@ -101,7 +101,7 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
 
             if (!await _controller.RemoveFair(fairID))
-                return NotFound();
+                return NotFound("Unable to remove fair.");
 
             return Ok();
         }
@@ -114,7 +114,7 @@ namespace backend.Server.Controllers
 
             Fair? fair;
             if ((fair = await _controller.GetFair(fairID)) == null)
-                return NotFound();
+                return NotFound("Unable to get fair by ID.");
 
             return Ok(fair);
         }
@@ -126,7 +126,7 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
 
             if (!await _controller.UpdateFairInfo(fair))
-                return BadRequest();
+                return BadRequest("Unable to update fair.");
 
             return Ok();
         }
@@ -139,7 +139,7 @@ namespace backend.Server.Controllers
 
             Fair[] fairs;
             if ((fairs = await _controller.GetAllFairs()) == null)
-                return BadRequest();
+                return BadRequest("Unable to get all fairs.");
 
             return Ok(fairs);
         }
@@ -147,7 +147,56 @@ namespace backend.Server.Controllers
         #endregion
 
         #region SCHEDULE
-        // WILL BE IMPLEMENTED AFTER CHANGING HOW TIMEBLOCK & SCHEDULES WORK
+        [HttpPost()]
+        public async Task<ActionResult> AddTimeBlock(TimeBlock tb)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _controller.AddTimeBlock(tb))
+                return BadRequest("Unable to add timeblock.");
+
+            return Ok();
+        }
+
+        [HttpPut()]
+        public async Task<ActionResult> UpdateTimeBlock(TimeBlock tb)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _controller.UpdateTimeBlock(tb))
+                return BadRequest("Unable to update timeblock.");
+
+            return Ok();
+        }
+
+        [HttpGet()]
+        public async Task<ActionResult> GetTimeBlockByID(int timeID)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            TimeBlock? tb;
+            if ((tb = await _controller.GetTimeBlock(timeID)) == null)
+                return NotFound("Unable to get timeblock by ID.");
+
+            return Ok(tb);
+        }
+
+        [HttpGet()]
+        public async Task<ActionResult> GetTimeBlockByTime(DateTime day, int timeBlockIndex)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            TimeBlock? tb;
+            if ((tb = await _controller.GetTimeBlock(day, timeBlockIndex)) == null)
+                return NotFound("Unable to get timeblock by time.");
+
+            return Ok(tb);
+        }
+
         #endregion
     }
 }

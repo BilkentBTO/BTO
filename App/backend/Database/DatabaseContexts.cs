@@ -21,7 +21,7 @@ namespace backend.Database
         public DbSet<GuideTourApplication> GuideTourApplication { get; set; }
 
         //Scheduling
-        public DbSet<TimeBlock> Schedules { get; set; }
+        public DbSet<TimeBlock> Schedule { get; set; }
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Fair> Fairs { get; set; }
 
@@ -51,8 +51,6 @@ namespace backend.Database
             modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.Code).IsUnique();
 
             modelBuilder.Entity<TimeBlock>().HasKey(t => t.ID);
-
-            modelBuilder.Entity<TimeBlock>().HasKey(s => s.ID);
 
             modelBuilder.Entity<Tour>().HasKey(t => t.ID);
 
