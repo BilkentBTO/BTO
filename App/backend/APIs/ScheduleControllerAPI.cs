@@ -147,7 +147,7 @@ namespace backend.Server.Controllers
         #endregion
 
         #region SCHEDULE
-        [HttpPost()]
+        [HttpPost("schedule")]
         public async Task<ActionResult> AddTimeBlock(TimeBlock tb)
         {
             if (!ModelState.IsValid)
@@ -159,7 +159,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpPut()]
+        [HttpPut("schedule")]
         public async Task<ActionResult> UpdateTimeBlock(TimeBlock tb)
         {
             if (!ModelState.IsValid)
@@ -171,7 +171,7 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
-        [HttpGet()]
+        [HttpGet("schedule")]
         public async Task<ActionResult> GetTimeBlockByID(int timeID)
         {
             if (!ModelState.IsValid)
@@ -184,7 +184,7 @@ namespace backend.Server.Controllers
             return Ok(tb);
         }
 
-        [HttpGet()]
+        [HttpGet("schedule/day")]
         public async Task<ActionResult> GetTimeBlockByTime(DateTime day, int timeBlockIndex)
         {
             if (!ModelState.IsValid)

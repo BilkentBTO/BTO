@@ -8358,31 +8358,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\krmcd\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/Users/boraakoguz/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\backend.csproj",
+      "projectUniqueName": "/Users/boraakoguz/Development/BTO/App/backend/backend.csproj",
       "projectName": "backend",
-      "projectPath": "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\backend.csproj",
-      "packagesPath": "C:\\Users\\krmcd\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\krmcd\\OneDrive\\Desktop\\BTO\\App\\backend\\obj\\",
+      "projectPath": "/Users/boraakoguz/Development/BTO/App/backend/backend.csproj",
+      "packagesPath": "/Users/boraakoguz/.nuget/packages/",
+      "outputPath": "/Users/boraakoguz/Development/BTO/App/backend/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\krmcd\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/boraakoguz/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8395,6 +8388,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -8459,7 +8457,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

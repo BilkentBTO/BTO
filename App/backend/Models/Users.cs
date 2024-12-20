@@ -91,6 +91,8 @@ namespace backend.Models
     public class Guide : User
     {
         public bool IsCandidate { get; private set; }
+
+        [Column(TypeName = "jsonb")]
         public Availability[] Schedule { get; private set; }
 
         public Guide(string Name, string Surname, string Mail, bool isCandidate = false)

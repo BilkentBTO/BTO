@@ -7,9 +7,9 @@ using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
-    public struct Availability()
+    public struct Availability
     {
-        private int DailySchedule = 0;
+        private int DailySchedule { get; set; }
 
         public readonly bool IsAvailableAt(int timeBlockID)
         {
@@ -35,7 +35,8 @@ namespace backend.Models
         private const byte MAX_TOURS_PER_BLOCK = 3;
         private const int PRIORITY_BIAS = 100;
 
-        public static int GetID(DateTime day, int timeBlockIndex) => day.GetHashCode() * TimeBlocksPerDay + timeBlockIndex;
+        public static int GetID(DateTime day, int timeBlockIndex) =>
+            day.GetHashCode() * TimeBlocksPerDay + timeBlockIndex;
 
         DateTime _day;
 
@@ -65,7 +66,9 @@ namespace backend.Models
         }
 
         public int ID { get; set; }
+
         private void ReCalculateID() => ID = GetID(Day, TimeBlockIndex);
+
         public int MaxStudentCount { get; private set; }
 
         // int, int = tourID, tourPriority
