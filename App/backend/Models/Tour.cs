@@ -19,11 +19,13 @@ namespace backend.Models
 
     public class Tour()
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Required] public int ID { get; set; }
+        public int ID { get; set; }
+        public DateTime Time { get; private set; }
 
-        public readonly TourRegistration? RegistirationInfo;
+        public string? TourRegistrationCode { get; set; }
+
+        [NotMapped]
+        public TourRegistration? TourRegistirationInfo { get; set; }
 
         public int? AssignedGuideID { get; private set; }
         private readonly List<int> AssignedCandidateGuideIDs = [];
@@ -31,9 +33,18 @@ namespace backend.Models
         private Survey_temp? Survey;
         private readonly List<Comment> Comments = [];
 
-        public int Priority => RegistirationInfo == null || RegistirationInfo.School == null ? 0 : RegistirationInfo.School.Priority;
+        public int Priority { get; set; }
+
+        public void ChangeTime(DateTime time) => Time = time;
+
+        public bool HasGuide() => AssignedGuide != null;
 
         public bool HasGuide() => AssignedGuideID != null;
+
+        public void FillTourRegistrationInfo(TourRegistration registration)
+        {
+            this.TourRegistirationInfo = registration;
+        }
 
         public void AssignGuide(Guide guide)
         {

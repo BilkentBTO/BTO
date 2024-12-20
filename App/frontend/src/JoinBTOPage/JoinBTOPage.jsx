@@ -17,7 +17,7 @@ function JoinBTOPage() {
     // Fetch majors from API
     const fetchMajors = async () => {
       try {
-        const response = await fetch("/api/User/majors");
+        const response = await fetch("/api/user/majors");
         if (!response.ok) throw new Error("Failed to fetch majors");
 
         const data = await response.json();

@@ -2,21 +2,18 @@ using System.Collections;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using CsvHelper;
+using Microsoft.Net.Http.Headers;
 
 namespace backend.Models
 {
     public class Fair()
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Required] public int ID { get; set; }
-
-        public readonly FairRegistration? RegistrationInfo;
-
-        private readonly List<int> AssignedGuideIDs = [];
+        public int ID { get; set; }
+        public DateTime? Time { get; set; }
+        public readonly FairRegistration? RegistirationInfo;
+        private readonly List<Guide> AssignedGuides = [];
         private readonly List<Comment> Comments = [];
-
-
 
         public bool AddGuide(Guide guide)
         {

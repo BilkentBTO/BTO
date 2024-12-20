@@ -10,9 +10,12 @@ COPY . .
 
 RUN dotnet publish backend.csproj -c Debug -o /app
 
+
 RUN apt-get update \
     && apt-get install -y unzip curl \
-    && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+    && if [ ! -d "/vsdbg" ]; then \
+        curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; \
+    fi
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 

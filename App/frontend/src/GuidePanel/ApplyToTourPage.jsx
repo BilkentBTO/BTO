@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
 
-const ManageTour = () => {
+function ApplyToTourPage() {
   const location = useLocation();
   const { selectedTour } = location.state || {}; // Retrieve selectedTour from state
   console.log("ROW DATA: ", selectedTour);
@@ -28,25 +28,18 @@ const ManageTour = () => {
     Notes: selectedTour.notes || "N/A",
   };
 
-  const [notes, setNotes] = useState(selectedTour.notes || ""); // Track updated notes
-
-  // Handle changes in the text area
-  const handleNotesChange = (value) => {
-    setNotes(value);
-  };
-
   // Handle the submit button to update the notes
-  const handleSubmit = () => {
-    console.log("Updated Notes:", notes);
+  const handleApply = () => {
+    console.log("Applied");
   };
 
   const handleCancel = () => {
-    navigate("/guidePanel/assignedTours");
+    navigate("/guidePanel/availableTours");
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Manage Tour</h1>
+      <h1>Apply Tour</h1>
       <table
         style={{
           width: "100%",
@@ -82,14 +75,8 @@ const ManageTour = () => {
         </tbody>
       </table>
       <div style={{ marginTop: "20px" }}>
-        <h3>Update Notes</h3>
-        <FormTextAreaGlobal
-          value={notes}
-          onChange={handleNotesChange} // Pass handleNotesChange
-          placeholder="Enter updated notes here..."
-        />
         <button
-          onClick={handleSubmit}
+          onClick={handleApply}
           style={{
             marginTop: "10px",
             padding: "10px 20px",
@@ -100,7 +87,7 @@ const ManageTour = () => {
             cursor: "pointer",
           }}
         >
-          Submit
+          Apply
         </button>
         <button
           onClick={handleCancel}
@@ -120,6 +107,5 @@ const ManageTour = () => {
       </div>
     </div>
   );
-};
-
-export default ManageTour;
+}
+export default ApplyToTourPage;

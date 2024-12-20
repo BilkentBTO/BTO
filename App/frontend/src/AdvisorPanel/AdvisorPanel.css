@@ -4,7 +4,7 @@
     gap: 50px; /* Adds spacing between buttons */
     justify-content: center; /* Centers the grid horizontally */
     align-items: center; /* Centers the grid vertically */
-    width: 80%; /* Adjusts the width of the button container */
+    width: 70%; /* Adjusts the width of the button container */
     margin: 0 auto; /* Horizontally centers the section within its parent */
     box-sizing: border-box; /* Ensures padding is included in width/height */
 }
@@ -19,7 +19,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    height: 90vh;
 }
 
 .buttonAdvisorPanelSection button {
@@ -37,4 +37,9 @@
 
 .buttonAdvisorPanelSection button:hover {
     background-color: rgb(19, 19, 70);
+}
+
+.leftSideAdvisor{
+    height: 100%;
+    background-color: rgb(60, 60, 130);
 }

@@ -6,49 +6,46 @@ namespace backend.Database
     public class SystemDatabaseController
     {
         private readonly SystemDbContext _SystemContext;
-        private readonly ScheduleDbContext _ScheduleContext;
         private readonly ILogger _logger;
 
-        public SystemDatabaseController(
-            SystemDbContext SystemContext,
-            ScheduleDbContext ScheduleContext,
-            ILoggerFactory loggerFactory
-        )
+        public SystemDatabaseController(SystemDbContext SystemContext, ILoggerFactory loggerFactory)
         {
             _SystemContext = SystemContext;
-            _ScheduleContext = ScheduleContext;
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        /*
-        public async Task<bool> AddGuideTourApplication(int TourID, int GuideUID)
+        public async Task<ErrorTypes> AddGuideTourApplication(int TourID, int GuideUID)
         {
-            if (TourID < 0 || GuideUID < 0)
+            if (TourID < 0)
             {
-                return false;
+                return ErrorTypes.InvalidTourID;
             }
 
-            Tour? Tour = await _ScheduleContext
-                .Tours.Include(t => t.School)
-                .SingleOrDefaultAsync(t => t.ID == TourID);
+            if (GuideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            Tour? Tour = await _SystemContext.Tours.SingleOrDefaultAsync(t => t.ID == TourID);
 
             if (Tour == null)
             {
-                return false;
+                return ErrorTypes.TourNotFound;
             }
 
-            User? Guide = await _SystemContext.Users.SingleOrDefaultAsync(u => u.Id == GuideUID);
+            User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.Id == GuideUID);
 
-            if (Guide == null || Guide.UserType != UserType.Guide)
+            if (user == null || user.UserType != UserType.Guide)
             {
-                return false;
+                return ErrorTypes.UserNotFound;
             }
-            
 
-            Tour.AssignGuide(Guide);
+            Guide foundGuide = (Guide)user;
 
-            
-        }*/
+            Tour.AssignGuide(foundGuide);
+
+            return ErrorTypes.Success;
+        }
 
         public async Task<Registration?> GetGeneralRegistration(string Code)
         {
@@ -75,6 +72,27 @@ namespace backend.Database
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 default:
                     return null;
+            }
+        }
+
+        public async Task<bool> CancelGeneralRegistration(string Code)
+        {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return false;
+            }
+
+            var type = Code[0];
+            switch (type)
+            {
+                case 'T':
+                    return await CancelTourRegistration(Code);
+                case 'F':
+                    return await CancelFairRegistration(Code);
+                case 'I':
+                    return await CancelIndividualRegistration(Code);
+                default:
+                    return false;
             }
         }
 
@@ -141,6 +159,25 @@ namespace backend.Database
                 .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
                 .SingleOrDefaultAsync(r => r.Code == Code);
+        }
+
+        public async Task<bool> CancelTourRegistration(string Code)
+        {
+            var tourRegistration = await _SystemContext
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+
+            if (tourRegistration == null)
+            {
+                return false;
+            }
+
+            _SystemContext.TourRegistrations.Remove(tourRegistration);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
@@ -267,6 +304,24 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
+        public async Task<bool> CancelFairRegistration(string Code)
+        {
+            var fairRegistration = await _SystemContext
+                .FairRegistrations.Include(r => r.School)
+                .SingleOrDefaultAsync(r => r.Code == Code);
+
+            if (fairRegistration == null)
+            {
+                return false;
+            }
+
+            _SystemContext.FairRegistrations.Remove(fairRegistration);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<bool> AcceptFairRegistration(string Code)
         {
             var registration = await _SystemContext.FairRegistrations.SingleOrDefaultAsync(r =>
@@ -352,6 +407,25 @@ namespace backend.Database
             return await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
             );
+        }
+
+        public async Task<bool> CancelIndividualRegistration(string Code)
+        {
+            var individualRegistration =
+                await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
+                    r.Code == Code
+                );
+
+            if (individualRegistration == null)
+            {
+                return false;
+            }
+
+            _SystemContext.IndividualRegistrations.Remove(individualRegistration);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> AcceptIndividualRegistration(string Code)

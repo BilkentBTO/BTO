@@ -11,7 +11,7 @@ namespace backend.Models
 
     public class GuideTourApplicationRequest()
     {
-        public int? TourID { get; set; }
+        public int TourID { get; set; }
         public int GuideUID { get; set; }
     }
 }

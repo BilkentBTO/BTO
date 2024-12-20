@@ -32,6 +32,22 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("general/cancel")]
+        public async Task<ActionResult> CancelGeneralRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.CancelGeneralRegistration(Code);
+            if (!result)
+            {
+                return NotFound(new { message = "Registration not found." });
+            }
+            return Ok(result);
+        }
+
         [HttpPost("tour")]
         public async Task<ActionResult> AddTourRegistration(
             [FromBody] TourRegistrationRequest registration

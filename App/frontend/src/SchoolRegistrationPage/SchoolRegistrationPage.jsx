@@ -105,12 +105,14 @@ function SchoolRegistrationPage() {
 
   // Generic handler for form state updates
   const handleChange = (key, value) => {
+    if (key === "visitDate" && isWeekend(value)) {
+      return; // Stop updating the state for invalid date
+    }
     setFormData((prev) => ({
       ...prev,
       [key]: value,
     }));
   };
-
   const handleSchoolChange = (selectedSchoolName) => {
     const selectedSchool = schools.find(
       (school) => school.name === selectedSchoolName
@@ -120,6 +122,10 @@ function SchoolRegistrationPage() {
       handleChange("school", selectedSchool.name); // Save school name
       handleChange("schoolID", selectedSchool.id); // Save school ID
     }
+  };
+  const isWeekend = (date) => {
+    const dayOfWeek = new Date(date).getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6; // Sunday (0) and Saturday (6)
   };
   const handleSubmit = () => {
     if (

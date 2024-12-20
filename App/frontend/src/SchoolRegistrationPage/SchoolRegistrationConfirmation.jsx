@@ -40,9 +40,8 @@ function SchoolRegistrationConfirmation() {
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"Confirmation Page"}></HeaderGlobal>
       <div className="innerSchoolConfirmation">
-        <div className="topInner">
-          <div className="leftInner">
-            {/* Left Side Info */}
+        <div className="topInnerSchool">
+          <div className="leftInnerSchool">
             <div className="infoLog">
               <div className="box">
                 <p>City:</p>
@@ -92,7 +91,7 @@ function SchoolRegistrationConfirmation() {
               </div>
             </div>
           </div>
-          <div className="rightInner">
+          <div className="rightInnerSchool">
             {/* Right Side Info */}
             <div className="infoLog">
               <div className="box">

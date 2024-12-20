@@ -40,8 +40,8 @@ function IndividualConfirmation() {
     <div className="schoolRegistrationPage">
       <HeaderGlobal name={"Confirmation Page"}></HeaderGlobal>
       <div className="innerSchoolConfirmation">
-        <div className="topInner">
-          <div className="leftInner">
+        <div className="topInnerSchool">
+          <div className="leftInnerSchool">
             {/* Individual Info */}
             <div className="infoLog">
               <div className="box">

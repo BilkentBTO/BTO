@@ -37,7 +37,7 @@ function AvailableToursPage() {
     const selectedTour = data.find((item) => item.code === rowData[0]);
     console.log("SELECTED TOUR: ", selectedTour);
     // Navigate to the detailed tour management page
-    navigate("/guidePanel/assignedTours/manageTour", {
+    navigate("/guidePanel/assignedTours/applyTour", {
       state: { selectedTour },
     });
   };
