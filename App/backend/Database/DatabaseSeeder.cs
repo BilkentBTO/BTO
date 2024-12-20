@@ -107,12 +107,8 @@ namespace backend.Database
         public async Task InsertTourSampleData(SystemDbContext db)
         {
             List<Tour> tours = new List<Tour> { new Tour(), new Tour() };
-            Schedule weeklySchedule = new Schedule();
-            weeklySchedule.AddTour(tours[0], 15);
-            weeklySchedule.AddTour(tours[1], 17);
 
             db.Tours.AddRange(tours);
-            db.Schedules.Add(weeklySchedule);
             try
             {
                 await db.SaveChangesAsync();

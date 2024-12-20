@@ -21,7 +21,7 @@ namespace backend.Database
         public DbSet<GuideTourApplication> GuideTourApplication { get; set; }
 
         //Scheduling
-        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<TimeBlock> Schedules { get; set; }
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Fair> Fairs { get; set; }
 
@@ -52,13 +52,11 @@ namespace backend.Database
 
             modelBuilder.Entity<TimeBlock>().HasKey(t => t.ID);
 
-            modelBuilder.Entity<Schedule>().HasKey(s => s.ID);
+            modelBuilder.Entity<TimeBlock>().HasKey(s => s.ID);
 
             modelBuilder.Entity<Tour>().HasKey(t => t.ID);
 
             modelBuilder.Entity<Fair>().HasKey(f => f.ID);
-
-            modelBuilder.Entity<Availability>().HasKey(a => a.Id);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
