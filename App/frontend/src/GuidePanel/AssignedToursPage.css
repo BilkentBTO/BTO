@@ -1,7 +1,12 @@
 .assignedToursHeading{
     margin-left: 3%;
+    
 }
+
 
 .assignedToursPage{
     font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
 }

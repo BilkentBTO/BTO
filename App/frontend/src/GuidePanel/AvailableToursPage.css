@@ -1,6 +1,9 @@
 
 .availableToursPage{
     font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
 }
 
 .availableToursHeading{

@@ -95,3 +95,11 @@
     border: 0;
     width: auto;
 }
+.leftSideGuideFunction{
+    height: 100%;
+    background-color: rgb(60, 60, 130);
+  
+  }
+  .rightSideGuideFunction{
+    width: 100%;
+  }
