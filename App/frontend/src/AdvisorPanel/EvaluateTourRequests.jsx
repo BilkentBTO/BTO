@@ -30,6 +30,12 @@ function renderNoDataTable(headers, message = "No Available Data") {
 
 function EvaluateTourRequests() {
   const [headers] = useState(["Tour ID", "School", "State"]);
+  const [headersIndv] = useState([
+    "Tour ID",
+    "Name",
+    "Preferred Major",
+    "State",
+  ]);
   const [popupHeaders] = useState([
     "Tour ID",
     "School Name",
@@ -47,10 +53,16 @@ function EvaluateTourRequests() {
   const [tableData, setTableData] = useState([]);
   const [completeData, setCompleteData] = useState([]);
 
+  const [selectedType, setSelectedType] = useState("school");
+
   // New states for pending, accepted, and rejected requests
   const [pendingData, setPendingData] = useState([]);
   const [acceptedData, setAcceptedData] = useState([]);
   const [rejectedData, setRejectedData] = useState([]);
+
+  const [pendingIndvData, setPendingIndvData] = useState([]);
+  const [acceptedIndvData, setAcceptedIndvData] = useState([]);
+  const [rejectedIndvData, setRejectedIndvData] = useState([]);
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -69,66 +81,54 @@ function EvaluateTourRequests() {
     transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
-  const fetchTourRequests = async () => {
+  const fetchSchoolData = async () => {
+    // Fetch data for school requests
     try {
-      const response = await fetch("/api/register/tour/registrations");
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const apiData = await response.json();
-      // Update complete data for popups
-      setTableData(apiData);
-      setCompleteData(apiData);
+      const pending = await fetch("/api/register/tour/registrations/0").then(
+        (res) => res.json()
+      );
+      const accepted = await fetch("/api/register/tour/registrations/1").then(
+        (res) => res.json()
+      );
+      const rejected = await fetch("/api/register/tour/registrations/2").then(
+        (res) => res.json()
+      );
+      setPendingData(pending);
+      setAcceptedData(accepted);
+      setRejectedData(rejected);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching school data:", error);
     }
   };
-  const fetchAcceptedTourRequests = async () => {
-    try {
-      const response = await fetch("/api/register/tour/registrations/1");
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
 
-      const apiData = await response.json();
-      console.log("ACCEPTED API: ", apiData);
-      setAcceptedData(apiData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  const fetchRejectedTourRequests = async () => {
+  const fetchIndividualData = async () => {
+    // Fetch data for individual requests
     try {
-      const response = await fetch("/api/register/tour/registrations/2");
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const apiData = await response.json();
-      console.log("REJECTED API: ", apiData);
-      setRejectedData(apiData);
+      const pending = await fetch(
+        "/api/register/individual/registrations/0"
+      ).then((res) => res.json());
+      const accepted = await fetch(
+        "/api/register/individual/registrations/1"
+      ).then((res) => res.json());
+      const rejected = await fetch(
+        "/api/register/individual/registrations/2"
+      ).then((res) => res.json());
+      setPendingIndvData(pending);
+      setAcceptedIndvData(accepted);
+      setRejectedIndvData(rejected);
     } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  const fetchPendingTourRequests = async () => {
-    try {
-      const response = await fetch("/api/register/tour/registrations/0");
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const apiData = await response.json();
-      console.log("PENDING API: ", apiData);
-      setPendingData(apiData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching individual data:", error);
     }
   };
 
   useEffect(() => {
-    fetchTourRequests();
-    fetchAcceptedTourRequests();
-    fetchRejectedTourRequests();
-    fetchPendingTourRequests();
-  }, []);
+    if (selectedType === "school") {
+      fetchSchoolData();
+    } else {
+      fetchIndividualData();
+    }
+  }, [selectedType]);
+
   const headerKeyMap = {
     "Tour ID": "code",
     "School Name": "school.schoolName",
@@ -269,176 +269,276 @@ function EvaluateTourRequests() {
     <div className="evaluateTourRequestPage">
       <GlobalSidebar />
       <div className="rightSideAdvisorFunction">
-        <div className="evaluateTourRequests">
-          <HeaderPanelGlobal name={"EVALUATE TOUR REQUESTS"} />
-          {/* Pending Requests */}
-          <h1 className="evaluateTourRequestsHeading">Pending Tour Requests</h1>
-          {pendingData.length > 0 ? (
-            <TableWithButtons
-              headers={headers}
-              data={pendingData.map((item) => [
-                item.code,
-                item.school?.schoolName || "N/A",
-                "Pending",
-              ])}
-              onButtonClick={handleRowClick}
-              buttonStyle={buttonStyle}
-              buttonName="Decide"
-            />
-          ) : (
-            <p className="noDataText">No Pending Tour Requests</p>
-          )}
-
-          {/* Accepted Requests */}
-          <h1 className="evaluateTourRequestsHeading">
-            Accepted Tour Requests
-          </h1>
-          {acceptedData.length > 0 ? (
-            <TableWithButtons
-              headers={headers}
-              data={acceptedData.map((item) => [
-                item.code,
-                item.school?.schoolName || "N/A",
-                "Accepted",
-              ])}
-              onButtonClick={handleAcceptedRowClick}
-              buttonStyle={buttonStyle}
-              buttonName="View"
-            />
-          ) : (
-            <p className="noDataText">No Accepted Tour Requests</p>
-          )}
-
-          {/* Rejected Requests */}
-          <h1 className="evaluateTourRequestsHeading">
-            Rejected Tour Requests
-          </h1>
-          {rejectedData.length > 0 ? (
-            <TableWithButtons
-              headers={headers}
-              data={rejectedData.map((item) => [
-                item.code,
-                item.school?.schoolName || "N/A",
-                "Rejected",
-              ])}
-              onButtonClick={(row) => handleDelete(row[0])}
-              buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
-              buttonName="Delete"
-            />
-          ) : (
-            <p className="noDataText">No Rejected Tour Requests</p>
-          )}
-
-          {/* Popup */}
-          {/* Popup */}
-          {popupVisible && selectedRow && (
-            <div className="popupOverlay">
-              <div className="popupContent">
-                <h2>Tour Details</h2>
-                <table className="popupTable">
-                  <tbody>
-                    {popupHeaders.map((header, index) => {
-                      const keyPath = headerKeyMap[header]; // Match header to object key
-                      const value = keyPath
-                        .split(".")
-                        .reduce(
-                          (acc, key) => (acc && acc[key] ? acc[key] : "N/A"),
-                          selectedRow
-                        );
-
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <strong>{header}:</strong>
-                          </td>
-                          <td>{value}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                {/* Conditional rendering for buttons */}
-                {selectedRow.state === 1 ? ( // Accepted rows
-                  <button
-                    style={{
-                      padding: "8px 16px",
-                      backgroundColor: "grey",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      width: "100%",
-                      maxWidth: "120px",
-                      textAlign: "center",
-                      transition:
-                        "background-color 0.3s ease, transform 0.2s ease",
-                    }}
-                    onClick={closePopup}
-                  >
-                    Close
-                  </button>
+        <HeaderPanelGlobal name={"EVALUATE TOUR REQUESTS"} />
+        <div className="toggleButtons">
+          <button
+            className={`toggleButton ${
+              selectedType === "school" ? "active" : ""
+            }`}
+            onClick={() => setSelectedType("school")}
+          >
+            School
+          </button>
+          <button
+            className={`toggleButton ${
+              selectedType === "individual" ? "active" : ""
+            }`}
+            onClick={() => setSelectedType("individual")}
+          >
+            Individual
+          </button>
+        </div>
+        <div className="rightInnerEvaluation">
+          {selectedType === "school" ? (
+            <div className="leftSideEvaluation">
+              <div className="evaluateTourRequests">
+                {/* Pending Requests */}
+                <h1 className="evaluateTourRequestsHeading">
+                  Pending School Tour Requests
+                </h1>
+                {pendingData.length > 0 ? (
+                  <TableWithButtons
+                    headers={headers}
+                    data={pendingData.map((item) => [
+                      item.code,
+                      item.school?.schoolName || "N/A",
+                      "Pending",
+                    ])}
+                    onButtonClick={handleRowClick}
+                    buttonStyle={buttonStyle}
+                    buttonName="Decide"
+                  />
                 ) : (
-                  // Pending rows
-                  <div className="popupActions">
-                    <button
-                      style={{
-                        padding: "8px 16px",
-                        backgroundColor: "green",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        width: "100%",
-                        maxWidth: "120px",
-                        textAlign: "center",
-                        transition:
-                          "background-color 0.3s ease, transform 0.2s ease",
-                      }}
-                      onClick={acceptPopup}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      style={{
-                        padding: "8px 16px",
-                        backgroundColor: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        width: "100%",
-                        maxWidth: "120px",
-                        textAlign: "center",
-                        transition:
-                          "background-color 0.3s ease, transform 0.2s ease",
-                      }}
-                      onClick={rejectPopup}
-                    >
-                      Reject
-                    </button>
-                    <button
-                      style={{
-                        padding: "8px 16px",
-                        backgroundColor: "grey",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                        width: "100%",
-                        maxWidth: "120px",
-                        textAlign: "center",
-                        transition:
-                          "background-color 0.3s ease, transform 0.2s ease",
-                      }}
-                      onClick={closePopup}
-                    >
-                      Close
-                    </button>
+                  <p className="noDataText">No Pending School Tour Requests</p>
+                )}
+
+                {/* Accepted Requests */}
+                <h1 className="evaluateTourRequestsHeading">
+                  Accepted School Tour Requests
+                </h1>
+                {acceptedData.length > 0 ? (
+                  <TableWithButtons
+                    headers={headers}
+                    data={acceptedData.map((item) => [
+                      item.code,
+                      item.school?.schoolName || "N/A",
+                      "Accepted",
+                    ])}
+                    onButtonClick={handleAcceptedRowClick}
+                    buttonStyle={buttonStyle}
+                    buttonName="View"
+                  />
+                ) : (
+                  <p className="noDataText">No Accepted School Tour Requests</p>
+                )}
+
+                {/* Rejected Requests */}
+                <h1 className="evaluateTourRequestsHeading">
+                  Rejected School Tour Requests
+                </h1>
+                {rejectedData.length > 0 ? (
+                  <TableWithButtons
+                    headers={headers}
+                    data={rejectedData.map((item) => [
+                      item.code,
+                      item.school?.schoolName || "N/A",
+                      "Rejected",
+                    ])}
+                    onButtonClick={(row) => handleDelete(row[0])}
+                    buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
+                    buttonName="Delete"
+                  />
+                ) : (
+                  <p className="noDataText">No Rejected School Tour Requests</p>
+                )}
+
+                {/* Popup */}
+                {/* Popup */}
+                {popupVisible && selectedRow && (
+                  <div className="popupOverlay">
+                    <div className="popupContent">
+                      <h2>Tour Details</h2>
+                      <table className="popupTable">
+                        <tbody>
+                          {popupHeaders.map((header, index) => {
+                            const keyPath = headerKeyMap[header]; // Match header to object key
+                            const value = keyPath
+                              .split(".")
+                              .reduce(
+                                (acc, key) =>
+                                  acc && acc[key] ? acc[key] : "N/A",
+                                selectedRow
+                              );
+
+                            return (
+                              <tr key={index}>
+                                <td>
+                                  <strong>{header}:</strong>
+                                </td>
+                                <td>{value}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                      {/* Conditional rendering for buttons */}
+                      {selectedRow.state === 1 ? ( // Accepted rows
+                        <button
+                          style={{
+                            padding: "8px 16px",
+                            backgroundColor: "grey",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            width: "100%",
+                            maxWidth: "120px",
+                            textAlign: "center",
+                            transition:
+                              "background-color 0.3s ease, transform 0.2s ease",
+                          }}
+                          onClick={closePopup}
+                        >
+                          Close
+                        </button>
+                      ) : (
+                        // Pending rows
+                        <div className="popupActions">
+                          <button
+                            style={{
+                              padding: "8px 16px",
+                              backgroundColor: "green",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              width: "100%",
+                              maxWidth: "120px",
+                              textAlign: "center",
+                              transition:
+                                "background-color 0.3s ease, transform 0.2s ease",
+                            }}
+                            onClick={acceptPopup}
+                          >
+                            Approve
+                          </button>
+                          <button
+                            style={{
+                              padding: "8px 16px",
+                              backgroundColor: "red",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              width: "100%",
+                              maxWidth: "120px",
+                              textAlign: "center",
+                              transition:
+                                "background-color 0.3s ease, transform 0.2s ease",
+                            }}
+                            onClick={rejectPopup}
+                          >
+                            Reject
+                          </button>
+                          <button
+                            style={{
+                              padding: "8px 16px",
+                              backgroundColor: "grey",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              width: "100%",
+                              maxWidth: "120px",
+                              textAlign: "center",
+                              transition:
+                                "background-color 0.3s ease, transform 0.2s ease",
+                            }}
+                            onClick={closePopup}
+                          >
+                            Close
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="rightSideEvaluation">
+              <div className="evaluateTourRequests">
+                {/* Pending Requests */}
+                <h1 className="evaluateTourRequestsHeading">
+                  Pending Individual Tour Requests
+                </h1>
+                {pendingIndvData.length > 0 ? (
+                  <TableWithButtons
+                    headers={headersIndv}
+                    data={pendingIndvData.map((item) => [
+                      item.code,
+                      item.name || "N/A",
+                      item.individualMajor?.name || "N/A",
+                      "Pending",
+                    ])}
+                    onButtonClick={handleRowClick}
+                    buttonStyle={buttonStyle}
+                    buttonName="Decide"
+                  />
+                ) : (
+                  <p className="noDataText">
+                    No Pending Individual Tour Requests
+                  </p>
+                )}
+
+                {/* Accepted Requests */}
+                <h1 className="evaluateTourRequestsHeading">
+                  Accepted Individual Tour Requests
+                </h1>
+                {acceptedIndvData.length > 0 ? (
+                  <TableWithButtons
+                    headers={headersIndv}
+                    data={acceptedIndvData.map((item) => [
+                      item.code,
+                      item.individualName || "N/A",
+                      item.individualMajor?.name || "N/A",
+                      "Accepted",
+                    ])}
+                    onButtonClick={handleAcceptedRowClick}
+                    buttonStyle={buttonStyle}
+                    buttonName="View"
+                  />
+                ) : (
+                  <p className="noDataText">
+                    No Accepted Individual Tour Requests
+                  </p>
+                )}
+
+                {/* Rejected Requests */}
+                <h1 className="evaluateTourRequestsHeading">
+                  Rejected Individual Tour Requests
+                </h1>
+                {rejectedIndvData.length > 0 ? (
+                  <TableWithButtons
+                    headers={headersIndv}
+                    data={rejectedIndvData.map((item) => [
+                      item.code,
+                      item.name || "N/A",
+                      item.individualMajor?.name || "N/A",
+                      "Rejected",
+                    ])}
+                    onButtonClick={(row) => handleDelete(row[0])}
+                    buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
+                    buttonName="Delete"
+                  />
+                ) : (
+                  <p className="noDataText">
+                    No Rejected Individual Tour Requests
+                  </p>
                 )}
               </div>
             </div>
