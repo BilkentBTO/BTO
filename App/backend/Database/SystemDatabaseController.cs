@@ -102,10 +102,34 @@ namespace backend.Database
 
         public async Task<List<GuideTourApplication>> GetAllGuideTourApplications()
         {
-            return await _SystemContext
+            var applications = await _SystemContext
                 .GuideTourApplication.Include(a => a.Tour)
                 .Include(g => g.Guide)
                 .ToListAsync();
+
+            List<GuideTourApplication> result = new List<GuideTourApplication>();
+            foreach (var application in applications)
+            {
+                if (string.IsNullOrEmpty(application.TourCode))
+                {
+                    continue;
+                }
+                Tour? linkedTour = await GetTour(application.TourCode);
+                if (linkedTour == null)
+                {
+                    continue;
+                }
+                User? linkedUser = await GetUserAsync(application.GuideUID);
+                if (linkedUser == null || linkedUser.UserType != UserType.Guide)
+                {
+                    continue;
+                }
+                application.Tour = linkedTour;
+                application.Guide = (Guide)linkedUser;
+                result.Add(application);
+            }
+
+            return result;
         }
 
         public async Task<ErrorTypes> AcceptGuideTourApplication(int guideUID)
@@ -193,11 +217,11 @@ namespace backend.Database
             }
         }
 
-        public async Task<bool> CancelGeneralRegistration(string Code)
+        public async Task<ErrorTypes> CancelGeneralRegistration(string Code)
         {
             if (string.IsNullOrEmpty(Code))
             {
-                return false;
+                return ErrorTypes.InvalidCode;
             }
 
             var type = Code[0];
@@ -210,7 +234,7 @@ namespace backend.Database
                 case 'I':
                     return await CancelIndividualRegistration(Code);
                 default:
-                    return false;
+                    return ErrorTypes.InvalidCode;
             }
         }
 
@@ -279,8 +303,13 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
-        public async Task<bool> CancelTourRegistration(string Code)
+        public async Task<ErrorTypes> CancelTourRegistration(string Code)
         {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return ErrorTypes.InvalidTourCode;
+            }
+
             var tourRegistration = await _SystemContext
                 .TourRegistrations.Include(r => r.School)
                 .Include(r => r.PreferredVisitTime)
@@ -288,14 +317,14 @@ namespace backend.Database
 
             if (tourRegistration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
 
             _SystemContext.TourRegistrations.Remove(tourRegistration);
 
             await _SystemContext.SaveChangesAsync();
 
-            return true;
+            return ErrorTypes.Success;
         }
 
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
@@ -422,22 +451,26 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
-        public async Task<bool> CancelFairRegistration(string Code)
+        public async Task<ErrorTypes> CancelFairRegistration(string Code)
         {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return ErrorTypes.InvalidFairCode;
+            }
             var fairRegistration = await _SystemContext
                 .FairRegistrations.Include(r => r.School)
                 .SingleOrDefaultAsync(r => r.Code == Code);
 
             if (fairRegistration == null)
             {
-                return false;
+                return ErrorTypes.FairRegistrationNotFound;
             }
 
             _SystemContext.FairRegistrations.Remove(fairRegistration);
 
             await _SystemContext.SaveChangesAsync();
 
-            return true;
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> AcceptFairRegistration(string Code)
@@ -528,8 +561,12 @@ namespace backend.Database
             );
         }
 
-        public async Task<bool> CancelIndividualRegistration(string Code)
+        public async Task<ErrorTypes> CancelIndividualRegistration(string Code)
         {
+            if (string.IsNullOrEmpty(Code))
+            {
+                return ErrorTypes.InvalidIndividualCode;
+            }
             var individualRegistration =
                 await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
                     r.Code == Code
@@ -537,14 +574,14 @@ namespace backend.Database
 
             if (individualRegistration == null)
             {
-                return false;
+                return ErrorTypes.IndividualRegistrationNotFound;
             }
 
             _SystemContext.IndividualRegistrations.Remove(individualRegistration);
 
             await _SystemContext.SaveChangesAsync();
 
-            return true;
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> AcceptIndividualRegistration(string Code)
@@ -837,6 +874,27 @@ namespace backend.Database
                     .Select(s => s[random.Next(s.Length)])
                     .ToArray()
             );
+        }
+
+        private async Task<Tour?> GetTour(string tourCode)
+        {
+            Tour? foundTour = await _SystemContext.Tours.FirstOrDefaultAsync(t =>
+                t.TourRegistrationCode == tourCode
+            );
+            if (foundTour == null)
+            {
+                return null;
+            }
+            TourRegistration? TourRegistration = await _SystemContext
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.PreferredVisitTime)
+                .FirstOrDefaultAsync(t => t.Code == tourCode);
+            if (TourRegistration == null)
+            {
+                return null;
+            }
+            foundTour.FillTourRegistrationInfo(TourRegistration);
+            return foundTour;
         }
     }
 }

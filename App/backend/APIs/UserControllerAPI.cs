@@ -116,26 +116,7 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.AddUserAsync(UserCreate);
-            switch (result)
-            {
-                case ErrorTypes.InvalidUserName:
-                    return BadRequest(new { message = "Invalid user name." });
-
-                case ErrorTypes.InvalidMail:
-                    return BadRequest(new { message = "Invalid email address." });
-
-                case ErrorTypes.InvalidSurname:
-                    return BadRequest(new { message = "Invalid surname." });
-
-                case ErrorTypes.UserAlreadyExists:
-                    return Conflict(new { message = "User already exists." });
-
-                case ErrorTypes.Success:
-                    return Ok();
-
-                default:
-                    return StatusCode(500, new { message = "An unexpected error occurred." }); // 500 Internal Server Error
-            }
+            return ErrorHandler.HandleError(result);
         }
 
         [HttpPut("{id}")]

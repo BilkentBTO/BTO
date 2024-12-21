@@ -23,7 +23,6 @@ namespace backend.Models
 
         [NotMapped]
         public TourRegistration? TourRegistirationInfo { get; set; }
-
         public int? AssignedGuideID { get; private set; }
         private readonly List<int> AssignedCandidateGuideIDs = [];
 
