@@ -51,6 +51,14 @@ namespace backend.Database
                     {
                         await InsertCredentialsSampleData(SystemDbContext);
                     }
+                    if (!await SystemDbContext.Surveys.AnyAsync())
+                    {
+                        await InsertSurveySampleData(SystemDbContext);
+                    }
+                    if (!await SystemDbContext.Visitors.AnyAsync())
+                    {
+                        await InsertVisitorSampleData(SystemDbContext);
+                    }
                     /*
                     if (!await SystemDbContext.Tours.AnyAsync())
                     {
@@ -183,5 +191,136 @@ namespace backend.Database
                 throw;
             }
         }
+
+        // Insert sample survey data
+        public async Task InsertSurveySampleData(SystemDbContext db)
+        {
+            var surveys = new List<Survey>
+            {
+                new Survey
+                {
+                    Title = "General Knowledge Survey",
+                    Questions = new List<Question>
+                    {
+                        new Question
+                        {
+                            QuestionText = "What is the capital of France?",
+                            TimeLimitInSeconds = 30,
+                            Options = new List<Option>
+                            {
+                                new Option { OptionLabel = "A", OptionText = "Berlin" },
+                                new Option { OptionLabel = "B", OptionText = "Madrid" },
+                                new Option { OptionLabel = "C", OptionText = "Paris" },
+                                new Option { OptionLabel = "D", OptionText = "Rome" }
+                            },
+                            CorrectAnswers = new List<string> { "C" }
+                        },
+                        new Question
+                        {
+                            QuestionText = "Which planet is known as the Red Planet?",
+                            TimeLimitInSeconds = 30,
+                            Options = new List<Option>
+                            {
+                                new Option { OptionLabel = "A", OptionText = "Earth" },
+                                new Option { OptionLabel = "B", OptionText = "Mars" },
+                                new Option { OptionLabel = "C", OptionText = "Jupiter" },
+                                new Option { OptionLabel = "D", OptionText = "Saturn" }
+                            },
+                            CorrectAnswers = new List<string> { "B" }
+                        }
+                    }
+                },
+                new Survey
+                {
+                    Title = "Science Quiz",
+                    Questions = new List<Question>
+                    {
+                        new Question
+                        {
+                            QuestionText = "What is the chemical symbol for water?",
+                            TimeLimitInSeconds = 20,
+                            Options = new List<Option>
+                            {
+                                new Option { OptionLabel = "A", OptionText = "H2O" },
+                                new Option { OptionLabel = "B", OptionText = "O2" },
+                                new Option { OptionLabel = "C", OptionText = "CO2" },
+                                new Option { OptionLabel = "D", OptionText = "NaCl" }
+                            },
+                            CorrectAnswers = new List<string> { "A" }
+                        }
+                    }
+                }
+            };
+
+            db.Surveys.AddRange(surveys);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"Error in {nameof(SystemDbSeeder)}: " + exp.Message);
+                throw;
+            }
+        }
+
+        public async Task InsertVisitorSampleData(SystemDbContext db)
+        {
+            var visitors = new List<Visitor>
+            {
+                new Visitor
+                {
+                    Name = "John",
+                    Surname = "Doe",
+                    City = "New York",
+                    School = "NYU",
+                    GuideName = "Alice",
+                    GuideRating = 4,
+                    Comment = "Great experience!"
+                },
+                new Visitor
+                {
+                    Name = "Jane",
+                    Surname = "Smith",
+                    City = "Los Angeles",
+                    School = "UCLA",
+                    GuideName = "Bob",
+                    GuideRating = 4,
+                    Comment = "Interesting tour."
+                },
+                new Visitor
+                {
+                    Name = "Tom",
+                    Surname = "Johnson",
+                    City = "Chicago",
+                    School = "University of Chicago",
+                    GuideName = "Charlie",
+                    GuideRating = 2,
+                    Comment = "Loved it!"
+                },
+                new Visitor
+                {
+                    Name = "Emily",
+                    Surname = "Davis",
+                    City = "San Francisco",
+                    School = "Stanford University",
+                    GuideName = "Dave",
+                    GuideRating = 1,
+                    Comment = "Very informative."
+                }
+            };
+
+            db.Visitors.AddRange(visitors);
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception exp)
+            {
+                _logger.LogError($"Error in {nameof(SystemDbSeeder)}: " + exp.Message);
+                throw;
+            }
+        }
+
     }
 }

@@ -22,6 +22,9 @@ namespace backend.Models
         InvalidFairCode = 13,
         InvalidIndividualCode = 14,
         IndividualRegistrationNotFound = 15,
+
+        WrongGuideIDForTour = 16,
+
     }
 
     public static class ErrorHandler

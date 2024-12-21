@@ -60,6 +60,8 @@ builder.Services.AddTransient<Seeder>();
 builder.Services.AddScoped<SystemDatabaseController>();
 builder.Services.AddScoped<ScheduleDatabaseController>();
 builder.Services.AddScoped<CredentialDatabaseController>();
+builder.Services.AddScoped<SurveyDatabaseController>();
+builder.Services.AddScoped<VisitorDatabaseController>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
