@@ -8,11 +8,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 function IndividualRegistrationPage() {
-  const majors = ["CS", "POLS", "EE", "IE"];
   const schools = ["TED", "Nesibe", "Jale Tezer"];
   const visitTimes = ["09.00", "11.00", "13.00", "16.00"];
   const navigate = useNavigate();
   const location = useLocation();
+  const [majors, setMajors] = useState([]);
 
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
@@ -22,7 +22,10 @@ function IndividualRegistrationPage() {
         surname: "",
         visitDate: "",
         visitTime: "",
-        major: "",
+        individualMajor: "",
+        individualMajorCode: "",
+        individualPhoneNumber: "",
+        individualMailAddress: "",
         notes: "",
       }
     );
@@ -44,7 +47,10 @@ function IndividualRegistrationPage() {
       !formData.surname ||
       !formData.visitDate ||
       !formData.visitTime ||
-      !formData.major
+      !formData.individualMajor ||
+      !formData.individualMajorCode ||
+      !formData.individualPhoneNumber ||
+      !formData.individualMailAddress
     ) {
       alert("Please fill in all the required fields.");
       return;
@@ -56,6 +62,24 @@ function IndividualRegistrationPage() {
   };
   useEffect(() => {
     document.title = "Individual Tour Registration - BTO"; // Set the tab title
+
+    const fetchMajors = async () => {
+      try {
+        const response = await fetch("/api/user/majors");
+        if (!response.ok) throw new Error("Failed to fetch majors");
+
+        const data = await response.json();
+        const majorOptions = data.map((major) => ({
+          id: major.id,
+          name: major.name,
+        }));
+        setMajors(majorOptions);
+      } catch (error) {
+        console.error("Error fetching majors:", error);
+      }
+    };
+
+    fetchMajors();
   }, []);
 
   return (
@@ -92,11 +116,32 @@ function IndividualRegistrationPage() {
           />
 
           <FormDropDownGlobal
-            arr={majors}
-            question="Preferred Major**"
-            onChange={(value) => handleChange("major", value)}
-            initialValue={formData.major}
+            arr={majors.map((major) => major.name)}
+            question="Major*"
+            onChange={(value) => {
+              const selectedMajor = majors.find(
+                (major) => major.name === value
+              );
+              handleChange("individualMajor", selectedMajor.name);
+              handleChange("individualMajorCode", selectedMajor?.id);
+            }}
+            initialValue={formData.individualMajor}
           />
+
+          <FormInputGlobal
+            question="Phone Number*"
+            type="text"
+            value={formData.individualPhoneNumber}
+            onChange={(value) => handleChange("individualPhoneNumber", value)}
+          />
+
+          <FormInputGlobal
+            question="Mail Address*"
+            type="text"
+            value={formData.individualMailAddress}
+            onChange={(value) => handleChange("individualMailAddress", value)}
+          />
+
           <FormTextAreaGlobal
             question="Notes"
             value={formData.notes}
