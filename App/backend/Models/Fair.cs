@@ -19,9 +19,9 @@ namespace backend.Models
 
         public bool AddGuide(Guide guide)
         {
-            if (AssignedGuideIDs.Contains(guide.Id))
+            if (AssignedGuideIDs.Contains(guide.ID))
                 return false;
-            AssignedGuideIDs.Add(guide.Id);
+            AssignedGuideIDs.Add(guide.ID);
             return true;
         }
 
@@ -30,9 +30,9 @@ namespace backend.Models
             this.FairRegistirationInfo = registration;
         }
 
-        public bool RemoveCandidateGuide(Guide guide) => AssignedGuideIDs.Remove(guide.Id);
+        public bool RemoveCandidateGuide(Guide guide) => AssignedGuideIDs.Remove(guide.ID);
 
-        public bool CandidateGuideAssigned(Guide guide) => AssignedGuideIDs.Contains(guide.Id);
+        public bool CandidateGuideAssigned(Guide guide) => AssignedGuideIDs.Contains(guide.ID);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 

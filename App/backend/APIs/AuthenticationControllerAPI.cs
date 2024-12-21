@@ -26,7 +26,7 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(typeof(List<Credential>), 200)]
         [ProducesResponseType(typeof(List<Credential>), 404)]
         public async Task<ActionResult> GetAllCredentials()
@@ -58,30 +58,6 @@ namespace backend.Server.Controllers
             var token = await GenerateJwtToken(request.Username);
 
             return Ok(token);
-        }
-
-        [HttpPost("register")]
-        [Authorize(Policy = "Admin&Coordinator")]
-        [ProducesResponseType(typeof(string), 201)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<ActionResult> Register([FromBody] RegisterRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool created = await _controller.Register(
-                request.Username,
-                request.Password,
-                request.userType
-            );
-            if (!created)
-            {
-                return BadRequest("Username already exists");
-            }
-
-            return Created("", "User registered successfully");
         }
 
         [HttpPut("changepassword")]
@@ -143,13 +119,6 @@ namespace backend.Server.Controllers
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-    }
-
-    public class RegisterRequest
-    {
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public UserType userType { get; set; } = UserType.Invalid;
     }
 
     public class ChangePasswordRequest

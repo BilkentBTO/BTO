@@ -7,5 +7,9 @@ namespace backend.Models
         TourNotFound = 2,
         InvalidTourID = 3,
         InvalidUserID = 4,
+        InvalidUserName = 5,
+        InvalidMail = 6,
+        InvalidSurname = 7,
+        UserAlreadyExists = 8,
     }
 }

@@ -45,7 +45,7 @@ namespace backend.Models
         {
             if (HasGuide())
                 RemoveGuide();
-            AssignedGuideID = guide.Id;
+            AssignedGuideID = guide.ID;
             // MAIL GUIDE ASSIGNED
         }
 
@@ -58,16 +58,16 @@ namespace backend.Models
         public bool AddCandidateGuide(Guide guide)
         {
             // if (!guide.isCandidate) return false; !!!!  IMPLEMENT FOR ALL OR CHECK IT IN TOURSYSTEM
-            if (AssignedCandidateGuideIDs.Contains(guide.Id))
+            if (AssignedCandidateGuideIDs.Contains(guide.ID))
                 return false;
-            AssignedCandidateGuideIDs.Add(guide.Id);
+            AssignedCandidateGuideIDs.Add(guide.ID);
             return true;
         }
 
-        public bool RemoveCandidateGuide(Guide guide) => AssignedCandidateGuideIDs.Remove(guide.Id);
+        public bool RemoveCandidateGuide(Guide guide) => AssignedCandidateGuideIDs.Remove(guide.ID);
 
         public bool CandidateGuideAssigned(Guide guide) =>
-            AssignedCandidateGuideIDs.Contains(guide.Id);
+            AssignedCandidateGuideIDs.Contains(guide.ID);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 

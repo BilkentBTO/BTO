@@ -35,7 +35,7 @@ namespace backend.Database
                 return ErrorTypes.TourNotFound;
             }
 
-            User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.Id == GuideUID);
+            User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.ID == GuideUID);
 
             if (user == null || user.UserType != UserType.Guide)
             {
@@ -47,6 +47,14 @@ namespace backend.Database
             Tour.AssignGuide(foundGuide);
 
             return ErrorTypes.Success;
+        }
+
+        public async Task<List<GuideTourApplication>> GetAllGuideTourApplications()
+        {
+            return await _SystemContext
+                .GuideTourApplication.Include(a => a.Tour)
+                .Include(g => g.Guide)
+                .ToListAsync();
         }
 
         public async Task<Registration?> GetGeneralRegistration(string Code)
@@ -538,7 +546,7 @@ namespace backend.Database
 
         public async Task<User?> GetUserAsync(int id)
         {
-            return await _SystemContext.Users.SingleOrDefaultAsync(c => c.Id == id);
+            return await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
         }
 
         public async Task<List<User>> GetUserFilteredAsync(UserType id)
@@ -546,30 +554,58 @@ namespace backend.Database
             return await _SystemContext.Users.Where(u => u.UserType == id).ToListAsync();
         }
 
-        public async Task<User?> InsertUserAsync(User user)
+        public async Task<ErrorTypes> AddUserAsync(UserCreate userCreate)
         {
-            bool userExists = await _SystemContext.Users.AnyAsync(u => u.Id == user.Id);
-            if (userExists)
+            if (string.IsNullOrEmpty(userCreate.Name))
             {
-                return null;
+                return ErrorTypes.InvalidUserName;
+            }
+            if (string.IsNullOrEmpty(userCreate.Mail))
+            {
+                return ErrorTypes.InvalidMail;
+            }
+            if (string.IsNullOrEmpty(userCreate.Surname))
+            {
+                return ErrorTypes.InvalidSurname;
             }
 
-            _SystemContext.Add(user);
-            try
+            string username = $"{userCreate.BilkentID}";
+
+            if (_SystemContext.Credentials.Any(c => c.Username == username))
             {
-                await _SystemContext.SaveChangesAsync();
-            }
-            catch (System.Exception exp)
-            {
-                _logger.LogError($"Error in {nameof(InsertUserAsync)}: " + exp.Message);
+                return ErrorTypes.UserAlreadyExists;
             }
 
-            return user;
+            User newUser = new User(userCreate.Name, userCreate.Surname, userCreate.Mail)
+            {
+                BilkentID = userCreate.BilkentID,
+                MajorCode = userCreate.MajorCode,
+                CurrentYear = userCreate.CurrentYear,
+                UserType = userCreate.UserType,
+            };
+
+            await _SystemContext.Users.AddAsync(newUser);
+
+            string randomPassword = GenerateRandomPassword();
+
+            Credential newCredential = new Credential(
+                username,
+                randomPassword,
+                newUser.ID,
+                userCreate.UserType
+            );
+
+            await _SystemContext.Credentials.AddAsync(newCredential);
+
+            await _SystemContext.SaveChangesAsync();
+
+            //TODO ADD MAIL TO USER
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> UpdateUserAsync(User user)
         {
-            bool userExists = await _SystemContext.Users.AnyAsync(u => u.Id == user.Id);
+            bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == user.ID);
             if (!userExists)
             {
                 return false;
@@ -590,13 +626,13 @@ namespace backend.Database
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            bool userExists = await _SystemContext.Users.AnyAsync(u => u.Id == id);
+            bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == id);
             if (!userExists)
             {
                 return false;
             }
 
-            var user = await _SystemContext.Users.SingleOrDefaultAsync(c => c.Id == id);
+            var user = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
 
             if (user == null)
             {
@@ -647,6 +683,19 @@ namespace backend.Database
         public List<Major> GetAllMajors()
         {
             return Major.AllMajors;
+        }
+
+        private string GenerateRandomPassword(int length = 12)
+        {
+            const string validChars =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
+            var random = new Random();
+            return new string(
+                Enumerable
+                    .Repeat(validChars, length)
+                    .Select(s => s[random.Next(s.Length)])
+                    .ToArray()
+            );
         }
     }
 }

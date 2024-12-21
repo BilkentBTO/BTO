@@ -7,18 +7,15 @@ namespace backend.Database
     public class Seeder
     {
         private readonly SystemDbSeeder _systemDbSeeder;
-        private readonly CredentialDbSeeder _credentialDbSeeder;
 
-        public Seeder(SystemDbSeeder userDbSeeder, CredentialDbSeeder credentialDbSeeder)
+        public Seeder(SystemDbSeeder SystemDbSeeder)
         {
-            _systemDbSeeder = userDbSeeder;
-            _credentialDbSeeder = credentialDbSeeder;
+            _systemDbSeeder = SystemDbSeeder;
         }
 
         public async Task SeedAsync(IServiceProvider serviceProvider)
         {
             await _systemDbSeeder.SeedAsync(serviceProvider);
-            await _credentialDbSeeder.SeedAsync(serviceProvider);
         }
     }
 
@@ -50,6 +47,11 @@ namespace backend.Database
                     {
                         await InsertUsersSampleData(SystemDbContext);
                     }
+                    if (!await SystemDbContext.Credentials.AnyAsync())
+                    {
+                        await InsertCredentialsSampleData(SystemDbContext);
+                    }
+                    /*
                     if (!await SystemDbContext.Tours.AnyAsync())
                     {
                         await InsertTourSampleData(SystemDbContext);
@@ -58,6 +60,7 @@ namespace backend.Database
                     {
                         await InsertFairSampleData(SystemDbContext);
                     }
+                    */
                 }
             }
         }
@@ -79,10 +82,28 @@ namespace backend.Database
 
         private List<User> GetUsers()
         {
+            User sampleUser1 = new User("Admin", "AdminSurname", "admin@gmail.com");
+            sampleUser1.UserType = UserType.Admin;
+
+            User sampleUser2 = new User("Coordinator", "CoordinatorSurname", "coord@gmail.com");
+            sampleUser2.UserType = UserType.Coordinator;
+
+            User sampleUser3 = new User("Advisor", "AdvisorrSurname", "advisor@gmail.com");
+            sampleUser3.UserType = UserType.Advisor;
+
+            User sampleUser4 = new User("Guide", "GuideSurname", "guide@gmail.com");
+            sampleUser4.UserType = UserType.Guide;
+
+            User sampleUser5 = new User("Candidate", "CandidateSurname", "candidate@gmail.com");
+            sampleUser5.UserType = UserType.CandidateGuide;
+
             var users = new List<User>
             {
-                new User("Ege", "Ertem", "ege@gmail.com"),
-                new User("Bora", "Akoğuz", "bora@gmail.com"),
+                sampleUser1,
+                sampleUser2,
+                sampleUser3,
+                sampleUser4,
+                sampleUser5,
             };
 
             return users;
@@ -143,43 +164,14 @@ namespace backend.Database
                 throw;
             }
         }
-    }
 
-    public class CredentialDbSeeder
-    {
-        readonly ILogger _logger;
-
-        public CredentialDbSeeder(ILoggerFactory loggerFactory)
+        public async Task InsertCredentialsSampleData(SystemDbContext db)
         {
-            _logger = loggerFactory.CreateLogger("CredentialDbSeederLogger");
-        }
+            var users = await db.Users.ToListAsync();
+            var creds = users
+                .Select(user => new Credential(user.Mail, "123", user.ID, user.UserType))
+                .ToList();
 
-        public async Task SeedAsync(IServiceProvider serviceProvider)
-        {
-            using (
-                var serviceScope = serviceProvider
-                    .GetRequiredService<IServiceScopeFactory>()
-                    .CreateScope()
-            )
-            {
-                var credentialDb = serviceScope.ServiceProvider.GetService<CredentialDbContext>();
-                if (credentialDb == null)
-                {
-                    return;
-                }
-                if (await credentialDb.Database.EnsureCreatedAsync())
-                {
-                    if (!await credentialDb.Credentials.AnyAsync())
-                    {
-                        await InsertCredentialsSampleData(credentialDb);
-                    }
-                }
-            }
-        }
-
-        public async Task InsertCredentialsSampleData(CredentialDbContext db)
-        {
-            var creds = GetCredentials();
             db.Credentials.AddRange(creds);
             try
             {
@@ -187,24 +179,9 @@ namespace backend.Database
             }
             catch (Exception exp)
             {
-                _logger.LogError($"Error in {nameof(CredentialDbSeeder)}: " + exp.Message);
+                _logger.LogError($"Error in {nameof(SystemDbSeeder)}: " + exp.Message);
                 throw;
             }
-        }
-
-        private List<Credential> GetCredentials()
-        {
-            var creds = new List<Credential>
-            {
-                new Credential("canga", "can123", UserType.Admin),
-                new Credential("bora", "bora123", UserType.Guide),
-                new Credential("advis", "123", UserType.Advisor),
-                new Credential("guide", "123", UserType.Guide),
-                new Credential("coord", "123", UserType.Coordinator),
-                new Credential("admin", "123", UserType.Admin),
-            };
-
-            return creds;
         }
     }
 }

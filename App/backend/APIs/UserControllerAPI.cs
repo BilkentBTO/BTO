@@ -32,6 +32,20 @@ namespace backend.Server.Controllers
             return Ok(success);
         }
 
+        [HttpGet("register")]
+        [ProducesResponseType(typeof(List<User>), 200)]
+        [ProducesResponseType(typeof(List<User>), 404)]
+        public async Task<ActionResult> GetAllUserRegisters()
+        {
+            var userType = UserType.Pending;
+            var users = await _controller.GetUserFilteredAsync(userType);
+            if (users == null)
+            {
+                return NotFound();
+            }
+            return Ok(users);
+        }
+
         [HttpGet("majors")]
         public IActionResult GetCities()
         {
@@ -39,7 +53,7 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Policy = "Admin&Coordinator")]
+        //[Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(List<User>), 200)]
         [ProducesResponseType(typeof(List<User>), 404)]
         public async Task<ActionResult> GetAllUsers()
@@ -66,22 +80,8 @@ namespace backend.Server.Controllers
             return Ok(users);
         }
 
-        [HttpGet("requests")]
-        [ProducesResponseType(typeof(List<User>), 200)]
-        [ProducesResponseType(typeof(List<User>), 404)]
-        public async Task<ActionResult> GetAllUserRequests()
-        {
-            var userType = UserType.Pending;
-            var users = await _controller.GetUserFilteredAsync(userType);
-            if (users == null)
-            {
-                return NotFound();
-            }
-            return Ok(users);
-        }
-
         [HttpGet("{id}", Name = "GetUsersRoute")]
-        [Authorize(Policy = "Admin&Coordinator")]
+        //[Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(User), 200)]
         [ProducesResponseType(typeof(User), 404)]
         public async Task<ActionResult> GetUserByID(int id)
@@ -95,21 +95,34 @@ namespace backend.Server.Controllers
         }
 
         [HttpPost()]
-        [ProducesResponseType(typeof(User), 201)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<ActionResult> CreateUser([FromBody] User user)
+        public async Task<ActionResult> AddUser([FromBody] UserCreate UserCreate)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var newUser = await _controller.InsertUserAsync(user);
-            if (newUser == null)
+            var result = await _controller.AddUserAsync(UserCreate);
+            switch (result)
             {
-                return BadRequest("Unable to insert user");
+                case ErrorTypes.InvalidUserName:
+                    return BadRequest(new { message = "Invalid user name." });
+
+                case ErrorTypes.InvalidMail:
+                    return BadRequest(new { message = "Invalid email address." });
+
+                case ErrorTypes.InvalidSurname:
+                    return BadRequest(new { message = "Invalid surname." });
+
+                case ErrorTypes.UserAlreadyExists:
+                    return Conflict(new { message = "User already exists." });
+
+                case ErrorTypes.Success:
+                    return Ok();
+
+                default:
+                    return StatusCode(500, new { message = "An unexpected error occurred." }); // 500 Internal Server Error
             }
-            return CreatedAtRoute("GetUsersRoute", new { id = newUser.Id }, newUser);
         }
 
         [HttpPut("{id}")]

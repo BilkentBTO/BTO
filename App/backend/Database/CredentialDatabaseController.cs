@@ -11,13 +11,10 @@ namespace backend.Database
 {
     public class CredentialDatabaseController
     {
-        private readonly CredentialDbContext _context;
+        private readonly SystemDbContext _context;
         private readonly ILogger _logger;
 
-        public CredentialDatabaseController(
-            CredentialDbContext context,
-            ILoggerFactory loggerFactory
-        )
+        public CredentialDatabaseController(SystemDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("CredentialController");
@@ -52,30 +49,6 @@ namespace backend.Database
                 return LoginStatus.WrongPassword;
             }
             return LoginStatus.Success;
-        }
-
-        public async Task<bool> Register(string username, string plainPassword, UserType userType)
-        {
-            bool userExists = await _context.Credentials.AnyAsync(c => c.Username == username);
-            if (userExists)
-            {
-                return false;
-            }
-
-            var newCreds = new Credential(username, plainPassword, userType);
-
-            _context.Add(newCreds);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (System.Exception exp)
-            {
-                _logger.LogError($"Error in {nameof(Register)}: " + exp.Message);
-            }
-
-            return true;
         }
 
         public async Task<bool> ChangePassword(

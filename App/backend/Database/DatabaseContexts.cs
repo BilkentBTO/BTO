@@ -25,12 +25,16 @@ namespace backend.Database
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Fair> Fairs { get; set; }
 
+        //Credentials
+        public DbSet<Credential> Credentials { get; set; }
+
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasKey(u => u.Id);
+            modelBuilder.Entity<User>().HasKey(u => u.ID);
+            modelBuilder.Entity<User>().Property(u => u.ID).ValueGeneratedOnAdd();
 
             modelBuilder.Entity<School>().HasKey(s => s.SchoolName);
 
@@ -46,15 +50,17 @@ namespace backend.Database
 
             modelBuilder.Entity<IndividualRegistration>().HasIndex(r => r.Code).IsUnique();
 
-            modelBuilder.Entity<GuideTourApplication>().HasKey(r => r.Code);
+            modelBuilder.Entity<GuideTourApplication>().HasKey(r => r.TourCode);
 
-            modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.Code).IsUnique();
+            modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.TourCode).IsUnique();
 
             modelBuilder.Entity<TimeBlock>().HasKey(t => t.ID);
 
             modelBuilder.Entity<Tour>().HasKey(t => t.TourRegistrationCode);
 
             modelBuilder.Entity<Fair>().HasKey(f => f.FairRegistrationCode);
+
+            modelBuilder.Entity<Credential>().HasKey(c => c.Username);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
@@ -86,19 +92,6 @@ namespace backend.Database
                 school.CalculatePriority();
             }
             return schools;
-        }
-    }
-
-    public class CredentialDbContext : DbContext
-    {
-        public DbSet<Credential> Credentials { get; set; }
-
-        public CredentialDbContext(DbContextOptions<CredentialDbContext> options)
-            : base(options) { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Credential>().HasKey(c => c.Username);
         }
     }
 

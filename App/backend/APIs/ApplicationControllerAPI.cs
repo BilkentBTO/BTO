@@ -46,5 +46,16 @@ namespace backend.Server.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("tour")]
+        public async Task<ActionResult> GetGuideTourApplications()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllGuideTourApplications();
+            return Ok(result);
+        }
     }
 }

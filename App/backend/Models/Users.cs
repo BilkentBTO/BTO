@@ -74,7 +74,7 @@ namespace backend.Models
 
     public class User(string Name, string Surname, string Mail)
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         public string Name { get; set; } = Name;
         public string Surname { get; set; } = Surname;
         public string Mail { get; set; } = Mail;
@@ -129,5 +129,16 @@ namespace backend.Models
         public int MajorCode { get; set; }
         public int? CurrentYear { get; set; }
         public string? Mail { get; set; }
+    }
+
+    public class UserCreate
+    {
+        public string? Name { get; set; }
+        public string? Surname { get; set; }
+        public int? BilkentID { get; set; }
+        public int MajorCode { get; set; }
+        public int? CurrentYear { get; set; }
+        public string? Mail { get; set; }
+        public UserType UserType { get; set; }
     }
 }

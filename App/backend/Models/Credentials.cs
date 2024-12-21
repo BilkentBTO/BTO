@@ -14,21 +14,26 @@ namespace backend.Models
         public string? Username { get; private set; }
         public string? Password { get; private set; }
         public UserType UserType { get; set; } = UserType.Invalid; //Defaults to Invalid
-
-        private static int WorkFactor = 12;
-
-        public Credential() { }
+        public int UID { get; set; }
+        private static int JWTCryptWorkFactor = 12;
 
         public Credential(
             string username,
             string plainPassword,
+            int uID,
             UserType userType = UserType.Invalid
         )
         {
             Username = username;
-            Password = BCrypt.Net.BCrypt.HashPassword(plainPassword, workFactor: WorkFactor);
+            Password = BCrypt.Net.BCrypt.HashPassword(
+                plainPassword,
+                workFactor: JWTCryptWorkFactor
+            );
             UserType = userType;
+            UID = uID;
         }
+
+        public Credential() { }
 
         public bool VerifyLogin(string plainPassword)
         {
@@ -41,7 +46,10 @@ namespace backend.Models
             {
                 return false;
             }
-            this.Password = BCrypt.Net.BCrypt.HashPassword(plainPassword, workFactor: WorkFactor);
+            this.Password = BCrypt.Net.BCrypt.HashPassword(
+                plainPassword,
+                workFactor: JWTCryptWorkFactor
+            );
             return true;
         }
     }

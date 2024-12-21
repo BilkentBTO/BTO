@@ -44,14 +44,7 @@ builder.Services.AddDbContext<SystemDbContext>(options =>
     )
 );
 
-builder.Services.AddDbContext<CredentialDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration["Data:DbContext:ConnectionStrings:CredentialsConnectionString"]
-    )
-);
-
 builder.Services.AddTransient<SystemDbSeeder>();
-builder.Services.AddTransient<CredentialDbSeeder>();
 builder.Services.AddTransient<Seeder>();
 builder.Services.AddScoped<SystemDatabaseController>();
 builder.Services.AddScoped<ScheduleDatabaseController>();
