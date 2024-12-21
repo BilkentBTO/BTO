@@ -39,6 +39,11 @@
   {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: calc(100vh - 120px); /* Adjust the height based on your layout (subtracting header/footer height) */
+    padding: 10px; /* Optional padding for inner content */
+    box-sizing: border-box; /* Include padding in width/height calculation */
   }
   .leftSideEvaluation{
     width: 100%;

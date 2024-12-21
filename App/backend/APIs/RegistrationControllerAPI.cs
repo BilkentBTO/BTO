@@ -41,11 +41,7 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.CancelGeneralRegistration(Code);
-            if (!result)
-            {
-                return NotFound(new { message = "Registration not found." });
-            }
-            return Ok(result);
+            return ErrorHandler.HandleError(result);
         }
 
         [HttpPost("tour")]

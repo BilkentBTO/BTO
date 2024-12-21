@@ -14,6 +14,16 @@ namespace backend.Models
         InvalidSurname = 7,
         UserAlreadyExists = 8,
         GuideAlreadyAppliedToTour = 9,
+        TourRegistrationNotFound = 10,
+
+        InvalidCode = 11,
+        FairRegistrationNotFound = 12,
+
+        InvalidFairCode = 13,
+        InvalidIndividualCode = 14,
+        IndividualRegistrationNotFound = 15,
+
+
     }
 
     public static class ErrorHandler
@@ -32,8 +42,16 @@ namespace backend.Models
                     new { message = "Tour not found." }
                 ),
 
+                ErrorTypes.TourRegistrationNotFound => new NotFoundObjectResult(
+                    new { message = "Tour Registration not found." }
+                ),
+
                 ErrorTypes.InvalidTourCode => new BadRequestObjectResult(
                     new { message = "Invalid tour code provided." }
+                ),
+
+                ErrorTypes.InvalidCode => new BadRequestObjectResult(
+                    new { message = "Invalid code provided." }
                 ),
 
                 ErrorTypes.InvalidUserID => new BadRequestObjectResult(
