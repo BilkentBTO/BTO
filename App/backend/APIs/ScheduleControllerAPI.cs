@@ -169,7 +169,7 @@ namespace backend.Server.Controllers
         }
 
         #endregion
-
+        /*
         #region SCHEDULE
         [HttpPost("schedule")]
         public async Task<ActionResult> AddTimeBlock(TimeBlock tb)
@@ -222,5 +222,6 @@ namespace backend.Server.Controllers
         }
 
         #endregion
+        */
     }
 }

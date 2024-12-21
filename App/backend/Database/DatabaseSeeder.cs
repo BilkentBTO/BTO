@@ -140,11 +140,11 @@ namespace backend.Database
                 Code = "T-Ankara4531",
                 CityName = "Ankara",
                 SchoolCode = 3438,
-                DateOfVisit = DateTime.SpecifyKind(
+                Time = DateTime.SpecifyKind(
                     DateTime.Parse("2024-12-20T16:34:45.327Z"),
                     DateTimeKind.Utc
                 ),
-                PreferredVisitTime = new TimeBlock(),
+                TimeBlock = new TimeBlock(),
                 NumberOfVisitors = 21,
                 SuperVisorName = "Ahmet Yavuz",
                 SuperVisorDuty = "Rehber",
@@ -155,7 +155,7 @@ namespace backend.Database
             };
             Tour sampleTour1 = new Tour
             {
-                Time = sampleTourRegistration1.DateOfVisit,
+                Time = sampleTourRegistration1.Time,
                 TourRegistrationCode = sampleTourRegistration1.Code,
                 TourRegistirationInfo = sampleTourRegistration1,
             };

@@ -36,7 +36,7 @@ namespace backend.Database
                 }
                 TourRegistration? TourRegistration = await _SystemContext
                     .TourRegistrations.Include(r => r.School)
-                    .Include(r => r.PreferredVisitTime)
+                    .Include(r => r.TimeBlock)
                     .FirstOrDefaultAsync(t => t.Code == tourCode);
 
                 if (TourRegistration == null)
@@ -107,7 +107,7 @@ namespace backend.Database
             }
             TourRegistration? TourRegistration = await _SystemContext
                 .TourRegistrations.Include(r => r.School)
-                .Include(r => r.PreferredVisitTime)
+                .Include(r => r.TimeBlock)
                 .FirstOrDefaultAsync(t => t.Code == tourCode);
             if (TourRegistration == null)
             {
@@ -214,7 +214,7 @@ namespace backend.Database
 
                     var tourRegistration = await _SystemContext
                         .TourRegistrations.Include(r => r.School)
-                        .Include(r => r.PreferredVisitTime)
+                        .Include(r => r.TimeBlock)
                         .FirstOrDefaultAsync(r => r.Code == tour.TourRegistrationCode);
 
                     if (tourRegistration == null)
@@ -377,33 +377,12 @@ namespace backend.Database
             }
         }
 
-        public async Task<bool> AddTimeBlock(TimeBlock tb)
-        {
-            try
-            {
-                if (await _SystemContext.Schedule.AnyAsync(t => t.ID == tb.ID))
-                {
-                    _logger.LogError(
-                        $"Can't add timeblock, time block, timeID {tb.ID} already exist."
-                    );
-                    return false;
-                }
-                await _SystemContext.Schedule.AddAsync(tb);
-                await _SystemContext.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in AddTimeBlock: {ex.Message}");
-                return false;
-            }
-        }
-
+        /*
         public async Task<bool> TimeBlockExists(int timeID)
         {
             try
             {
-                return await _SystemContext.Schedule.AnyAsync(t => t.ID == timeID);
+                return await _SystemContext.TimeBlocks.AnyAsync(t => t.ID == timeID);
             }
             catch (Exception ex)
             {
@@ -422,7 +401,7 @@ namespace backend.Database
 
         public async Task<TimeBlock?> GetTimeBlock(int timeID)
         {
-            TimeBlock? foundTB = await _SystemContext.Schedule.FirstOrDefaultAsync(t =>
+            TimeBlock? foundTB = await _SystemContext.TimeBlocks.FirstOrDefaultAsync(t =>
                 t.ID == timeID
             );
             if (foundTB == null)
@@ -442,12 +421,12 @@ namespace backend.Database
 
         public async Task<bool> UpdateTimeBlock(TimeBlock timeBlock)
         {
-            if (!await _SystemContext.Schedule.AnyAsync(t => t.ID == timeBlock.ID))
+            if (!await _SystemContext.TimeBlocks.AnyAsync(t => t.ID == timeBlock.ID))
             {
                 return false;
             }
 
-            _SystemContext.Schedule.Attach(timeBlock);
+            _SystemContext.TimeBlocks.Attach(timeBlock);
             _SystemContext.Entry(timeBlock).State = EntityState.Modified;
 
             try
@@ -460,5 +439,6 @@ namespace backend.Database
                 return false;
             }
         }
+        */
     }
 }

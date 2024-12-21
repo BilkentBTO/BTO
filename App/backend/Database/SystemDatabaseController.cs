@@ -202,7 +202,7 @@ namespace backend.Database
                 case 'T':
                     return await _SystemContext
                         .TourRegistrations.Include(r => r.School)
-                        .Include(r => r.PreferredVisitTime)
+                        .Include(r => r.TimeBlock)
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 case 'F':
                     return await _SystemContext
@@ -263,8 +263,7 @@ namespace backend.Database
                 {
                     CityName = request.CityName,
                     SchoolCode = request.SchoolCode,
-                    DateOfVisit = request.DateOfVisit,
-                    PreferredVisitTime = request.PreferredVisitTime,
+                    Time = request.DateOfVisit,
                     NumberOfVisitors = request.NumberOfVisitors,
                     SuperVisorName = request.SuperVisorName,
                     SuperVisorDuty = request.SuperVisorDuty,
@@ -277,14 +276,44 @@ namespace backend.Database
                 registration.GenerateCode();
                 registration.FillSchool(School);
 
-                _SystemContext.TourRegistrations.Add(registration);
-
-                var result = await _SystemContext.SaveChangesAsync();
-
-                if (registration.Code == null)
+                if (string.IsNullOrEmpty(registration.Code) || registration.School == null)
                 {
                     return "";
                 }
+
+                bool TimeBlockExists = await _SystemContext.TimeBlocks.AnyAsync(tb =>
+                    tb.Time == request.DateOfVisit
+                );
+
+                TimeBlock? TimeBlock;
+                if (!TimeBlockExists)
+                {
+                    TimeBlock = new TimeBlock() { Time = request.DateOfVisit };
+                }
+                else
+                {
+                    TimeBlock = await _SystemContext.TimeBlocks.FirstOrDefaultAsync(tb =>
+                        tb.Time == request.DateOfVisit
+                    );
+                }
+
+                if (TimeBlock == null)
+                {
+                    return "";
+                }
+
+                TimeBlock.AddTour(registration.Code);
+
+                registration.FillTimeBlock(TimeBlock);
+
+                if (!TimeBlockExists)
+                {
+                    _SystemContext.TimeBlocks.Add(TimeBlock);
+                }
+
+                _SystemContext.TourRegistrations.Add(registration);
+
+                await _SystemContext.SaveChangesAsync();
 
                 return registration.Code;
             }
@@ -299,7 +328,7 @@ namespace backend.Database
         {
             return await _SystemContext
                 .TourRegistrations.Include(r => r.School)
-                .Include(r => r.PreferredVisitTime)
+                .Include(r => r.TimeBlock)
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
@@ -312,12 +341,17 @@ namespace backend.Database
 
             var tourRegistration = await _SystemContext
                 .TourRegistrations.Include(r => r.School)
-                .Include(r => r.PreferredVisitTime)
+                .Include(r => r.TimeBlock)
                 .SingleOrDefaultAsync(r => r.Code == Code);
 
             if (tourRegistration == null)
             {
                 return ErrorTypes.TourRegistrationNotFound;
+            }
+
+            if (tourRegistration.TimeBlock != null)
+            {
+                tourRegistration.TimeBlock.RemoveTour(Code);
             }
 
             _SystemContext.TourRegistrations.Remove(tourRegistration);
@@ -331,7 +365,7 @@ namespace backend.Database
         {
             return await _SystemContext
                 .TourRegistrations.Include(r => r.School)
-                .Include(r => r.PreferredVisitTime)
+                .Include(r => r.TimeBlock)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .ToListAsync();
         }
@@ -344,7 +378,7 @@ namespace backend.Database
                 .TourRegistrations.Where(r => r.State == state)
                 .OrderBy(r => r.School != null ? r.School.Priority : int.MaxValue)
                 .Include(r => r.School)
-                .Include(r => r.PreferredVisitTime)
+                .Include(r => r.TimeBlock)
                 .ToListAsync();
         }
 
@@ -887,7 +921,7 @@ namespace backend.Database
             }
             TourRegistration? TourRegistration = await _SystemContext
                 .TourRegistrations.Include(r => r.School)
-                .Include(r => r.PreferredVisitTime)
+                .Include(r => r.TimeBlock)
                 .FirstOrDefaultAsync(t => t.Code == tourCode);
             if (TourRegistration == null)
             {

@@ -25,9 +25,9 @@ namespace backend.Models
 
         public School? School { get; set; }
 
-        public DateTime DateOfVisit { get; set; }
+        public DateTime Time { get; set; }
 
-        public TimeBlock? PreferredVisitTime { get; set; }
+        public TimeBlock? TimeBlock { get; set; }
 
         public int NumberOfVisitors { get; set; }
 
@@ -51,8 +51,12 @@ namespace backend.Models
 
         public void FillSchool(School school)
         {
-            Console.WriteLine("Filled: ", school.Priority);
             this.School = school;
+        }
+
+        public void FillTimeBlock(TimeBlock timeBlock)
+        {
+            this.TimeBlock = timeBlock;
         }
 
         public int GetPriority()
@@ -149,7 +153,6 @@ namespace backend.Models
         public string? CityName { get; set; }
         public int? SchoolCode { get; set; }
         public DateTime DateOfVisit { get; set; }
-        public TimeBlock? PreferredVisitTime { get; set; }
         public int NumberOfVisitors { get; set; }
         public string? SuperVisorName { get; set; }
         public string? SuperVisorDuty { get; set; }
