@@ -133,46 +133,6 @@ namespace backend.Database
             }
         }
 
-        public async Task InsertTourSampleData(SystemDbContext db)
-        {
-            var sampleTourRegistration1 = new TourRegistration
-            {
-                Code = "T-Ankara4531",
-                CityName = "Ankara",
-                SchoolCode = 3438,
-                Time = DateTime.SpecifyKind(
-                    DateTime.Parse("2024-12-20T16:34:45.327Z"),
-                    DateTimeKind.Utc
-                ),
-                TimeBlock = new TimeBlock(),
-                NumberOfVisitors = 21,
-                SuperVisorName = "Ahmet Yavuz",
-                SuperVisorDuty = "Rehber",
-                SuperVisorPhoneNumber = "05359594521",
-                SuperVisorMailAddress = "mehmetyavuz@gmail.com",
-                Notes = "İstek kabulunde telefonla arar mısınız?",
-                State = RegistrationState.Accepted,
-            };
-            Tour sampleTour1 = new Tour
-            {
-                Time = sampleTourRegistration1.Time,
-                TourRegistrationCode = sampleTourRegistration1.Code,
-                TourRegistirationInfo = sampleTourRegistration1,
-            };
-            List<Tour> tours = new List<Tour> { sampleTour1 };
-
-            db.Tours.AddRange(tours);
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (Exception exp)
-            {
-                _logger.LogError($"Error in {nameof(SystemDbContext)}: " + exp.Message);
-                throw;
-            }
-        }
-
         public async Task InsertCredentialsSampleData(SystemDbContext db)
         {
             var users = await db.Users.ToListAsync();
@@ -211,9 +171,9 @@ namespace backend.Database
                                 new Option { OptionLabel = "A", OptionText = "Berlin" },
                                 new Option { OptionLabel = "B", OptionText = "Madrid" },
                                 new Option { OptionLabel = "C", OptionText = "Paris" },
-                                new Option { OptionLabel = "D", OptionText = "Rome" }
+                                new Option { OptionLabel = "D", OptionText = "Rome" },
                             },
-                            CorrectAnswers = new List<string> { "C" }
+                            CorrectAnswers = new List<string> { "C" },
                         },
                         new Question
                         {
@@ -224,11 +184,11 @@ namespace backend.Database
                                 new Option { OptionLabel = "A", OptionText = "Earth" },
                                 new Option { OptionLabel = "B", OptionText = "Mars" },
                                 new Option { OptionLabel = "C", OptionText = "Jupiter" },
-                                new Option { OptionLabel = "D", OptionText = "Saturn" }
+                                new Option { OptionLabel = "D", OptionText = "Saturn" },
                             },
-                            CorrectAnswers = new List<string> { "B" }
-                        }
-                    }
+                            CorrectAnswers = new List<string> { "B" },
+                        },
+                    },
                 },
                 new Survey
                 {
@@ -244,12 +204,12 @@ namespace backend.Database
                                 new Option { OptionLabel = "A", OptionText = "H2O" },
                                 new Option { OptionLabel = "B", OptionText = "O2" },
                                 new Option { OptionLabel = "C", OptionText = "CO2" },
-                                new Option { OptionLabel = "D", OptionText = "NaCl" }
+                                new Option { OptionLabel = "D", OptionText = "NaCl" },
                             },
-                            CorrectAnswers = new List<string> { "A" }
-                        }
-                    }
-                }
+                            CorrectAnswers = new List<string> { "A" },
+                        },
+                    },
+                },
             };
 
             db.Surveys.AddRange(surveys);
@@ -276,7 +236,7 @@ namespace backend.Database
                     School = "NYU",
                     GuideName = "Alice",
                     GuideRating = 4,
-                    Comment = "Great experience!"
+                    Comment = "Great experience!",
                 },
                 new Visitor
                 {
@@ -286,7 +246,7 @@ namespace backend.Database
                     School = "UCLA",
                     GuideName = "Bob",
                     GuideRating = 4,
-                    Comment = "Interesting tour."
+                    Comment = "Interesting tour.",
                 },
                 new Visitor
                 {
@@ -296,7 +256,7 @@ namespace backend.Database
                     School = "University of Chicago",
                     GuideName = "Charlie",
                     GuideRating = 2,
-                    Comment = "Loved it!"
+                    Comment = "Loved it!",
                 },
                 new Visitor
                 {
@@ -306,8 +266,8 @@ namespace backend.Database
                     School = "Stanford University",
                     GuideName = "Dave",
                     GuideRating = 1,
-                    Comment = "Very informative."
-                }
+                    Comment = "Very informative.",
+                },
             };
 
             db.Visitors.AddRange(visitors);
@@ -321,6 +281,5 @@ namespace backend.Database
                 throw;
             }
         }
-
     }
 }

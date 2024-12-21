@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
-using BTO.Constrains;
-using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
@@ -99,7 +97,7 @@ namespace backend.Models
             : base(Name, Surname, Mail)
         {
             IsCandidate = isCandidate;
-            Schedule = new Availability[TimeBlocksPerDay];
+            Schedule = new Availability[4];
         }
     }
 

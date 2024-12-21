@@ -1,5 +1,6 @@
 using System.Globalization;
 using backend.Models;
+using BTO.Setting;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,9 @@ namespace backend.Database
         //Credentials
         public DbSet<Credential> Credentials { get; set; }
 
+        //Settings
+        public DbSet<Setting> Setting { get; set; }
+
         // Surveys
 
         // Surveys and related entities
@@ -43,6 +47,7 @@ namespace backend.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.ID);
+
             modelBuilder.Entity<User>().Property(u => u.ID).ValueGeneratedOnAdd();
 
             modelBuilder.Entity<School>().HasKey(s => s.SchoolName);
@@ -81,6 +86,9 @@ namespace backend.Database
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
+            modelBuilder
+                .Entity<Setting>()
+                .HasData(new Setting { Id = 1, AllowedConcurrentTourCount = 2 });
 
             base.OnModelCreating(modelBuilder);
         }
