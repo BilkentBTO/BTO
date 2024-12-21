@@ -6,7 +6,7 @@ function TableWithButtonConflict({
   data,
   onButtonClick,
   buttonStyle,
-  buttonName,
+  defaultButtonName,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(data);
@@ -24,6 +24,12 @@ function TableWithButtonConflict({
     );
 
     setFilteredData(filtered);
+  };
+
+  const handleButtonClick = (row) => {
+    const isConflict = row[row.length - 2]; // Second-to-last item is `isConflict`
+    const conflictId = row[row.length - 1]; // Last item is `conflictId`
+    onButtonClick(row, isConflict, conflictId);
   };
 
   return (
@@ -57,17 +63,24 @@ function TableWithButtonConflict({
               return (
                 <tr
                   key={rowIndex}
-                  className={isConflict ? `${conflictId}` : ""}
+                  className={isConflict ? `conflict-${conflictId}` : ""}
                 >
                   {row.slice(0, -2).map((cell, cellIndex) => (
                     <td key={cellIndex}>{cell}</td>
                   ))}
                   <td>
                     <button
-                      style={buttonStyle}
-                      onClick={() => onButtonClick(row)}
+                      style={{
+                        ...buttonStyle,
+                        backgroundColor: isConflict
+                          ? "orange"
+                          : buttonStyle.backgroundColor,
+                      }}
+                      onClick={() => handleButtonClick(row)}
                     >
-                      {buttonName}
+                      {isConflict
+                        ? `Resolve Conflict ${conflictId}`
+                        : defaultButtonName}
                     </button>
                   </td>
                 </tr>
