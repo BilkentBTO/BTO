@@ -7,6 +7,7 @@ function SchoolRegistrationConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize formData with all fields
   const formData = location.state?.formData || {};
@@ -18,15 +19,6 @@ function SchoolRegistrationConfirmation() {
   };
 
   // Function to handle the "Confirm" button click
-  const confirmReg = () => {
-    // Perform registration confirmation actions (e.g., send data to a server)
-    console.log("Registration Confirmed:", formData);
-
-    // Navigate to a success page or show a success message
-    navigate("/successSchoolRegistration", { state: { formData } });
-  };
-
-  // Function to open the confirmation popup
   const handleConfirmClick = () => {
     setShowPopup(true); // Show the popup
   };
@@ -34,6 +26,87 @@ function SchoolRegistrationConfirmation() {
   // Function to close the popup
   const closePopup = () => {
     setShowPopup(false); // Hide the popup
+  };
+
+  const confirmReg = async () => {
+    setIsSubmitting(true); // Show loading state
+    const convertDateToUTC = (dateString) => {
+      if (!dateString) return null;
+      const parsedDate = new Date(`${dateString}T00:00:00Z`);
+      return parsedDate.toISOString();
+    };
+
+    const convertTimeToUTC = (dateString, timeString) => {
+      if (!dateString || !timeString) return null;
+      const combinedDateTime = `${dateString}T${timeString}:00Z`;
+      const parsedDateTime = new Date(combinedDateTime);
+      return parsedDateTime.toISOString();
+    };
+
+    try {
+      const dateOfVisitUTC = convertDateToUTC(formData.visitDate);
+      if (!dateOfVisitUTC) {
+        alert("Invalid visit date.");
+        return;
+      }
+
+      const startTimeUTC = convertTimeToUTC(
+        formData.visitDate,
+        formData.visitTime
+      );
+      if (!startTimeUTC) {
+        alert("Invalid visit time.");
+        return;
+      }
+
+      const endTime = new Date(startTimeUTC);
+      endTime.setHours(endTime.getHours() + 2);
+      const endTimeUTC = endTime.toISOString();
+
+      const registrationRequest = {
+        cityName: formData.city,
+        schoolCode: formData.schoolID,
+        dateOfVisit: dateOfVisitUTC,
+        prefferedVisitTime: {
+          id: 0,
+          startTime: startTimeUTC,
+          endTime: endTimeUTC,
+        },
+        numberOfVisitors: parseInt(formData.visitorCount, 10),
+        superVisorName: formData.supervisorName,
+        superVisorDuty: formData.supervisorDuty,
+        superVisorPhoneNumber: formData.supervisorPhone,
+        superVisorMailAddress: formData.supervisorEmail,
+        notes: formData.notes,
+      };
+
+      const response = await fetch("/api/register/tour", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify(registrationRequest),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseText = await response.text();
+      console.log("API Response:", responseText);
+
+      // Navigate to the success page with the response
+      navigate("/successSchoolRegistration", {
+        state: { successMessage: responseText },
+      });
+    } catch (error) {
+      console.error("Error registering school:", error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+      setShowPopup(false);
+    }
   };
 
   return (
@@ -125,28 +198,28 @@ function SchoolRegistrationConfirmation() {
                 <p>{formData.supervisorEmail}</p>
               </div>
             </div>
-            <div className="buttonLayout">
-              <button className="formEditButton" onClick={handleEdit}>
-                Edit
-              </button>
-              <button
-                className="formConfirmButton"
-                onClick={handleConfirmClick}
-              >
-                Confirm
-              </button>
-            </div>
           </div>
+        </div>
+        <div className="buttonLayout">
+          <button className="formEditButton" onClick={handleEdit}>
+            Edit
+          </button>
+          <button
+            className="formConfirmButton"
+            onClick={handleConfirmClick}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Confirm"}
+          </button>
         </div>
       </div>
 
-      {/* Confirmation Popup */}
       {showPopup && (
-        <div className="formPopupOverlay">
-          <div className="formPopupContent">
+        <div className="popupOverlay">
+          <div className="popupContent">
             <h2>Confirm Registration</h2>
             <p>Are you sure you want to confirm this registration?</p>
-            <div className="formPopupActions">
+            <div className="popupActions">
               <button onClick={confirmReg} className="formPopupConfirmButton">
                 Confirm
               </button>
