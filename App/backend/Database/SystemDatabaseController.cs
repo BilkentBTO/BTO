@@ -14,11 +14,60 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
-        public async Task<ErrorTypes> AddGuideTourApplication(string TourCode, int GuideUID)
+        public async Task<ErrorTypes> AddGuideTourApplication(GuideTourApplicationRequest request)
+        {
+            string? tourCode = request.TourCode;
+            int guideUID = request.GuideUID;
+
+            if (string.IsNullOrEmpty(tourCode))
+            {
+                return ErrorTypes.InvalidTourCode;
+            }
+            if (guideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            bool applicationExists = await _SystemContext.GuideTourApplication.AnyAsync(a =>
+                a.GuideUID == guideUID
+            );
+
+            if (applicationExists)
+            {
+                return ErrorTypes.GuideAlreadyAppliedToTour;
+            }
+
+            bool tourExists = await _SystemContext.Tours.AnyAsync(t =>
+                t.TourRegistrationCode == tourCode
+            );
+
+            if (!tourExists)
+            {
+                return ErrorTypes.TourNotFound;
+            }
+
+            bool guideExists = await _SystemContext.Users.AnyAsync(u => u.ID == guideUID);
+
+            if (!guideExists)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+            GuideTourApplication application = new GuideTourApplication
+            {
+                TourCode = tourCode,
+                GuideUID = guideUID,
+            };
+
+            await _SystemContext.GuideTourApplication.AddAsync(application);
+            await _SystemContext.SaveChangesAsync();
+            return ErrorTypes.Success;
+        }
+
+        public async Task<ErrorTypes> AddGuideToTour(string TourCode, int GuideUID)
         {
             if (string.IsNullOrEmpty(TourCode))
             {
-                return ErrorTypes.InvalidTourID;
+                return ErrorTypes.InvalidTourCode;
             }
 
             if (GuideUID < 0)
@@ -57,6 +106,63 @@ namespace backend.Database
                 .GuideTourApplication.Include(a => a.Tour)
                 .Include(g => g.Guide)
                 .ToListAsync();
+        }
+
+        public async Task<ErrorTypes> AcceptGuideTourApplication(int guideUID)
+        {
+            if (guideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            GuideTourApplication? guideTourApplication =
+                await _SystemContext.GuideTourApplication.SingleOrDefaultAsync(a =>
+                    a.GuideUID == guideUID
+                );
+
+            if (guideTourApplication == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            if (guideTourApplication.TourCode == null)
+            {
+                return ErrorTypes.TourNotFound;
+            }
+
+            var result = await AddGuideToTour(
+                guideTourApplication.TourCode,
+                guideTourApplication.GuideUID
+            );
+
+            if (result == ErrorTypes.Success)
+            {
+                _SystemContext.Remove(guideTourApplication);
+                await _SystemContext.SaveChangesAsync();
+            }
+            return result;
+        }
+
+        public async Task<ErrorTypes> RejectGuideTourApplication(int guideUID)
+        {
+            if (guideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            GuideTourApplication? guideTourApplication =
+                await _SystemContext.GuideTourApplication.SingleOrDefaultAsync(a =>
+                    a.GuideUID == guideUID
+                );
+
+            if (guideTourApplication == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            _SystemContext.GuideTourApplication.Remove(guideTourApplication);
+            await _SystemContext.SaveChangesAsync();
+            return ErrorTypes.Success;
         }
 
         public async Task<Registration?> GetGeneralRegistration(string Code)
