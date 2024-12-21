@@ -1,4 +1,10 @@
 /* Table container styling */
+.table-container-conflict {
+  margin: 20px;
+  overflow-x: auto;
+  max-height: 400px; /* Set max height for the table container */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
 .table-container {
   margin: 20px;
   overflow-x: auto;
@@ -40,11 +46,10 @@ td {
   text-align: center;
 }
 
-/* Alternating row color */
-tr:nth-child(even) {
+
+.table-container tr:nth-child(even) {
   background-color: rgb(242, 242, 242);
 }
-
 /* Search bar styling */
 .searchBar {
   padding: 10px;
@@ -71,3 +76,22 @@ tr:nth-child(even) {
   color: #888;
   padding: 12px;
 }
+/* Base conflict row styling */
+.conflict-row {
+  background-color: rgba(255, 99, 71, 0.2); /* Default light red */
+}
+
+/* Specific styles for conflict IDs */
+.conflict-1 {
+  background-color: rgba(255, 99, 71, 0.2); /* Light red */
+}
+.conflict-2 {
+  background-color: rgba(255, 165, 0, 0.2); /* Light orange */
+}
+.conflict-3 {
+  background-color: rgba(255, 255, 0, 0.2); /* Light yellow */
+}
+.conflict-4 {
+  background-color: rgba(144, 238, 144, 0.2); /* Light green */
+}
+/* Add more styles as needed for additional conflict IDs */

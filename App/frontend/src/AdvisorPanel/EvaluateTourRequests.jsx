@@ -6,6 +6,7 @@ import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import profileImage from "../assets/profile_image.png";
 import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+import TableWithButtonConflict from "../GlobalClasses/TableWithButtonConflict";
 
 function EvaluateTourRequests() {
   const [headers] = useState(["Tour ID", "School", "State"]);
@@ -72,8 +73,22 @@ function EvaluateTourRequests() {
       const rejected = await fetch("/api/register/tour/registrations/2").then(
         (res) => res.json()
       );
-      setPendingData(pending);
-      setAcceptedData(accepted);
+
+      // Process the combined Pending and Accepted data
+      const processedData = processCombinedTourData(pending, accepted);
+
+      // Separate processed data back into pending and accepted
+      const updatedPendingData = processedData.filter((tour) =>
+        pending.some((pendingItem) => pendingItem.code === tour.code)
+      );
+
+      const updatedAcceptedData = processedData.filter((tour) =>
+        accepted.some((acceptedItem) => acceptedItem.code === tour.code)
+      );
+
+      // Update state with processed data
+      setPendingData(updatedPendingData);
+      setAcceptedData(updatedAcceptedData);
       setRejectedData(rejected);
     } catch (error) {
       console.error("Error fetching school data:", error);
@@ -122,21 +137,34 @@ function EvaluateTourRequests() {
     Notes: "notes",
   };
 
-  const handleRowClick = (rowData) => {
-    const tourId = String(rowData[0]);
+  const [conflictPopupVisible, setConflictPopupVisible] = useState(false);
+  const [selectedConflictId, setSelectedConflictId] = useState(null);
+  const [conflictingTours, setConflictingTours] = useState([]);
+  const [selectedTours, setSelectedTours] = useState([]);
+  const handleRowClick = (rowData, isConflict, conflictId) => {
+    if (isConflict) {
+      // Filter tours with the same conflictId
+      const conflictingTours = [...pendingData, ...acceptedData].filter(
+        (tour) => tour.conflictId === conflictId
+      );
 
-    const completeRow = pendingData.find((row) => String(row.code) === tourId);
-    console.log("TOUR ID: ", tourId);
-    console.log("COMPLETE ROW: ", completeRow);
-
-    if (completeRow) {
-      setSelectedRow(completeRow);
-      setPopupVisible(true);
+      setSelectedConflictId(conflictId);
+      setConflictingTours(conflictingTours);
+      setConflictPopupVisible(true);
     } else {
-      console.error("No matching row found for tour ID:", tourId);
+      const tourId = String(rowData[0]);
+      const completeRow = pendingData.find(
+        (row) => String(row.code) === tourId
+      );
+
+      if (completeRow) {
+        setSelectedRow(completeRow);
+        setPopupVisible(true);
+      } else {
+        console.error("No matching row found for tour ID:", tourId);
+      }
     }
   };
-
   const handleAcceptedRowClick = (rowData) => {
     const tourId = String(rowData[0]);
     console.log("ACCEPTED DATA: ", acceptedData);
@@ -160,6 +188,104 @@ function EvaluateTourRequests() {
     setPopupVisible(false);
     setSelectedRow(null);
     fetchTourRequests(); // Refresh data
+  };
+  const processCombinedTourData = (pendingData, acceptedData) => {
+    const conflictMap = new Map(); // Map to store conflict data for each timeBlock
+    let conflictCounter = 1; // Counter to generate unique conflict IDs
+
+    // Combine pending and accepted data into one array
+    const combinedData = [...pendingData, ...acceptedData];
+
+    // Step 1: Build the conflict map
+    combinedData.forEach((tour) => {
+      const timeBlock = tour.timeBlock?.scheduledTours?.join(",");
+
+      // Skip processing for resolved tours
+      if (tour.resolved) {
+        return;
+      }
+
+      if (timeBlock) {
+        if (conflictMap.has(timeBlock)) {
+          const conflictInfo = conflictMap.get(timeBlock);
+          conflictInfo.tours.push(tour.code);
+
+          // Mark as conflict only if there are multiple tours
+          if (conflictInfo.tours.length > 1 && !conflictInfo.isConflict) {
+            conflictInfo.isConflict = true; // Mark the group as a conflict
+            conflictInfo.conflictId = `${conflictCounter++}`; // Assign a new conflict ID
+          }
+        } else {
+          conflictMap.set(timeBlock, {
+            conflictId: null,
+            tours: [tour.code],
+            isConflict: false,
+          });
+        }
+      }
+    });
+
+    // Step 2: Map the conflict information back to tours
+    return combinedData.map((tour) => {
+      const timeBlock = tour.timeBlock?.scheduledTours?.join(",");
+      if (timeBlock && conflictMap.has(timeBlock)) {
+        const conflictInfo = conflictMap.get(timeBlock);
+        return {
+          ...tour,
+          isConflict: tour.resolved ? false : conflictInfo.isConflict,
+          conflictId: tour.resolved ? null : conflictInfo.conflictId,
+        };
+      }
+      return {
+        ...tour,
+        isConflict: false,
+        conflictId: null,
+      };
+    });
+  };
+  const confirmConflictResolution = async () => {
+    try {
+      // Accept selected tours
+      for (const tourId of selectedTours) {
+        await fetch(`/api/register/tour/accept?Code=${tourId}`, {
+          method: "POST",
+        });
+      }
+
+      // Reject unselected tours
+      const unselectedTours = conflictingTours
+        .filter((tour) => !selectedTours.includes(tour.code))
+        .map((tour) => tour.code);
+
+      for (const tourId of unselectedTours) {
+        await fetch(`/api/register/tour/reject?Code=${tourId}`, {
+          method: "POST",
+        });
+      }
+
+      // Update the state to remove conflicts from selected tours
+      setPendingData((prevData) =>
+        prevData.map((tour) =>
+          selectedTours.includes(tour.code)
+            ? { ...tour, isConflict: false, conflictId: null }
+            : tour
+        )
+      );
+
+      setAcceptedData((prevData) =>
+        prevData.map((tour) =>
+          selectedTours.includes(tour.code)
+            ? { ...tour, isConflict: false, conflictId: null }
+            : tour
+        )
+      );
+
+      alert("Conflict resolved successfully!");
+      setConflictPopupVisible(false);
+      refresh(); // Reload data
+    } catch (error) {
+      console.error("Error resolving conflict:", error);
+    }
   };
   const updateData = (prevData, newRow, stateValue) => {
     // Check if the row already exists in the data
@@ -268,6 +394,69 @@ function EvaluateTourRequests() {
           </button>
         </div>
         <div className="rightInnerEvaluation">
+          {conflictPopupVisible && (
+            <div className="popupOverlay">
+              <div className="popupContent">
+                <h2>Resolve Conflict - ID: {selectedConflictId}</h2>
+                <p>Select the tours to accept. The rest will be rejected.</p>
+                <form>
+                  {conflictingTours.map((tour) => (
+                    <div key={tour.code}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          value={tour.code}
+                          onChange={(e) => {
+                            const { value, checked } = e.target;
+                            setSelectedTours((prevSelected) =>
+                              checked
+                                ? [...prevSelected, value]
+                                : prevSelected.filter((id) => id !== value)
+                            );
+                          }}
+                        />
+                        {tour.school?.schoolName || tour.name || "N/A"} (ID:{" "}
+                        {tour.code})
+                      </label>
+                    </div>
+                  ))}
+                </form>
+                <div className="popupActions">
+                  <button
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "green",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      margin: "5px",
+                    }}
+                    onClick={confirmConflictResolution}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "grey",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      margin: "5px",
+                    }}
+                    onClick={() => setConflictPopupVisible(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {selectedType === "school" ? (
             <div className="leftSideEvaluation">
               <div className="evaluateTourRequests">
@@ -276,16 +465,18 @@ function EvaluateTourRequests() {
                   Pending School Tour Requests
                 </h1>
                 {pendingData.length > 0 ? (
-                  <TableWithButtons
+                  <TableWithButtonConflict
                     headers={headers}
                     data={pendingData.map((item) => [
                       item.code,
                       item.school?.schoolName || "N/A",
                       "Pending",
+                      item.isConflict,
+                      item.conflictId,
                     ])}
                     onButtonClick={handleRowClick}
                     buttonStyle={buttonStyle}
-                    buttonName="Decide"
+                    defaultButtonName="Decide"
                   />
                 ) : (
                   <p className="noDataText">No Pending School Tour Requests</p>
@@ -296,12 +487,14 @@ function EvaluateTourRequests() {
                   Accepted School Tour Requests
                 </h1>
                 {acceptedData.length > 0 ? (
-                  <TableWithButtons
+                  <TableWithButtonConflict
                     headers={headers}
                     data={acceptedData.map((item) => [
                       item.code,
                       item.school?.schoolName || "N/A",
                       "Accepted",
+                      item.isConflict,
+                      item.conflictId,
                     ])}
                     onButtonClick={handleAcceptedRowClick}
                     buttonStyle={buttonStyle}
