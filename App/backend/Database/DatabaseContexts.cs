@@ -51,9 +51,9 @@ namespace backend.Database
 
             modelBuilder.Entity<IndividualRegistration>().HasIndex(r => r.Code).IsUnique();
 
-            modelBuilder.Entity<GuideTourApplication>().HasKey(r => r.TourCode);
+            modelBuilder.Entity<GuideTourApplication>().HasKey(r => r.GuideUID);
 
-            modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.TourCode).IsUnique();
+            modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.GuideUID).IsUnique();
 
             modelBuilder.Entity<TimeBlock>().HasKey(t => t.ID);
 

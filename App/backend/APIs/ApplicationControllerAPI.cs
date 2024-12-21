@@ -23,28 +23,10 @@ namespace backend.Server.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (request.GuideUID < 0)
-            {
-                return BadRequest(new { message = "Invalid User ID.", errors = ModelState });
-            }
-            if (string.IsNullOrEmpty(request.TourCode))
-            {
-                return BadRequest(new { message = "Invalid Tour ID.", errors = ModelState });
-            }
 
-            var result = await _controller.AddGuideTourApplication(
-                request.TourCode,
-                request.GuideUID
-            );
-            if (result == ErrorTypes.TourNotFound)
-            {
-                return NotFound(new { message = "Tour not found." });
-            }
-            if (result == ErrorTypes.UserNotFound)
-            {
-                return NotFound(new { message = "Guide not found." });
-            }
-            return Ok(result);
+            var result = await _controller.AddGuideTourApplication(request);
+
+            return ErrorHandler.HandleError(result);
         }
 
         [HttpGet("tour")]
@@ -56,6 +38,28 @@ namespace backend.Server.Controllers
             }
             var result = await _controller.GetAllGuideTourApplications();
             return Ok(result);
+        }
+
+        [HttpGet("tour/accept/{guideUID}")]
+        public async Task<ActionResult> AcceptGuideTourApplications(int guideUID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.AcceptGuideTourApplication(guideUID);
+            return ErrorHandler.HandleError(result);
+        }
+
+        [HttpGet("tour/reject/{guideUID}")]
+        public async Task<ActionResult> RejectGuideTourApplications(int guideUID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.RejectGuideTourApplication(guideUID);
+            return ErrorHandler.HandleError(result);
         }
     }
 }
