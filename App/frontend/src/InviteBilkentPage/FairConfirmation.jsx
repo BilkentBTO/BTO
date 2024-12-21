@@ -7,6 +7,7 @@ function FairConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize formData with all fields
   const formData = location.state?.formData || {};
@@ -18,12 +19,60 @@ function FairConfirmation() {
   };
 
   // Function to handle the "Confirm" button click
-  const confirmReg = () => {
-    // Perform registration confirmation actions (e.g., send data to a server)
-    console.log("Registration Confirmed:", formData);
+  const confirmReg = async () => {
+    setIsSubmitting(true); // Show loading state
+    const convertDateToUTC = (dateString) => {
+      if (!dateString) return null;
+      const parsedDate = new Date(`${dateString}T00:00:00Z`);
+      return parsedDate.toISOString();
+    };
 
-    // Navigate to a success page or show a success message
-    navigate("/successInvite", { state: { formData } });
+    const convertTimeToUTC = (dateString, timeString) => {
+      if (!dateString || !timeString) return null;
+      const combinedDateTime = `${dateString}T${timeString}:00Z`;
+      const parsedDateTime = new Date(combinedDateTime);
+      return parsedDateTime.toISOString();
+    };
+
+    try {
+      const registrationRequest = {
+        cityName: formData.cityName,
+        schoolCode: formData.schoolCode,
+        dateOfVisit: formData.dateOfVisit,
+        superVisorName: formData.superVisorName,
+        superVisorDuty: formData.superVisorDuty,
+        superVisorPhoneNumber: formData.superVisorPhoneNumber,
+        superVisorMailAddress: formData.superVisorMailAddress,
+        notes: formData.notes,
+      };
+
+      const response = await fetch("/api/register/fair", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+        body: JSON.stringify(registrationRequest),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseText = await response.text();
+      console.log("API Response:", responseText);
+
+      // Navigate to the success page with the response
+      navigate("/successInvite", {
+        state: { successMessage: responseText },
+      });
+    } catch (error) {
+      console.error("Error registering school:", error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+      setShowPopup(false);
+    }
   };
 
   // Function to open the confirmation popup
