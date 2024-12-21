@@ -9,18 +9,34 @@ import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function ListAllUsers() {
-  const headers = ["Name", "Surname", "Username", "User Type"];
-  const data = [
-    ["Can", "Kütükoğlu", "spritewithice", "Coordinator"],
-    ["Ege", "Ertem", "ege04", "Advisor"],
-    ["Bora", "Akoğuz", "boraborabora", "Candidate Guide"],
-  ];
+  const headers = ["ID", "Name", "Surname", "EMail", "User Type"];
 
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showManageAdvisorPopup, setShowManageAdvisorPopup] = useState(false);
   const [formData, setFormData] = useState({
     taskDate: "",
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setData(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const today = new Date().toISOString().split("T")[0];
   const dateFilter = {
@@ -28,11 +44,12 @@ function ListAllUsers() {
   };
 
   const handleRowClick = (userData) => {
+    console.log("USER DATA: ", userData);
     setSelectedUser(userData);
   };
 
   const handleClosePopup = () => {
-    setSelectedUser(null);
+    setSelectedUser(false);
     setShowManageAdvisorPopup(false);
   };
 
@@ -60,6 +77,23 @@ function ListAllUsers() {
     }));
   };
 
+  const handleDeleteUser = async (id) => {
+    try {
+      await fetch(`/api/user/${id}`, {
+        method: "DELETE",
+      });
+      fetchTourRequests();
+    } catch (error) {
+      console.error("Error deleting registration:", error);
+    }
+    handleClosePopup();
+    refresh();
+  };
+
+  const refresh = () => {
+    window.location.reload();
+  };
+
   const buttonStyle = {
     padding: "8px 16px",
     backgroundColor: "#1e1e64",
@@ -74,6 +108,23 @@ function ListAllUsers() {
     transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
+  const getUserTypeString = (userType) => {
+    switch (userType) {
+      case 0:
+        return "Admin";
+      case 1:
+        return "Coordinator";
+      case 2:
+        return "Advisor";
+      case 3:
+        return "Guide";
+      case 4:
+        return "Candidate Guide";
+      default:
+        return "Unknown";
+    }
+  };
+
   return (
     <div className="listAllUsersPage">
       <GlobalSidebar />
@@ -81,25 +132,25 @@ function ListAllUsers() {
         <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
         <div>
           <h1 className="listAllUsersHeading">List All Users</h1>
-          <TableWithButtons
-            headers={headers}
-            data={data}
-            onButtonClick={(row) => handleRowClick(row)}
-            buttonStyle={{
-              padding: "8px 16px",
-              backgroundColor: "#1e1e64",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "14px",
-              width: "100%",
-              maxWidth: "120px",
-              textAlign: "center",
-              transition: "background-color 0.3s ease, transform 0.2s ease",
-            }}
-            buttonName="Manage"
-          />
+          {data.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={data.map((item) => [
+                item.id || "N/A",
+                item.name || "N/A",
+                item.surname || "N/A",
+                item.mail || "N/A",
+                getUserTypeString(item.userType),
+              ])}
+              onButtonClick={(row) => {
+                handleRowClick(row);
+              }}
+              buttonStyle={buttonStyle}
+              buttonName="Manage"
+            />
+          ) : (
+            <p className="noDataText">No Users</p>
+          )}
         </div>
 
         {/* Main User Info Popup */}
@@ -120,26 +171,31 @@ function ListAllUsers() {
                 <strong>User Type:</strong> {selectedUser[3]}
               </p>
               <div className="popupActions">
-                <button
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "red",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    width: "100%",
-                    maxWidth: "120px",
-                    textAlign: "center",
-                    transition:
-                      "background-color 0.3s ease, transform 0.2s ease",
-                  }}
-                  onClick={() => alert(`Deleted user: ${selectedUser[2]}`)}
-                >
-                  Delete User
-                </button>
-                {selectedUser[3] === "Advisor" && (
+                {(selectedUser[4] === "Guide" ||
+                  selectedUser[4] === "Advisor" ||
+                  selectedUser[4] === "Candidate Guide") && (
+                  <button
+                    style={{
+                      padding: "8px 16px",
+                      backgroundColor: "red",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      width: "100%",
+                      maxWidth: "120px",
+                      textAlign: "center",
+                      transition:
+                        "background-color 0.3s ease, transform 0.2s ease",
+                    }}
+                    onClick={() => handleDeleteUser(selectedUser[0])}
+                  >
+                    Delete User
+                  </button>
+                )}
+
+                {selectedUser[4] === "Advisor" && (
                   <button
                     style={{
                       padding: "8px 16px",
@@ -160,7 +216,7 @@ function ListAllUsers() {
                     Manage Advisor
                   </button>
                 )}
-                {selectedUser[3] === "Candidate Guide" && (
+                {selectedUser[4] === "Candidate Guide" && (
                   <button
                     style={{
                       padding: "8px 16px",
