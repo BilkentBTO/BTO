@@ -1,0 +1,117 @@
+
+.profileSidebarSection {
+    display: flex;
+    font-family: 'Arial',sans-serif;
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Add spacing between the image and the text */
+    height: 60px;
+    width: 250px;
+    padding: 10px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px; /* Add rounded corners */
+
+}
+
+.profileSidebarSection img {
+    height: 100%;
+    width: 60px; /* Make the image square */
+    border-radius: 50%; /* Make the image circular */
+    object-fit: cover; /* Ensure the image scales correctly */
+    border: 2px solid white; /* Add a border around the image for better contrast */
+}
+.profileDetails {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.5s ease;
+    background-color: rgba(60, 60, 130, 0.8);
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+  }
+.profileSidebarSection span {
+    margin: 0; /* Remove default margin */
+    color: white; /* Set text color */
+    font-size: 1.2rem; /* Adjust font size */
+    font-weight: bold; /* Make the text bold */
+    white-space: nowrap; /* Prevent text wrapping */
+    text-overflow: ellipsis; /* Add ellipsis if the text overflows */
+    overflow: hidden; /* Hide overflow text */
+    flex: 1; /* Allow the text to take up remaining space */
+}
+.bottomSidebarSection{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 270px;
+    position: absolute;
+    gap: 10px;
+    bottom: 10px;
+    left: 10px;
+}
+.profileDetails.show {
+    font-family: 'Arial',sans-serif;
+    background-color:  rgb(60, 60, 130);
+    width: 250px;
+    padding: 10px;
+    height: auto;
+    border: 2px solid rgb(255, 255, 255);
+    opacity: 1;
+  }
+.bottomSidebarSection .profileSidebarSection:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+ 
+}
+.bottomSidebarSection button{
+    font-weight: bold;
+    font-size: 12px;
+    background-color: red;
+    color: white;
+    padding: 10px;
+    height: 40px;
+    border-radius: 10px;
+    border: 0;
+    width: auto;
+}
+
+.sidebar {
+    border-radius: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 250px;
+    background-color: rgb(60, 60, 130);
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  .sidebar
+  .sidebar h3 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 10px 15px; /* Add some padding for better button appearance */
+    margin-bottom: 10px; /* Add spacing between buttons */
+    cursor: pointer;
+    color: #ccc;
+    transition: all 0.3s ease;
+    background-color: #2c2c70; /* Background for button appearance */
+    border: 1px solid #ccc; /* Add border */
+    border-radius: 4px; /* Slightly round corners */
+    text-align: center; /* Center align text */
+  }
+  
+  .sidebar ul li:hover {
+    color: #fff;
+    background-color: #37377e; /* Darker background on hover */
+    border-color: #fff; /* Change border color on hover */
+  }

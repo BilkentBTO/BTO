@@ -5,6 +5,8 @@ import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+
 function AddUser() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,46 +73,49 @@ function AddUser() {
   const roles = ["Guide", "Advisor", "Coordinator"];
 
   return (
-    <div>
-      <HeaderPanelGlobal name="ADMIN PANEL" />
-      <div className="addUserPage">
-        <div className="innerAddUserPage">
-          <div className="userForm">
-            <FormDropDownGlobal
-              question="Role*"
-              arr={roles}
-              initialValue={formData.role}
-              onChange={(value) => handleChange("role", value)}
-            />
-            <FormInputGlobal
-              question="Name*"
-              type="text"
-              value={formData.name}
-              onChange={(value) => handleChange("name", value)}
-            />
-            <FormInputGlobal
-              question="Surname*"
-              type="text"
-              value={formData.surname}
-              onChange={(value) => handleChange("surname", value)}
-            />
-            <FormInputGlobal
-              question="Username*"
-              type="text"
-              value={formData.username}
-              onChange={(value) => handleChange("username", value)}
-            />
-            <FormInputGlobal
-              question="Email*"
-              type="email"
-              value={formData.email}
-              onChange={(value) => handleChange("email", value)}
-            />
+    <div className="addUser">
+      <GlobalSidebar />
+      <div className="rightSideCoorFunction">
+        <HeaderPanelGlobal name="Add User" />
+        <div className="addUserPage">
+          <div className="innerAddUserPage">
+            <div className="userForm">
+              <FormDropDownGlobal
+                question="Role*"
+                arr={roles}
+                initialValue={formData.role}
+                onChange={(value) => handleChange("role", value)}
+              />
+              <FormInputGlobal
+                question="Name*"
+                type="text"
+                value={formData.name}
+                onChange={(value) => handleChange("name", value)}
+              />
+              <FormInputGlobal
+                question="Surname*"
+                type="text"
+                value={formData.surname}
+                onChange={(value) => handleChange("surname", value)}
+              />
+              <FormInputGlobal
+                question="Username*"
+                type="text"
+                value={formData.username}
+                onChange={(value) => handleChange("username", value)}
+              />
+              <FormInputGlobal
+                question="Email*"
+                type="email"
+                value={formData.email}
+                onChange={(value) => handleChange("email", value)}
+              />
 
-            {/* Submit Button */}
-            <button onClick={handleSubmit} className="submitButton">
-              Add User
-            </button>
+              {/* Submit Button */}
+              <button onClick={handleSubmit} className="submitButton">
+                Add User
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function GuidePanel() {
   const navigate = useNavigate();
@@ -93,43 +94,7 @@ function GuidePanel() {
     <div className="guidePanel">
       <div className="innerGuide">
         {/* Sidebar */}
-        <div className="leftSideGuide">
-          <div className="sidebar">
-            <h3>Navigation</h3>
-            <ul>
-              {sidebarOptions[userRole]?.map((option, index) => (
-                <li
-                  key={index}
-                  onClick={() => navigateToSection(option.path)}
-                  style={{
-                    border: "1px solid white",
-                    padding: "10px",
-                    marginBottom: "10px",
-                    cursor: "pointer",
-                    textAlign: "center",
-                    backgroundColor: location.pathname.startsWith(option.path)
-                      ? "#1e1e64"
-                      : "#3c3c82",
-                    color: location.pathname.startsWith(option.path)
-                      ? "white"
-                      : "white",
-                  }}
-                >
-                  {option.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bottomSidebarSection">
-            <div className="profileSidebarSection">
-              <img src={profileImage}></img>
-              <span>{username}</span>
-            </div>
-            <div className="logoutSidebarSection">
-              <button onClick={handleLogout}>LOGOUT</button>
-            </div>
-          </div>
-        </div>
+        <GlobalSidebar />
 
         {/* Guide Panel Buttons */}
         <div className="buttonGuidePanelSection">

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AdminPanel() {
   const navigate = useNavigate();
@@ -75,30 +76,9 @@ function AdminPanel() {
   };
   return (
     <div className="adminPanel">
-      <HeaderPanelGlobal name={"ADMIN PANEL"} />
       <div className="innerAdmin">
-        <div className="leftSideAdmin">
-          <div className="sidebar">
-            <h3>Navigation</h3>
-            <ul>
-              {sidebarOptions[userRole]?.map((option, index) => (
-                <li
-                  key={index}
-                  onClick={() => navigateToSection(option.path)}
-                  style={{
-                    border: "1px solid white",
-                    padding: "10px",
-                    marginBottom: "10px",
-                    cursor: "pointer",
-                    textAlign: "center",
-                  }}
-                >
-                  {option.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <GlobalSidebar />
+
         <div className="buttonAdminPanelSection">
           <button onClick={handleListCoordinatorsClick}>
             List Coordinators
