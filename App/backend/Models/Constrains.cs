@@ -15,4 +15,13 @@ namespace BTO.Constrains
         { new(9, 0), new(11, 0), new(13, 30), new(16, 0) };
         public static readonly int TimeBlocksPerDay = EntranceTimeBlocks.Length;
     }
+
+    public static class TourVisitorConstrains
+    {
+        public const int MAX_TOURS_PER_BLOCK = 3;
+        public const int MAX_VISITORS_COUNT = 150;
+
+        public const int PRIORITY_BIAS = 100;
+        public const int VISITOR_BIAS = 10;
+    }
 }

@@ -74,7 +74,7 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
 
             List<Tour> tours;
-            if ((tours = await _controller.GetAllTours()) == null)
+            if ((tours = await _controller.GetAllTours()).Count == 0)
                 return BadRequest("Unable to get all tours.");
 
             return Ok(tours);
@@ -140,7 +140,7 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
 
             List<Fair> fairs;
-            if ((fairs = await _controller.GetAllFairs()) == null)
+            if ((fairs = await _controller.GetAllFairs()).Count == 0)
                 return BadRequest("Unable to get all fairs.");
 
             return Ok(fairs);
@@ -174,13 +174,13 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet("schedule")]
-        public async Task<ActionResult> GetTimeBlockByID(int timeID)
+        public async Task<ActionResult> GetTimeBlockByID(int timeBlockID)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             TimeBlock? tb;
-            if ((tb = await _controller.GetTimeBlock(timeID)) == null)
+            if ((tb = await _controller.GetTimeBlock(timeBlockID)) == null)
                 return NotFound("Unable to get timeblock by ID.");
 
             return Ok(tb);
@@ -197,6 +197,107 @@ namespace backend.Server.Controllers
                 return NotFound("Unable to get timeblock by time.");
 
             return Ok(tb);
+        }
+
+        [HttpGet("schedule/scheduled")]
+        public async Task<ActionResult> GetScheduledTours(int timeBlockID)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            Tour[] scheduledTours;
+            if((scheduledTours = await _controller.GetScheduledTours(timeBlockID)).Length == 0)
+                return NotFound("Unable to get scheduled tours.");
+
+            return Ok(scheduledTours);
+        }
+
+        [HttpGet("schedule/alternative")]
+        public async Task<ActionResult> GetAlternativeTours(int timeBlockID)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            Tour[] scheduledTours;
+            if ((scheduledTours = await _controller.GetAlternativeTours(timeBlockID)).Length == 0)
+                return NotFound("Unable to get alternative tours.");
+
+            return Ok(scheduledTours);
+        }
+
+        [HttpGet("schedule/regreq")]
+        public async Task<ActionResult> GetAllTourRegistirationRequests()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<TourRegistirationRequest> scheduledTours;
+            if ((scheduledTours = await _controller.GetAllTourRegistirationRequests()).Count == 0)
+                return NotFound("Unable to get registiration requests.");
+
+            return Ok(scheduledTours);
+        }
+
+        [HttpGet("schedule/regreqtime")]
+        public async Task<ActionResult> GetTourRegistirationRequestsOf(int timeBlockID)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<TourRegistirationRequest> scheduledTours;
+            if ((scheduledTours = await _controller.GetTourRegistirationRequestsOf(timeBlockID)).Count == 0)
+                return NotFound("Unable to get registiration requests.");
+
+            return Ok(scheduledTours);
+        }
+
+        [HttpPost("schedule/regreq")]
+        public async Task<ActionResult> RequestTour(int timeBlockID, Tour tour)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _controller.RequestTour(timeBlockID, tour))
+                return NotFound("Unable to get request tour.");
+
+            return Ok();
+
+        }
+
+        [HttpPut("schedule/replace")]
+        public async Task<ActionResult> AcceptAlternativeTour(int timeBlockID, string scheduledTourCode, string alternativeTourCode)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _controller.AcceptAlternativeTour(timeBlockID, scheduledTourCode, alternativeTourCode))
+                return BadRequest("Unable to accept alternative tour.");
+
+            return Ok();
+        }
+
+        [HttpPost("schedule/tour")]
+        public async Task<ActionResult> AcceptTour(int timeBlockID, string tourCode)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _controller.AcceptTour(timeBlockID, tourCode))
+                return BadRequest("Unable to add tour to timeblock.");
+
+            return Ok();
+        }
+
+        [HttpDelete("schedule/tour")]
+        public async Task<ActionResult> RemoveTour(int timeBlockID, string tourCode)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!await _controller.RemoveTour(timeBlockID, tourCode))
+                return BadRequest("Unable to remove tour from timeblock.");
+
+            return Ok();
         }
 
         #endregion

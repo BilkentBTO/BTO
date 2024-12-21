@@ -16,6 +16,7 @@ namespace backend.Database
         public DbSet<TourRegistration> TourRegistrations { get; set; }
         public DbSet<FairRegistration> FairRegistrations { get; set; }
         public DbSet<IndividualRegistration> IndividualRegistrations { get; set; }
+        public DbSet<TourRegistirationRequest> TourRegistirationRequests { get; set; }
 
         //Guide Applications
         public DbSet<GuideTourApplication> GuideTourApplication { get; set; }

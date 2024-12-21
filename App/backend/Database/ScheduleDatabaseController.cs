@@ -1,6 +1,8 @@
 using backend.Models;
 using BTO.Constrains;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace backend.Database
 {
@@ -334,11 +336,11 @@ namespace backend.Database
             }
         }
 
-        public async Task<bool> TimeBlockExists(int timeID)
+        public async Task<bool> TimeBlockExists(int timeBlockID)
         {
             try
             {
-                return await _context.Schedule.AnyAsync(t => t.ID == timeID);
+                return await _context.Schedule.AnyAsync(t => t.ID == timeBlockID);
             }
             catch (Exception ex)
             {
@@ -355,12 +357,12 @@ namespace backend.Database
             return await TimeBlockExists(TimeBlock.GetID(day, timeBlockIndex));
         }
 
-        public async Task<TimeBlock?> GetTimeBlock(int timeID)
+        public async Task<TimeBlock?> GetTimeBlock(int timeBlockID)
         {
-            TimeBlock? foundTB = await _context.Schedule.FirstOrDefaultAsync(t => t.ID == timeID);
+            TimeBlock? foundTB = await _context.Schedule.FirstOrDefaultAsync(t => t.ID == timeBlockID);
             if (foundTB == null)
             {
-                _logger.LogError($"Can't find time block, timeID {timeID} does not exist.");
+                _logger.LogError($"Can't find time block, timeID {timeBlockID} does not exist.");
             }
             return foundTB;
         }
@@ -372,7 +374,6 @@ namespace backend.Database
             day = new DateTime(day.Year, day.Month, day.Day);
             return await GetTimeBlock(TimeBlock.GetID(day, timeBlockIndex));
         }
-
         public async Task<bool> UpdateTimeBlock(TimeBlock timeBlock)
         {
             if (!await _context.Schedule.AnyAsync(t => t.ID == timeBlock.ID))
@@ -392,6 +393,148 @@ namespace backend.Database
                 _logger.LogError($"Error in UpdateTimeBlock: {ex.Message}");
                 return false;
             }
+        }
+
+        public async Task<Tour[]> GetScheduledTours(int timeBlockID)
+        {
+            TimeBlock? timeBlock = await GetTimeBlock(timeBlockID);
+            if (timeBlock == null)
+            {
+                _logger.LogError("Cannot find timeblock.");
+                return [];
+            }
+            KeyValuePair<string, int>[] tourCodes = [.. timeBlock.ScheduledTours];
+            Tour[] tours = new Tour[tourCodes.Length];
+            for (int i = 0; i < tourCodes.Length; i++)
+            {
+                Tour? tour = await GetTour(tourCodes[i].Key);
+                if (tour == null)
+                {
+                    _logger.LogError("Cannot find tour.");
+                    return [];
+                }
+                tours[i] = tour;
+            }
+            return tours;
+        }
+        public async Task<Tour[]> GetAlternativeTours(int timeBlockID)
+        {
+            TimeBlock? timeBlock = await GetTimeBlock(timeBlockID);
+            if (timeBlock == null)
+            {
+                _logger.LogError("Cannot find timeblock.");
+                return [];
+            }
+            KeyValuePair<string, int>[] tourCodes = [.. timeBlock.AlternativeTours];
+            Tour[] tours = new Tour[tourCodes.Length];
+            for (int i = 0; i < tourCodes.Length; i++)
+            {
+                Tour? tour = await GetTour(tourCodes[i].Key);
+                if (tour == null)
+                {
+                    _logger.LogError("Cannot find tour.");
+                    return [];
+                }
+                tours[i] = tour;
+            }
+            return tours;
+        }
+        public async Task<List<TourRegistirationRequest>> GetAllTourRegistirationRequests()
+        {
+            try
+            {
+                return await _context.TourRegistirationRequests.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+        public async Task<List<TourRegistirationRequest>> GetTourRegistirationRequestsOf(int timeBlockID)
+        {
+            try
+            {
+                List<TourRegistirationRequest> requests = await _context.TourRegistirationRequests.ToListAsync();
+                return requests.Where(r => r.TimeBlockID == timeBlockID).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+        public async Task<bool> RequestTour(int timeBlockID, Tour tour)
+        {
+            TimeBlock? timeBlock = await GetTimeBlock(timeBlockID);
+            if (timeBlock == null)
+            {
+                _logger.LogError("Cannot find timeblock.");
+                return false;
+            }
+            TourRegistirationRequest? regReq = timeBlock.RequestTour(tour);
+            if(regReq != null)
+            {
+                await _context.TourRegistirationRequests.AddAsync(regReq);
+                await _context.SaveChangesAsync();
+                return await UpdateTimeBlock(timeBlock);
+            }
+            return true;
+        }
+        public async Task<bool> AcceptAlternativeTour(int timeBlockID, string scheduledTourCode, string alternativeTourCode)
+        {
+            TimeBlock? timeBlock = await GetTimeBlock(timeBlockID);
+            if(timeBlock == null)
+            {
+                _logger.LogError("Cannot find timeblock.");
+                return false;
+            }
+            Tour? alternativeTour = await GetTour(alternativeTourCode), ScheduledTour = await GetTour(scheduledTourCode);
+            if(alternativeTour == null || ScheduledTour == null)
+            {
+                _logger.LogError("Cannot find tour.");
+                return false;
+            }
+
+            if (!timeBlock.AcceptTour(ScheduledTour, alternativeTour))
+                return false;
+
+            return await UpdateTimeBlock(timeBlock);
+        }
+
+        public async Task<bool> AcceptTour(int timeBlockID, string tourCode)
+        {
+            TimeBlock? timeBlock = await GetTimeBlock(timeBlockID);
+            if (timeBlock == null)
+            {
+                _logger.LogError("Cannot find timeblock.");
+                return false;
+            }
+            Tour? tour = await GetTour(tourCode);
+            if (tour == null)
+            {
+                _logger.LogError("Cannot find tour.");
+                return true;
+            }
+            timeBlock.AcceptTour(tour);
+            return await UpdateTimeBlock(timeBlock);
+        }
+        public async Task<bool> RemoveTour(int timeBlockID, string tourCode)
+        {
+            TimeBlock? timeBlock = await GetTimeBlock(timeBlockID);
+            if (timeBlock == null)
+            {
+                _logger.LogError("Cannot find timeblock.");
+                return false;
+            }
+            Tour? tour = await GetTour(tourCode);
+            if (tour == null)
+            {
+                _logger.LogError("Cannot find tour.");
+                return true;
+            }
+            timeBlock.RemoveTour(tour);
+            return await UpdateTimeBlock(timeBlock);
         }
     }
 }
