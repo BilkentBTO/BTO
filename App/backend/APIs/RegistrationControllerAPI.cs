@@ -216,7 +216,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("fair/getregistrations/{state}")]
+        [HttpGet("fair/registrations/{state}")]
         public async Task<ActionResult> GetAllFairRegistrationsFiltered(RegistrationState state)
         {
             if (!ModelState.IsValid)
@@ -227,7 +227,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("fair/getregistration")]
+        [HttpGet("fair/registration")]
         public async Task<ActionResult> GetFairRegistration(string Code)
         {
             if (!ModelState.IsValid)

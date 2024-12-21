@@ -15,16 +15,12 @@ namespace backend.Models
         UserAlreadyExists = 8,
         GuideAlreadyAppliedToTour = 9,
         TourRegistrationNotFound = 10,
-
         InvalidCode = 11,
         FairRegistrationNotFound = 12,
-
         InvalidFairCode = 13,
         InvalidIndividualCode = 14,
         IndividualRegistrationNotFound = 15,
-
         WrongGuideIDForTour = 16,
-
     }
 
     public static class ErrorHandler
