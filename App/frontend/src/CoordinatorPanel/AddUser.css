@@ -42,3 +42,16 @@
   .submitButton:hover {
     background-color: #0056b3;
   }
+  .leftInsideAddUser{
+    width: 50%;
+
+  } 
+  .rightInsideAddUser{
+    width: 50%;
+
+  }
+  .rightInnerSideAddUser{
+    display: flex;
+    flex-direction: row;
+  }
+ 
