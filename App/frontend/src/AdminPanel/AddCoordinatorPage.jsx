@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./AddCoordinatorPage.css"; // Make sure to style the popup in this file
+import "./AddCoordinatorPage.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
+import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AddCoordinator() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
     return (
       location?.state?.formData || {
@@ -17,12 +17,18 @@ function AddCoordinator() {
         surname: "",
         username: "",
         email: "",
+        bilkentID: "",
+        major: "",
+        currentYear: "",
+        majorCode: "",
+        role: "Coordinator", // Default role for the coordinator
       }
     );
   });
 
-  // Popup state
   const [showPopup, setShowPopup] = useState(false);
+  const [majors, setMajors] = useState([]);
+  const [years] = useState(["1", "2", "3", "4"]); // Year options for dropdown
 
   // Generic handler for form state updates
   const handleChange = (key, value) => {
@@ -32,6 +38,27 @@ function AddCoordinator() {
     }));
   };
 
+  // Fetch majors for dropdown
+  useEffect(() => {
+    const fetchMajors = async () => {
+      try {
+        const response = await fetch("/api/user/majors");
+        if (!response.ok) throw new Error("Failed to fetch majors");
+
+        const data = await response.json();
+        const majorOptions = data.map((major) => ({
+          id: major.id,
+          name: major.name,
+        }));
+        setMajors(majorOptions);
+      } catch (error) {
+        console.error("Error fetching majors:", error);
+      }
+    };
+
+    fetchMajors();
+  }, []);
+
   // Handle form submission
   const handleSubmit = () => {
     // Validate required fields
@@ -39,27 +66,60 @@ function AddCoordinator() {
       !formData.name ||
       !formData.surname ||
       !formData.username ||
-      !formData.email
+      !formData.email ||
+      !formData.bilkentID ||
+      !formData.major ||
+      !formData.currentYear
     ) {
       alert("Please fill in all the required fields.");
       return;
     }
 
-    // Show the confirmation popup
-    setShowPopup(true);
+    setShowPopup(true); // Show the confirmation popup
   };
 
   const handleConfirm = () => {
-    // Proceed with form submission (save data, navigate, etc.)
-    console.log("Form Data confirmed:", formData);
-    // Navigate or save data (e.g., API call)
-    setShowPopup(false);
-    // IMPLEMENT !!!!!!!!!
+    console.log("Bilkent ID before confirmation:", formData.bilkentID);
+    const payload = {
+      name: formData.name,
+      surname: formData.surname,
+      username: formData.username,
+      mail: formData.email,
+      bilkentID: parseInt(formData.bilkentID, 10),
+      majorCode: formData.majorCode,
+      currentYear: parseInt(formData.currentYear, 10),
+      userType: 1, // UserType for Coordinator
+    };
+
+    console.log("Submitting payload:", payload);
+
+    fetch("/api/user/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to add coordinator: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((data) => {
+        console.log("Coordinator added successfully:", data);
+        alert("Coordinator added successfully!");
+        setShowPopup(false);
+        navigate("/adminPanel"); // Navigate to admin panel
+      })
+      .catch((error) => {
+        console.error("Error adding coordinator:", error);
+        alert("Failed to add coordinator. Please try again.");
+      });
   };
 
   const handleBack = () => {
-    // Close the popup and return to the form
-    setShowPopup(false);
+    setShowPopup(false); // Close the popup and return to the form
   };
 
   useEffect(() => {
@@ -97,6 +157,30 @@ function AddCoordinator() {
                 type="email"
                 value={formData.email}
                 onChange={(value) => handleChange("email", value)}
+              />
+              <FormInputGlobal
+                question="Bilkent ID*"
+                type="text"
+                value={formData.bilkentID}
+                onChange={(value) => handleChange("bilkentID", value)}
+              />
+              <FormDropDownGlobal
+                arr={majors.map((major) => major.name)}
+                question="Major*"
+                onChange={(value) => {
+                  const selectedMajor = majors.find(
+                    (major) => major.name === value
+                  );
+                  handleChange("major", selectedMajor.name);
+                  handleChange("majorCode", selectedMajor?.id);
+                }}
+                initialValue={formData.major}
+              />
+              <FormDropDownGlobal
+                arr={years}
+                question="Current Year*"
+                onChange={(value) => handleChange("currentYear", value)}
+                initialValue={formData.currentYear}
               />
 
               {/* Submit Button */}
@@ -146,6 +230,24 @@ function AddCoordinator() {
                           <strong>Email</strong>
                         </td>
                         <td>{formData.email}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Bilkent ID</strong>
+                        </td>
+                        <td>{formData.bilkentID}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Major</strong>
+                        </td>
+                        <td>{formData.major}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Current Year</strong>
+                        </td>
+                        <td>{formData.currentYear}</td>
                       </tr>
                     </tbody>
                   </table>

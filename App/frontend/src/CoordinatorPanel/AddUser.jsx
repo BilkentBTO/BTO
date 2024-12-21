@@ -239,6 +239,13 @@ function AddUser() {
                   />
 
                   <FormInputGlobal
+                    question="Bilkent ID*"
+                    type="text"
+                    value={formData.bilkentID}
+                    onChange={(value) => handleChange("bilkentID", value)}
+                  />
+
+                  <FormInputGlobal
                     question="Name*"
                     type="text"
                     value={formData.name}

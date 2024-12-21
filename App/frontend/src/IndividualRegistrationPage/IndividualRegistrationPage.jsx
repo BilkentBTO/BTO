@@ -9,7 +9,7 @@ import { useState } from "react";
 
 function IndividualRegistrationPage() {
   const schools = ["TED", "Nesibe", "Jale Tezer"];
-  const visitTimes = ["09.00", "11.00", "13.00", "16.00"];
+  const visitTimes = ["09:00", "11:00", "13:00", "16:00"];
   const navigate = useNavigate();
   const location = useLocation();
   const [majors, setMajors] = useState([]);

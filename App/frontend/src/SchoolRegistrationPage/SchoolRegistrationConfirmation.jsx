@@ -30,11 +30,6 @@ function SchoolRegistrationConfirmation() {
 
   const confirmReg = async () => {
     setIsSubmitting(true); // Show loading state
-    const convertDateToUTC = (dateString) => {
-      if (!dateString) return null;
-      const parsedDate = new Date(`${dateString}T00:00:00Z`);
-      return parsedDate.toISOString();
-    };
 
     const convertTimeToUTC = (dateString, timeString) => {
       if (!dateString || !timeString) return null;
@@ -44,12 +39,6 @@ function SchoolRegistrationConfirmation() {
     };
 
     try {
-      const dateOfVisitUTC = convertDateToUTC(formData.visitDate);
-      if (!dateOfVisitUTC) {
-        alert("Invalid visit date.");
-        return;
-      }
-
       const startTimeUTC = convertTimeToUTC(
         formData.visitDate,
         formData.visitTime
@@ -58,20 +47,12 @@ function SchoolRegistrationConfirmation() {
         alert("Invalid visit time.");
         return;
       }
-
-      const endTime = new Date(startTimeUTC);
-      endTime.setHours(endTime.getHours() + 2);
-      const endTimeUTC = endTime.toISOString();
+      console.log("START TIME: ", startTimeUTC);
 
       const registrationRequest = {
         cityName: formData.city,
         schoolCode: formData.schoolID,
-        dateOfVisit: dateOfVisitUTC,
-        prefferedVisitTime: {
-          id: 0,
-          startTime: startTimeUTC,
-          endTime: endTimeUTC,
-        },
+        dateOfVisit: startTimeUTC,
         numberOfVisitors: parseInt(formData.visitorCount, 10),
         superVisorName: formData.supervisorName,
         superVisorDuty: formData.supervisorDuty,
@@ -80,6 +61,7 @@ function SchoolRegistrationConfirmation() {
         notes: formData.notes,
       };
 
+      console.log(registrationRequest);
       const response = await fetch("/api/register/tour", {
         method: "POST",
         headers: {

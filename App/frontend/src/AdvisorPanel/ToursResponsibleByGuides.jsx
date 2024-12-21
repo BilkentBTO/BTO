@@ -12,7 +12,9 @@ function ToursResponsibleByGuides() {
   // State to manage popup visibility and data
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-
+  const [guides, setGuides] = useState([]);
+  const [selectedGuide, setSelectedGuide] = useState(null);
+  const [formData, setFormData] = useState({ guideName: "", guideId: null });
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = ["Tour", "Guide Name", "Guide Surname", "Guide Username"];
   const [tableData, setTableData] = useState([]);
@@ -27,9 +29,37 @@ function ToursResponsibleByGuides() {
     setIsPopupVisible(false);
     setSelectedRow(null);
   };
+  useEffect(() => {
+    console.log("GUIDES Updated: ", guides);
+  }, [guides]);
+  const saveChanges = async () => {
+    if (!selectedRow) return;
+    const tourCode = selectedRow[0];
+    console.log("FORM DATA: ", formData);
+    if (!formData.guideId) {
+      alert("Please select a valid guide.");
+      return;
+    }
 
-  const saveChanges = () => {
-    // SAVE ACTION IMPLEMENT !!!!!!!!!!!!!!!!!!!!!!!!!1
+    try {
+      const response = await fetch(
+        `/api/schedule/tour/${tourCode}/guide/${formData.guideId}`,
+        { method: "PUT" }
+      );
+
+      if (response.ok) {
+        alert(
+          `Successfully assigned ${formData.guideName} to tour ${tourCode}.`
+        );
+        setIsPopupVisible(false);
+      } else {
+        console.error("Failed to assign guide:", response.statusText);
+        alert("Failed to assign guide. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error assigning guide:", error);
+      alert("An error occurred while assigning the guide.");
+    }
   };
   useEffect(() => {
     // Fetch tours and guides data from the API
@@ -96,6 +126,20 @@ function ToursResponsibleByGuides() {
       }
     };
 
+    const fetchGuides = async () => {
+      try {
+        const guidesResponse = await fetch("/api/user/filter/3");
+        if (!guidesResponse.ok) {
+          throw new Error(`Failed to fetch guides: ${guidesResponse.status}`);
+        }
+        const guidesData = await guidesResponse.json();
+        setGuides(guidesData);
+      } catch (error) {
+        console.error("Error fetching guides:", error);
+      }
+    };
+
+    fetchGuides();
     fetchToursAndUsers();
   }, []);
   const buttonStyle = {
@@ -112,11 +156,19 @@ function ToursResponsibleByGuides() {
     transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
-  const buttonName = "Edit";
+  const handleFormChange = (guideName) => {
+    const guideProfile = guides.find(
+      (guide) => `${guide.name} ${guide.surname}` === guideName
+    );
 
-  // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  const guides = ["Canga", "Ertu", "Egorto", "Borabora"];
-  // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if (guideProfile) {
+      setFormData({
+        guideName: `${guideProfile.name} ${guideProfile.surname}`,
+        guideId: guideProfile.id,
+      });
+    }
+  };
+  const buttonName = "Edit";
 
   return (
     <div className="toursResponsibleByGuidesPage">
@@ -156,7 +208,11 @@ function ToursResponsibleByGuides() {
               </p>
 
               {/* Dropdown for New Guide */}
-              <FormDropDownGlobal arr={guides} question="Change to*" />
+              <FormDropDownGlobal
+                arr={guides.map((guide) => `${guide.name} ${guide.surname}`)}
+                question="Change to*"
+                onChange={handleFormChange}
+              />
 
               {/* Actions */}
               <div className="popupActions">

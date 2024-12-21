@@ -13,21 +13,39 @@ function AssignGuideToFairs() {
     "School Name",
     "City",
     "Date of Visit",
-    "Guide Number",
+    "Supervisor Name",
+    "Supervisor Duty",
+    "Supervisor Phone Number",
+    "Supervisor Mail",
     "Notes",
   ];
 
-  const data = [
-    ["TED Ankara", "Ankara", "24.12.2025", "1", "Not not not"],
-    ["Nesibe Aydin", "Ankara", "30.12.2025", "2", "Not not not"],
-  ];
-
+  const [data, setData] = useState([]);
   const [selectedFair, setSelectedFair] = useState(null);
   const [popupType, setPopupType] = useState(null); // "dismiss" or "assign"
   const [dropdownValue, setDropdownValue] = useState("");
 
   const guides = ["Can", "Ege", "Bora"];
   const allGuides = [...guides, "Ertu", "Kerem"];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/register/fair/getregistrations/1");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setData(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleRowClick = (row) => {
     setSelectedFair(row);
@@ -52,6 +70,7 @@ function AssignGuideToFairs() {
     alert(`Confirmed action with guide: ${dropdownValue}`);
     setPopupType(null);
   };
+
   return (
     <div className="assignGuideToFairs">
       <GlobalSidebar />
@@ -59,25 +78,38 @@ function AssignGuideToFairs() {
         <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
         <div>
           <h1 className="assignGuideToFairsHeading">Assign Guide to Fairs</h1>
-          <TableWithButtons
-            headers={headers}
-            data={data}
-            onButtonClick={(row) => handleRowClick(row)}
-            buttonStyle={{
-              padding: "8px 16px",
-              backgroundColor: "#1e1e64",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "14px",
-              width: "100%",
-              maxWidth: "120px",
-              textAlign: "center",
-              transition: "background-color 0.3s ease, transform 0.2s ease",
-            }}
-            buttonName="Manage Guide"
-          />
+          {data.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={data.map((item) => [
+                item.school.schoolName || "N/A",
+                item.cityName || "N/A",
+                item.dateOfVisit || "N/A",
+                item.superVisorName || "N/A",
+                item.superVisorDuty || "N/A",
+                item.superVisorPhoneNumber || "N/A",
+                item.superVisorMailAddress || "N/A",
+                item.notes || "N/A",
+              ])}
+              onButtonClick={(row) => handleRowClick(row)}
+              buttonStyle={{
+                padding: "8px 16px",
+                backgroundColor: "#1e1e64",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "14px",
+                width: "100%",
+                maxWidth: "120px",
+                textAlign: "center",
+                transition: "background-color 0.3s ease, transform 0.2s ease",
+              }}
+              buttonName="Manage Guide"
+            />
+          ) : (
+            <p className="noDataText">No Users</p>
+          )}
         </div>
 
         {selectedFair && (
