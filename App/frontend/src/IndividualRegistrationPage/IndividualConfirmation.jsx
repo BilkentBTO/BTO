@@ -55,7 +55,7 @@ function IndividualConfirmation() {
     const endTime = new Date(startTimeUTC);
     endTime.setHours(endTime.getHours() + 2);
     const endTimeUTC = formatISO(endTime, { representation: "complete" });
-
+    console.log("FORM DATA: ", formData);
     const registrationRequest = {
       dateOfVisit: dateOfVisitUTC,
       prefferedVisitTime: {
@@ -64,12 +64,14 @@ function IndividualConfirmation() {
         endTime: endTimeUTC,
       },
       individualName: formData.name,
-      individualPrefferedMajorCode: formData.major,
-      individualPhoneNumber: formData.supervisorPhone,
-      individualMailAddress: formData.supervisorEmail,
+      individualSurname: formData.surname,
+      individualMajorCode: formData.individualMajorCode,
+      individualMajor: formData.individualMajor,
+      individualPhoneNumber: formData.individualPhoneNumber,
+      individualMailAddress: formData.individualMailAddress,
       notes: formData.notes,
     };
-
+    console.log("REG DATA: ", registrationRequest);
     try {
       const response = await fetch("/api/register/individual", {
         method: "POST",
@@ -150,7 +152,23 @@ function IndividualConfirmation() {
                 <p>Preferred Major:</p>
               </div>
               <div className="info">
-                <p>{formData.major}</p>
+                <p>{formData.individualMajor}</p>
+              </div>
+            </div>
+            <div className="infoLog">
+              <div className="box">
+                <p>Phone Number:</p>
+              </div>
+              <div className="info">
+                <p>{formData.individualPhoneNumber}</p>
+              </div>
+            </div>
+            <div className="infoLog">
+              <div className="box">
+                <p>Mail Address:</p>
+              </div>
+              <div className="info">
+                <p>{formData.individualMailAddress}</p>
               </div>
             </div>
             <div className="infoLogNote">
