@@ -42,8 +42,7 @@ import AddCoordinator from "./AdminPanel/AddCoordinatorPage";
 import SuccessAddCoordinator from "./AdminPanel/SuccessAddCoordinator";
 import DataPanel from "./AdminPanel/DataPanel";
 import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
-import ManageSurveys from "./CoordinatorPanel/SurveyClasses/ManageSurveys";
-import CreateSurvey from "./CoordinatorPanel/SurveyClasses/CreateSurvey";
+import SurveyCodePage from "./SurveyCodePage/SurveyCodePage";
 
 function App() {
   //UserPage has problems!!!!!!!!!!!!
@@ -54,6 +53,7 @@ function App() {
       <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
       <Route path="/regChoice" element={<RegChoicePage />} />
       <Route path="/regCode" element={<RegCodePage />} />
+      <Route path="/surveyCode" element={<SurveyCodePage />} />
       <Route path="/joinBTO" element={<JoinBTOPage />} />
       <Route path="/inviteBilkent" element={<InviteBilkentPage />} />
       <Route
@@ -242,22 +242,6 @@ function App() {
         element={
           <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
             <ManageFairRequests />
-          </RoleProtectedRoute>
-        }
-      />
-      <Route
-        path="/coordinatorPanel/manageSurveys"
-        element={
-          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
-            <ManageSurveys />
-          </RoleProtectedRoute>
-        }
-      />
-      <Route
-        path="/coordinatorPanel/createEditSurvey"
-        element={
-          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
-            <CreateSurvey />
           </RoleProtectedRoute>
         }
       />

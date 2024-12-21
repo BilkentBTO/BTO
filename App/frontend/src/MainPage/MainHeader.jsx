@@ -13,6 +13,7 @@ function MainHeader() {
         </div>
       </div>
       <div className="mainHeaderButtonSection">
+        <MainButton name="View Survey" link="/surveyCode" />
         <MainButton name="Invite Bilkent to Fairs" link="/inviteBilkent" />
         <MainButton name="Join Information Office" link="/joinBTO" />
         <MainButton name="BTO Login" link="/login" />
