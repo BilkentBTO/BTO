@@ -23,6 +23,7 @@ namespace backend.Models
         InvalidIndividualCode = 14,
         IndividualRegistrationNotFound = 15,
 
+        WrongGuideIDForTour = 16,
 
     }
 

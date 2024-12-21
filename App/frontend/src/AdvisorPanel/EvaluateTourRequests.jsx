@@ -7,27 +7,6 @@ import profileImage from "../assets/profile_image.png";
 import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
-function renderNoDataTable(headers, message = "No Available Data") {
-  return (
-    <table className="noDataTable">
-      <thead>
-        <tr>
-          {headers.map((header, index) => (
-            <th key={index}>{header}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colSpan={headers.length} style={{ textAlign: "center" }}>
-            {message}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
-}
-
 function EvaluateTourRequests() {
   const [headers] = useState(["Tour ID", "School", "State"]);
   const [headersIndv] = useState([

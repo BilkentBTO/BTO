@@ -29,6 +29,28 @@ namespace backend.Server.Controllers
             return Ok();
         }
 
+        [HttpDelete("tour/{tourCode}/guide")]
+        public async Task<ActionResult> RemoveGuideFromTour(string tourCode)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controller.RemoveGuideFromTour(tourCode);
+
+            return ErrorHandler.HandleError(result);
+        }
+
+        [HttpPut("tour/{tourCode}/guide/{guideUID}")]
+        public async Task<ActionResult> ChangeGuideOfTour(string tourCode, int guideUID)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controller.ChangeGuideOfTour(tourCode, guideUID);
+
+            return ErrorHandler.HandleError(result);
+        }
+
         [HttpDelete("tour/{tourCode}")]
         public async Task<ActionResult> RemoveTour(string tourCode)
         {

@@ -1,4 +1,1 @@
-namespace backend.Mail
-{
-
-}
+namespace backend.Mail { }
