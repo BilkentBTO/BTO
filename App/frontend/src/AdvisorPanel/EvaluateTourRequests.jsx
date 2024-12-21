@@ -6,6 +6,7 @@ import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import profileImage from "../assets/profile_image.png";
 import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+import TableWithButtonConflict from "../GlobalClasses/TableWithButtonConflict";
 
 function EvaluateTourRequests() {
   const [headers] = useState(["Tour ID", "School", "State"]);
@@ -72,8 +73,22 @@ function EvaluateTourRequests() {
       const rejected = await fetch("/api/register/tour/registrations/2").then(
         (res) => res.json()
       );
-      setPendingData(pending);
-      setAcceptedData(accepted);
+
+      // Process the combined Pending and Accepted data
+      const processedData = processCombinedTourData(pending, accepted);
+
+      // Separate processed data back into pending and accepted
+      const updatedPendingData = processedData.filter((tour) =>
+        pending.some((pendingItem) => pendingItem.code === tour.code)
+      );
+
+      const updatedAcceptedData = processedData.filter((tour) =>
+        accepted.some((acceptedItem) => acceptedItem.code === tour.code)
+      );
+
+      // Update state with processed data
+      setPendingData(updatedPendingData);
+      setAcceptedData(updatedAcceptedData);
       setRejectedData(rejected);
     } catch (error) {
       console.error("Error fetching school data:", error);
@@ -160,6 +175,76 @@ function EvaluateTourRequests() {
     setPopupVisible(false);
     setSelectedRow(null);
     fetchTourRequests(); // Refresh data
+  };
+  const processCombinedTourData = (pendingData, acceptedData) => {
+    const conflictMap = new Map(); // Map to store conflict data for each timeBlock
+    let conflictCounter = 1; // Counter to generate unique conflict IDs
+
+    // Combine pending and accepted data into one array
+    const combinedData = [...pendingData, ...acceptedData];
+
+    // Step 1: Build the conflict map
+    combinedData.forEach((tour) => {
+      const timeBlock = tour.timeBlock?.scheduledTours?.join(","); // Create a unique key for the timeBlock
+
+      if (timeBlock) {
+        console.log(`Processing Tour ID: ${tour.code}`);
+        console.log(`Time Block: ${timeBlock}`);
+
+        if (conflictMap.has(timeBlock)) {
+          // Add to existing timeBlock group
+          const conflictInfo = conflictMap.get(timeBlock);
+          conflictInfo.tours.push(tour.code);
+
+          // Mark as conflict only if there are multiple tours
+          if (conflictInfo.tours.length > 1 && !conflictInfo.isConflict) {
+            conflictInfo.isConflict = true; // Mark the group as a conflict
+            conflictInfo.conflictId = `conflict-${conflictCounter++}`; // Assign a new conflict ID
+            console.log(
+              `Conflict detected for Time Block: "${timeBlock}". Number of Tours: ${conflictInfo.tours.length}. Assigned Conflict ID: ${conflictInfo.conflictId}.`
+            );
+          }
+        } else {
+          // Create a new timeBlock group but don't assign a conflict ID yet
+          conflictMap.set(timeBlock, {
+            conflictId: null, // No conflict ID yet
+            tours: [tour.code],
+            isConflict: false, // Initially no conflict
+          });
+
+          console.log(
+            `New Time Block "${timeBlock}" detected. No conflict. Assigned no Conflict ID to Tour ID: ${tour.code}.`
+          );
+        }
+      } else {
+        console.log(
+          `Tour ID: ${tour.code} has no Time Block. Marked as no conflict.`
+        );
+      }
+    });
+
+    // Step 2: Map the conflict information back to tours
+    return combinedData.map((tour) => {
+      const timeBlock = tour.timeBlock?.scheduledTours?.join(",");
+      if (timeBlock && conflictMap.has(timeBlock)) {
+        const conflictInfo = conflictMap.get(timeBlock);
+        console.log(
+          `Mapping Tour ID: ${tour.code} to Conflict ID: ${
+            conflictInfo.isConflict ? conflictInfo.conflictId : "None"
+          }.`
+        );
+        return {
+          ...tour,
+          isConflict: conflictInfo.isConflict,
+          conflictId: conflictInfo.conflictId,
+        };
+      }
+      return {
+        ...tour,
+        isConflict: false,
+        conflictId: null,
+      };
+    });
   };
   const updateData = (prevData, newRow, stateValue) => {
     // Check if the row already exists in the data
@@ -276,12 +361,14 @@ function EvaluateTourRequests() {
                   Pending School Tour Requests
                 </h1>
                 {pendingData.length > 0 ? (
-                  <TableWithButtons
+                  <TableWithButtonConflict
                     headers={headers}
                     data={pendingData.map((item) => [
                       item.code,
                       item.school?.schoolName || "N/A",
                       "Pending",
+                      item.isConflict,
+                      item.conflictId,
                     ])}
                     onButtonClick={handleRowClick}
                     buttonStyle={buttonStyle}
@@ -296,12 +383,14 @@ function EvaluateTourRequests() {
                   Accepted School Tour Requests
                 </h1>
                 {acceptedData.length > 0 ? (
-                  <TableWithButtons
+                  <TableWithButtonConflict
                     headers={headers}
                     data={acceptedData.map((item) => [
                       item.code,
                       item.school?.schoolName || "N/A",
                       "Accepted",
+                      item.isConflict,
+                      item.conflictId,
                     ])}
                     onButtonClick={handleAcceptedRowClick}
                     buttonStyle={buttonStyle}
