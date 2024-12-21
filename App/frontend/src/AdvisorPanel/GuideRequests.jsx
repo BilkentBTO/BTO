@@ -8,15 +8,34 @@ import { useNavigate } from "react-router-dom";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function GuideRequests() {
-  const navigate = useNavigate();
+  const [data, setData] = useState([]);
 
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = ["Guide Username", "Tour", "Status"];
-  const data = [
-    ["cankutukoglu", "Tour 14", "Decision Waiting"],
-    ["borabora", "Tour 56", "Decision Waiting"],
-    ["egeertem", "Tour 98", "Decision Waiting"],
-  ];
+
+  useEffect(() => {
+    // Fetch data from API
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/apply/tour");
+        if (!response.ok) {
+          throw new Error("Failed to fetch guide tour requests.");
+        }
+        const result = await response.json();
+        // Map the result into the format expected by the table
+        const formattedData = result.map((item) => [
+          item.guideUID || "N/A", // Guide Username
+          item.tourCode || "N/A", // Tour Code
+          item.guide ? "Pending" : "N/A", // Status
+        ]);
+        setData(formattedData);
+      } catch (error) {
+        console.error("Error fetching guide tour requests:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const buttonStyleApprove = {
     padding: "8px 16px",
@@ -89,16 +108,42 @@ function GuideRequests() {
     setSelectedRow(null);
   };
 
-  const approve = () => {
-    // Approve
+  const approve = async () => {
+    try {
+      const guideUID = selectedRow[0]; // Extract guide UID from selected row
+      const response = await fetch(`/api/apply/tour/accept/${guideUID}`, {
+        method: "GET", // API method is GET
+      });
+      if (response.ok) {
+        alert("Request approved!");
+        setData((prevData) => prevData.filter((row) => row[0] !== guideUID)); // Remove approved request from the table
+        closePopup(); // Close popup after successful operation
+      } else {
+        alert("Failed to approve the request.");
+      }
+    } catch (error) {
+      console.error("Error approving request:", error);
+      alert("Failed to approve the request.");
+    }
   };
 
-  const deny = () => {
-    // Deny
-  };
-
-  const proposeDate = () => {
-    // Propose Date
+  const deny = async () => {
+    try {
+      const guideUID = selectedRow[0]; // Extract guide UID from selected row
+      const response = await fetch(`/api/apply/tour/reject/${guideUID}`, {
+        method: "GET", // API method is GET
+      });
+      if (response.ok) {
+        alert("Request denied!");
+        setData((prevData) => prevData.filter((row) => row[0] !== guideUID)); // Remove denied request from the table
+        closePopup(); // Close popup after successful operation
+      } else {
+        alert("Failed to deny the request.");
+      }
+    } catch (error) {
+      console.error("Error denying request:", error);
+      alert("Failed to deny the request.");
+    }
   };
 
   return (
@@ -107,13 +152,18 @@ function GuideRequests() {
       <div className="rightSideAdvisorFunction">
         <HeaderPanelGlobal name={"ADVISOR PANEL"} />
         <h1 className="guideRequestsHeading">Guide Tour Requests</h1>
-        <TableWithButtons
-          headers={headers}
-          data={data}
-          onButtonClick={handleRowClick}
-          buttonStyle={buttonStyle} // Pass custom button style
-          buttonName={buttonName}
-        />
+
+        {data.length > 0 ? (
+          <TableWithButtons
+            headers={headers}
+            data={data}
+            onButtonClick={handleRowClick}
+            buttonStyle={buttonStyle}
+            buttonName="Decide"
+          />
+        ) : (
+          <p className="noDataText">No guide tour requests available.</p>
+        )}
       </div>
       {popupVisible && selectedRow && (
         <div className="popupOverlay">
