@@ -133,6 +133,7 @@ namespace backend.Models
 
     public class UserCreate
     {
+        public string? Username { get; set; }
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public int? BilkentID { get; set; }

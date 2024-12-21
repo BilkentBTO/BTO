@@ -91,7 +91,7 @@ namespace backend.Database
             User sampleUser3 = new User("Advisor", "AdvisorrSurname", "advisor@gmail.com");
             sampleUser3.UserType = UserType.Advisor;
 
-            User sampleUser4 = new User("Guide", "GuideSurname", "guide@gmail.com");
+            Guide sampleUser4 = new Guide("Guide", "GuideSurname", "guide@gmail.com");
             sampleUser4.UserType = UserType.Guide;
 
             User sampleUser5 = new User("Candidate", "CandidateSurname", "candidate@gmail.com");

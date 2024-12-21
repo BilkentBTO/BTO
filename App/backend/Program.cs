@@ -5,6 +5,7 @@ using backend.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,10 +39,20 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Admin&Coordinator", policy => policy.RequireRole("Admin", "Coordinator"));
 });
 
-builder.Services.AddDbContext<SystemDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration["Data:DbContext:ConnectionStrings:UserConnectionString"]
-    )
+builder.Services.AddDbContext<SystemDbContext>(
+    (serviceProvider, options) =>
+    {
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        var connectionString = configuration[
+            "Data:DbContext:ConnectionStrings:UserConnectionString"
+        ];
+
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+        dataSourceBuilder.UseJsonNet();
+        var dataSource = dataSourceBuilder.Build();
+
+        options.UseNpgsql(dataSource);
+    }
 );
 
 builder.Services.AddTransient<SystemDbSeeder>();

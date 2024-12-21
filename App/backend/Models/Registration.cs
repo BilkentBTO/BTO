@@ -121,6 +121,8 @@ namespace backend.Models
 
         public string? IndividualName { get; set; }
 
+        public string? IndividualSurname { get; set; }
+
         public int? IndividualMajorCode { get; set; }
 
         [NotMapped]
@@ -138,7 +140,7 @@ namespace backend.Models
         public void GenerateCode()
         {
             var randomSuffix = new Random().Next(1000, 9999);
-            this.Code = $"I-{this.IndividualName}{randomSuffix}";
+            this.Code = $"I-{this.IndividualSurname}{randomSuffix}";
         }
     }
 
@@ -173,6 +175,7 @@ namespace backend.Models
         public DateTime DateOfVisit { get; set; }
         public TimeBlock? PreferredVisitTime { get; set; }
         public string? IndividualName { get; set; }
+        public string? IndividualSurname { get; set; }
         public int? IndividualPreferredMajorCode { get; set; }
         public string? IndividualPhoneNumber { get; set; }
         public string? IndividualMailAddress { get; set; }
