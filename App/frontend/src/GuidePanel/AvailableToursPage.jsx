@@ -10,6 +10,7 @@ import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 function AvailableToursPage() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [guideUID, setGuideUID] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false); // Popup visibility state
   const [selectedTour, setSelectedTour] = useState(null); // Selected tour data
@@ -40,11 +41,64 @@ function AvailableToursPage() {
     setSelectedTour(selectedTourData); // Track the clicked tour
     setShowPopup(true); // Show popup
   };
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    console.log(token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // Decode the token
 
-  const handleApply = () => {
-    console.log("Applied:", selectedTour);
-    setShowPopup(false);
-    // IMPLEMENT !!!!!!!!!!!!!
+        // Extract the name claim
+        const UID = decodedToken["UID"];
+        setGuideUID(UID || "Unknown");
+
+        // Extract the role claim (adjust based on your JWT structure)
+
+        console.log("Decoded Token:", decodedToken);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        navigate("/login"); // Redirect to login if token is invalid
+      }
+    } else {
+      console.log("No token found");
+      navigate("/login"); // Redirect to login if no token is found
+    }
+  }, [navigate]);
+
+  const handleApply = async () => {
+    if (!selectedTour) {
+      alert("No tour selected to apply for.");
+      return;
+    }
+
+    console.log("TOUR: ", selectedTour.code);
+
+    const payload = {
+      tourCode: selectedTour.code, // Pass the tour code from the selected tour
+      guideUID: guideUID, // Replace with the actual guide UID from your app's state or context
+    };
+
+    try {
+      const response = await fetch("/api/apply/tour", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        alert("Successfully applied to the tour!");
+        setShowPopup(false);
+      } else {
+        const error = await response.json();
+        console.error("Failed to apply for the tour:", error);
+        alert(`Error: ${error.message || "Unable to apply for the tour."}`);
+      }
+    } catch (error) {
+      console.error("Error applying for the tour:", error);
+      alert("An error occurred while applying for the tour.");
+    }
   };
 
   const closePopup = () => {

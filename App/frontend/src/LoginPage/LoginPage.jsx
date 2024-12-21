@@ -40,13 +40,13 @@ function LoginPage() {
 
       localStorage.setItem("jwt", token);
 
-      const role =
-        decodedToken[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        ];
+      const role = decodedToken["UserType"];
+
+      console.log("ROLE: ", role);
       if (role === "Coordinator") {
         navigate("/coordinatorPanel");
       } else if (role === "Admin") {
+        console.log("I WORK HERE");
         navigate("/adminPanel");
       } else if (role === "Guide") {
         navigate("/guidePanel");

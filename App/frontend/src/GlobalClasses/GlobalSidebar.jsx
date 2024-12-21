@@ -16,17 +16,13 @@ function GlobalSidebar() {
   // Simulate fetching the user's role from an API or global state
   useEffect(() => {
     const token = localStorage.getItem("jwt");
+    console.log(token);
     if (token) {
       try {
         const decodedToken = jwtDecode(token); // Decode the token
-        const roleClaim =
-          decodedToken[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ] || decodedToken.role; // Use "role" if no namespace is used
-        const nameClaim =
-          decodedToken[
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
-          ];
+        console.log(decodedToken);
+        const roleClaim = decodedToken["UserType"] || decodedToken.role; // Use "role" if no namespace is used
+        const nameClaim = decodedToken["Username"];
         const emailClaim = decodedToken.email || "example@mail.com";
         const surnameClaim = decodedToken.surname || "Unknown Surname";
 

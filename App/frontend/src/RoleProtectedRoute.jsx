@@ -5,9 +5,7 @@ import { jwtDecode } from "jwt-decode";
 const getRoleFromToken = (token) => {
   try {
     const decodedToken = jwtDecode(token);
-    return decodedToken?.[
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-    ];
+    return decodedToken?.["UserType"];
   } catch (error) {
     console.error("Error decoding token:", error);
     return null;
