@@ -1,5 +1,4 @@
 using backend.Models;
-using BTO.Constrains;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
@@ -16,54 +15,6 @@ namespace backend.Database
         {
             _SystemContext = systemDbContext;
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
-        }
-
-        public async Task<bool> AddTour(string tourCode)
-        {
-            try
-            {
-                if (await _SystemContext.Tours.AnyAsync(t => t.TourRegistrationCode == tourCode))
-                {
-                    _logger.LogError($"Can't add tour, tour with code {tourCode} already exist.");
-                    return false;
-                }
-                bool tourRegistrationExists = await _SystemContext.TourRegistrations.AnyAsync(t =>
-                    t.Code == tourCode
-                );
-                if (!tourRegistrationExists)
-                {
-                    return false;
-                }
-                TourRegistration? TourRegistration = await _SystemContext
-                    .TourRegistrations.Include(r => r.School)
-                    .Include(r => r.TimeBlock)
-                    .FirstOrDefaultAsync(t => t.Code == tourCode);
-
-                if (TourRegistration == null)
-                {
-                    return false;
-                }
-                if (TourRegistration.School == null)
-                {
-                    return false;
-                }
-
-                Tour newTour = new Tour
-                {
-                    TourRegistrationCode = tourCode,
-                    TourRegistirationInfo = TourRegistration,
-                    Priority = TourRegistration.School.Priority,
-                };
-
-                await _SystemContext.Tours.AddAsync(newTour);
-                await _SystemContext.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in AddTour: {ex.Message}");
-                return false;
-            }
         }
 
         public async Task<bool> RemoveTour(string tourCode)
@@ -211,6 +162,44 @@ namespace backend.Database
                 for (int i = allTours.Count - 1; i >= 0; i--)
                 {
                     var tour = allTours[i];
+
+                    var tourRegistration = await _SystemContext
+                        .TourRegistrations.Include(r => r.School)
+                        .Include(r => r.TimeBlock)
+                        .FirstOrDefaultAsync(r => r.Code == tour.TourRegistrationCode);
+
+                    if (tourRegistration == null)
+                    {
+                        allTours.RemoveAt(i);
+                    }
+                    else
+                    {
+                        tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+                }
+                return allTours;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+
+        public async Task<List<Tour>> GetAllAvailableTours()
+        {
+            try
+            {
+                var allTours = await _SystemContext.Tours.ToListAsync();
+                for (int i = allTours.Count - 1; i >= 0; i--)
+                {
+                    var tour = allTours[i];
+
+                    if (tour.HasGuide())
+                    {
+                        allTours.RemoveAt(i);
+                        continue;
+                    }
 
                     var tourRegistration = await _SystemContext
                         .TourRegistrations.Include(r => r.School)

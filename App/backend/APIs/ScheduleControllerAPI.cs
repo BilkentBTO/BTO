@@ -17,18 +17,6 @@ namespace backend.Server.Controllers
         }
 
         #region TOUR
-        [HttpPost("tour/{tourCode}")]
-        public async Task<ActionResult> AddTour(string tourCode)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!await _controller.AddTour(tourCode))
-                return BadRequest("Unable to add tour.");
-
-            return Ok();
-        }
-
         [HttpDelete("tour/{tourCode}/guide")]
         public async Task<ActionResult> RemoveGuideFromTour(string tourCode)
         {
@@ -95,9 +83,18 @@ namespace backend.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            List<Tour> tours;
-            if ((tours = await _controller.GetAllTours()) == null)
-                return BadRequest("Unable to get all tours.");
+            List<Tour> tours = await _controller.GetAllTours();
+
+            return Ok(tours);
+        }
+
+        [HttpGet("availabletours")]
+        public async Task<ActionResult> GetAllAvailableTours()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<Tour> tours = await _controller.GetAllAvailableTours();
 
             return Ok(tours);
         }
@@ -169,59 +166,5 @@ namespace backend.Server.Controllers
         }
 
         #endregion
-        /*
-        #region SCHEDULE
-        [HttpPost("schedule")]
-        public async Task<ActionResult> AddTimeBlock(TimeBlock tb)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!await _controller.AddTimeBlock(tb))
-                return BadRequest("Unable to add timeblock.");
-
-            return Ok();
-        }
-
-        [HttpPut("schedule")]
-        public async Task<ActionResult> UpdateTimeBlock(TimeBlock tb)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!await _controller.UpdateTimeBlock(tb))
-                return BadRequest("Unable to update timeblock.");
-
-            return Ok();
-        }
-
-        [HttpGet("schedule")]
-        public async Task<ActionResult> GetTimeBlockByID(int timeID)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            TimeBlock? tb;
-            if ((tb = await _controller.GetTimeBlock(timeID)) == null)
-                return NotFound("Unable to get timeblock by ID.");
-
-            return Ok(tb);
-        }
-
-        [HttpGet("schedule/day")]
-        public async Task<ActionResult> GetTimeBlockByTime(DateTime day, int timeBlockIndex)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            TimeBlock? tb;
-            if ((tb = await _controller.GetTimeBlock(day, timeBlockIndex)) == null)
-                return NotFound("Unable to get timeblock by time.");
-
-            return Ok(tb);
-        }
-
-        #endregion
-        */
     }
 }

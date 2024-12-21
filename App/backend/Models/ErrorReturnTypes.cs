@@ -21,6 +21,9 @@ namespace backend.Models
         InvalidIndividualCode = 14,
         IndividualRegistrationNotFound = 15,
         WrongGuideIDForTour = 16,
+        TourAlreadyAccepted = 17,
+
+        TourRegistrationNotLinkedWithSchool = 18,
     }
 
     public static class ErrorHandler

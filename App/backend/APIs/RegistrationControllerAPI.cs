@@ -93,11 +93,21 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.AcceptTourRegistration(Code);
-            if (!result)
+
+            return ErrorHandler.HandleError(result);
+        }
+
+        [HttpPost("tour/marksolved")]
+        public async Task<ActionResult> MarkTourConflictAsSolved(string Code)
+        {
+            if (!ModelState.IsValid)
             {
-                return BadRequest(result);
+                return BadRequest(ModelState);
             }
-            return Ok(result);
+
+            var result = await _controller.MarkConflictAsSolved(Code);
+
+            return ErrorHandler.HandleError(result);
         }
 
         [HttpPost("tour/reject")]

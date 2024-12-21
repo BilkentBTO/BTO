@@ -1,8 +1,4 @@
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using static BTO.Constrains.TimeConstrains;
 
 namespace backend.Models
 {
@@ -17,8 +13,6 @@ namespace backend.Models
 
     public class Tour()
     {
-        public DateTime Time { get; set; }
-
         public string? TourRegistrationCode { get; set; }
 
         [NotMapped]
@@ -30,8 +24,6 @@ namespace backend.Models
         private readonly List<Comment> Comments = [];
 
         public int Priority { get; set; }
-
-        public void ChangeTime(DateTime time) => Time = time;
 
         public bool HasGuide() => AssignedGuideID != null;
 

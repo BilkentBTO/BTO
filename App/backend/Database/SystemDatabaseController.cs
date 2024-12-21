@@ -382,19 +382,70 @@ namespace backend.Database
                 .ToListAsync();
         }
 
-        public async Task<bool> AcceptTourRegistration(string Code)
+        public async Task<ErrorTypes> AcceptTourRegistration(string Code)
         {
-            var registration = await _SystemContext.TourRegistrations.SingleOrDefaultAsync(r =>
-                r.Code == Code
-            );
-
-            if (registration == null)
+            if (await _SystemContext.Tours.AnyAsync(t => t.TourRegistrationCode == Code))
             {
-                return false;
+                return ErrorTypes.TourAlreadyAccepted;
             }
-            registration.State = RegistrationState.Accepted;
+
+            TourRegistration? TourRegistration = await _SystemContext
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.TimeBlock)
+                .FirstOrDefaultAsync(t => t.Code == Code);
+
+            if (TourRegistration == null)
+            {
+                return ErrorTypes.TourRegistrationNotFound;
+            }
+
+            if (TourRegistration.School == null)
+            {
+                return ErrorTypes.TourRegistrationNotLinkedWithSchool;
+            }
+
+            TourRegistration.State = RegistrationState.Accepted;
+
+            Tour newTour = new Tour
+            {
+                TourRegistrationCode = Code,
+                TourRegistirationInfo = TourRegistration,
+                Priority = TourRegistration.School.Priority,
+            };
+
+            await _SystemContext.Tours.AddAsync(newTour);
             await _SystemContext.SaveChangesAsync();
-            return true;
+
+            return ErrorTypes.Success;
+        }
+
+        public async Task<ErrorTypes> MarkConflictAsSolved(string tourCode)
+        {
+            if (string.IsNullOrEmpty(tourCode))
+            {
+                return ErrorTypes.InvalidTourCode;
+            }
+
+            TourRegistration? TourRegistration = await _SystemContext
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.TimeBlock)
+                .FirstOrDefaultAsync(t => t.Code == tourCode);
+
+            if (TourRegistration == null)
+            {
+                return ErrorTypes.TourNotFound;
+            }
+
+            if (TourRegistration.TimeBlock == null)
+            {
+                return ErrorTypes.TourNotFound;
+            }
+
+            TourRegistration.TimeBlock.ConflictSolved = true;
+
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> RejectTourRegistration(string Code)
@@ -756,13 +807,38 @@ namespace backend.Database
                 return ErrorTypes.UserAlreadyExists;
             }
 
-            User newUser = new User(userCreate.Name, userCreate.Surname, userCreate.Mail)
+            User newUser;
+
+            if (userCreate.UserType == UserType.Guide)
             {
-                BilkentID = userCreate.BilkentID,
-                MajorCode = userCreate.MajorCode,
-                CurrentYear = userCreate.CurrentYear,
-                UserType = userCreate.UserType,
-            };
+                newUser = new Guide(userCreate.Name, userCreate.Surname, userCreate.Mail)
+                {
+                    BilkentID = userCreate.BilkentID,
+                    MajorCode = userCreate.MajorCode,
+                    CurrentYear = userCreate.CurrentYear,
+                    UserType = userCreate.UserType,
+                };
+            }
+            else if (userCreate.UserType == UserType.Advisor)
+            {
+                newUser = new Advisor(userCreate.Name, userCreate.Surname, userCreate.Mail)
+                {
+                    BilkentID = userCreate.BilkentID,
+                    MajorCode = userCreate.MajorCode,
+                    CurrentYear = userCreate.CurrentYear,
+                    UserType = userCreate.UserType,
+                };
+            }
+            else
+            {
+                newUser = new User(userCreate.Name, userCreate.Surname, userCreate.Mail)
+                {
+                    BilkentID = userCreate.BilkentID,
+                    MajorCode = userCreate.MajorCode,
+                    CurrentYear = userCreate.CurrentYear,
+                    UserType = userCreate.UserType,
+                };
+            }
 
             await _SystemContext.Users.AddAsync(newUser);
 
@@ -895,6 +971,16 @@ namespace backend.Database
         public List<Major> GetAllMajors()
         {
             return Major.AllMajors;
+        }
+
+        public async Task<int> GetAllowedConcurrentTourCount()
+        {
+            var setting = await _SystemContext.Setting.FirstOrDefaultAsync();
+            if (setting != null)
+            {
+                return setting.AllowedConcurrentTourCount;
+            }
+            return 2;
         }
 
         private string GenerateRandomPassword(int length = 12)
