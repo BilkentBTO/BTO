@@ -15,11 +15,7 @@ function ToursResponsibleByGuides() {
 
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = ["Tour", "Guide Name", "Guide Surname", "Guide Username"];
-  const data = [
-    ["12", "Can", "Kütükoğlu", "spritewithice"],
-    ["54", "Ege", "Ertem", "ege04"],
-    ["33", "Bora", "Akoğuz", "boraborabora"],
-  ];
+  const [tableData, setTableData] = useState([]);
 
   const handleRowClick = (rowData) => {
     // Set the selected row and show popup
@@ -35,7 +31,73 @@ function ToursResponsibleByGuides() {
   const saveChanges = () => {
     // SAVE ACTION IMPLEMENT !!!!!!!!!!!!!!!!!!!!!!!!!1
   };
+  useEffect(() => {
+    // Fetch tours and guides data from the API
+    const fetchToursAndUsers = async () => {
+      try {
+        // Fetch tours data
+        const toursResponse = await fetch("/api/schedule/tours");
+        if (!toursResponse.ok) {
+          throw new Error(`Failed to fetch tours: ${toursResponse.status}`);
+        }
+        const toursData = await toursResponse.json();
 
+        // For each tour, fetch the guide's user details
+        const enrichedData = await Promise.all(
+          toursData.map(async (tour) => {
+            if (tour.assignedGuideID) {
+              try {
+                // Fetch user details for the assigned guide
+                const userResponse = await fetch(
+                  `/api/user/${tour.assignedGuideID}`
+                );
+                if (!userResponse.ok) {
+                  throw new Error(
+                    `Failed to fetch user ${tour.assignedGuideID}: ${userResponse.status}`
+                  );
+                }
+                const userData = await userResponse.json();
+
+                // Return enriched tour data
+                return [
+                  tour.tourRegistrationCode, // Tour Code
+                  userData.name || "N/A", // Guide Name
+                  userData.surname || "N/A", // Guide Surname
+                  userData.mail || "N/A", // Guide Email/Username
+                ];
+              } catch (userError) {
+                console.error(
+                  `Error fetching user ${tour.assignedGuideID}:`,
+                  userError
+                );
+                return [
+                  tour.tourRegistrationCode,
+                  "Unknown",
+                  "Unknown",
+                  "Unknown",
+                ];
+              }
+            } else {
+              // If no guide is assigned, return placeholders
+              return [
+                tour.tourRegistrationCode,
+                "Unassigned",
+                "Unassigned",
+                "Unassigned",
+              ];
+            }
+          })
+        );
+
+        // Set the table data
+        setTableData(enrichedData);
+      } catch (error) {
+        console.error("Error fetching tours and user details:", error);
+      }
+    };
+
+    fetchToursAndUsers();
+  }, []);
   const buttonStyle = {
     padding: "8px 16px",
     backgroundColor: "#1e1e64",
@@ -65,13 +127,17 @@ function ToursResponsibleByGuides() {
           <h1 className="assignedToursHeading">
             Guides and Corresponding Tours
           </h1>
-          <TableWithButtons
-            headers={headers}
-            data={data}
-            onButtonClick={handleRowClick}
-            buttonStyle={buttonStyle} // Pass custom button style
-            buttonName={buttonName}
-          />
+          {tableData.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={tableData}
+              onButtonClick={handleRowClick}
+              buttonStyle={buttonStyle} // Pass custom button style
+              buttonName={buttonName}
+            />
+          ) : (
+            <p>No tours assigned to guides yet.</p>
+          )}
         </div>
 
         {/* Popup Modal */}
