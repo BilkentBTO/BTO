@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import HeaderGlobal from "../GlobalClasses/HeaderGlobal";
 import ButtonHeaderGlobal from "../GlobalClasses/ButtonHeaderGlobal";
 import { useNavigate } from "react-router-dom";
-import "./RegCode.css";
+import "./SurveyCodePage.css";
 import returnButton from "../assets/return.png";
 
-function RegCodePage() {
+function SurveyCodePage() {
   const [registrationCode, setRegistrationCode] = useState(""); // Input field state
   const [isPopupVisible, setIsPopupVisible] = useState(false); // Popup visibility
   const [popupMessage, setPopupMessage] = useState(""); // Popup message
@@ -58,12 +58,10 @@ function RegCodePage() {
 
   return (
     <div className="regCodePage">
-      <HeaderGlobal name={"VIEW YOUR REGISTRATION"}></HeaderGlobal>
+      <HeaderGlobal name={"VIEW SURVEY"}></HeaderGlobal>
       <div className="regCodePageInputSection">
         <div className="regCodePageContainer">
-          <h2 className="regCodePageInputTitle">
-            Enter Your Registration Code
-          </h2>
+          <h2 className="regCodePageInputTitle">Enter Your Survey Code</h2>
           <input
             type="text"
             className="regCodePageInputField"
@@ -76,7 +74,7 @@ function RegCodePage() {
             onClick={handleViewRegistration}
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "View Registration"}
+            {isLoading ? "Loading..." : "View Survey"}
           </button>
           <button
             className="regCodePageBackButton"
@@ -103,4 +101,4 @@ function RegCodePage() {
   );
 }
 
-export default RegCodePage;
+export default SurveyCodePage;

@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+
 function CoordinatorPanel() {
   const navigate = useNavigate();
 
@@ -28,17 +29,6 @@ function CoordinatorPanel() {
     navigate("/coordinatorPanel/addUser");
   };
 
-  const handleManageSurveysClick = () => {
-    navigate("/coordinatorPanel/manageSurveys");
-
-    // Implement Later
-  };
-
-  const handleAccessAdvisorPanelClick = () => {
-    console.log("Access to Advisor Panel button clicked");
-    navigate("/advisorPanel");
-  };
-
   return (
     <div className="coordinatorPanel">
       <div className="innerCoordinator">
@@ -55,8 +45,6 @@ function CoordinatorPanel() {
           </button>
 
           <button onClick={handleAddUserClick}>Add User</button>
-
-          <button onClick={handleManageSurveysClick}>Manage Surveys</button>
         </div>
       </div>
       <Outlet />
