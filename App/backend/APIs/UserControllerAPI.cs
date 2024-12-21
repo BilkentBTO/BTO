@@ -46,6 +46,19 @@ namespace backend.Server.Controllers
             return Ok(users);
         }
 
+        [HttpDelete("register/{UID}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(bool), 404)]
+        public async Task<ActionResult> DeleteUserRegisterRequest(int UID)
+        {
+            var status = await _controller.DeleteUserRegisterRequestAsync(UID);
+            if (!status)
+            {
+                return NotFound();
+            }
+            return Ok(status);
+        }
+
         [HttpGet("majors")]
         public IActionResult GetCities()
         {

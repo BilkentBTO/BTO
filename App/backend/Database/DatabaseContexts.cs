@@ -3,6 +3,7 @@ using backend.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace backend.Database
 {

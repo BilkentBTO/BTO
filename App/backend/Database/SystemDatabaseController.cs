@@ -46,6 +46,8 @@ namespace backend.Database
 
             Tour.AssignGuide(foundGuide);
 
+            await _SystemContext.SaveChangesAsync();
+
             return ErrorTypes.Success;
         }
 
@@ -370,6 +372,7 @@ namespace backend.Database
                 {
                     DateOfVisit = request.DateOfVisit,
                     IndividualName = request.IndividualName,
+                    IndividualSurname = request.IndividualSurname,
                     IndividualMajorCode = request.IndividualPreferredMajorCode,
                     IndividualPhoneNumber = request.IndividualPhoneNumber,
                     IndividualMailAddress = request.IndividualMailAddress,
@@ -556,7 +559,7 @@ namespace backend.Database
 
         public async Task<ErrorTypes> AddUserAsync(UserCreate userCreate)
         {
-            if (string.IsNullOrEmpty(userCreate.Name))
+            if (string.IsNullOrEmpty(userCreate.Name) || string.IsNullOrEmpty(userCreate.Username))
             {
                 return ErrorTypes.InvalidUserName;
             }
@@ -569,7 +572,7 @@ namespace backend.Database
                 return ErrorTypes.InvalidSurname;
             }
 
-            string username = $"{userCreate.BilkentID}";
+            string username = userCreate.Username;
 
             if (_SystemContext.Credentials.Any(c => c.Username == username))
             {
@@ -678,6 +681,38 @@ namespace backend.Database
                 Console.WriteLine($"Error adding registration: {ex.Message}");
                 return false;
             }
+        }
+
+        public async Task<bool> DeleteUserRegisterRequestAsync(int UID)
+        {
+            bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == UID);
+            if (!userExists)
+            {
+                return false;
+            }
+
+            var user = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == UID);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (user.UserType != UserType.Pending)
+            {
+                return false;
+            }
+            _ = _SystemContext.Remove(user);
+
+            try
+            {
+                return await _SystemContext.SaveChangesAsync() > 0 ? true : false;
+            }
+            catch (System.Exception exp)
+            {
+                _logger.LogError($"Error in {nameof(DeleteUserAsync)}: " + exp.Message);
+            }
+            return false;
         }
 
         public List<Major> GetAllMajors()
