@@ -5,18 +5,6 @@ import "../SchoolRegistrationPage/SchoolRegistrationPage.css";
 import { parseISO, formatISO } from "date-fns";
 
 // Helper functions
-const convertDateToUTC = (dateString) => {
-  if (!dateString) return null;
-  const parsedDate = parseISO(`${dateString}T00:00:00Z`);
-  return formatISO(parsedDate, { representation: "complete" });
-};
-
-const convertTimeToUTC = (dateString, timeString) => {
-  if (!dateString || !timeString) return null;
-  const combinedDateTime = `${dateString}T${timeString}:00Z`;
-  const parsedDateTime = parseISO(combinedDateTime);
-  return formatISO(parsedDateTime, { representation: "complete" });
-};
 
 function IndividualConfirmation() {
   const location = useLocation();
@@ -25,7 +13,6 @@ function IndividualConfirmation() {
   const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
 
   const formData = location.state?.formData || {};
-  console.log("FORM RECEIVED: ", formData);
 
   const handleEdit = () => {
     // Navigate back to the registration page with the current formData
@@ -34,35 +21,39 @@ function IndividualConfirmation() {
 
   const confirmReg = async () => {
     setIsSubmitting(true); // Show loading state
+    console.log("Visit Date:", formData.visitDate);
+    console.log("Visit Time:", formData.visitTime);
+    const convertTimeToUTC = (dateString, timeString) => {
+      if (!dateString || !timeString) {
+        console.error("Missing date or time:", { dateString, timeString });
+        return null;
+      }
 
-    const dateOfVisitUTC = convertDateToUTC(formData.visitDate);
-    if (!dateOfVisitUTC) {
-      alert("Invalid visit date.");
-      setIsSubmitting(false);
-      return;
-    }
+      const combinedDateTime = `${dateString}T${timeString}:00Z`;
+      const parsedDateTime = new Date(combinedDateTime);
+
+      if (isNaN(parsedDateTime.getTime())) {
+        console.error("Invalid date-time string:", combinedDateTime);
+        return null;
+      }
+
+      return parsedDateTime.toISOString();
+    };
 
     const startTimeUTC = convertTimeToUTC(
       formData.visitDate,
       formData.visitTime
     );
+
+    console.log("TIME: ", startTimeUTC);
     if (!startTimeUTC) {
       alert("Invalid visit time.");
       setIsSubmitting(false);
       return;
     }
-
-    const endTime = new Date(startTimeUTC);
-    endTime.setHours(endTime.getHours() + 2);
-    const endTimeUTC = formatISO(endTime, { representation: "complete" });
     console.log("FORM DATA: ", formData);
     const registrationRequest = {
-      dateOfVisit: dateOfVisitUTC,
-      prefferedVisitTime: {
-        id: 0,
-        startTime: startTimeUTC,
-        endTime: endTimeUTC,
-      },
+      dateOfVisit: startTimeUTC,
       individualName: formData.name,
       individualSurname: formData.surname,
       individualPreferredMajorCode: formData.individualMajorCode,
@@ -70,6 +61,7 @@ function IndividualConfirmation() {
       individualMailAddress: formData.individualMailAddress,
       notes: formData.notes,
     };
+
     console.log("REG DATA: ", registrationRequest);
     try {
       const response = await fetch("/api/register/individual", {
