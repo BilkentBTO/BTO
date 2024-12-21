@@ -12,6 +12,7 @@
   
   .successMessage {
     margin-bottom: 350px;
+    height: 250px;
     font-family: "Arial";
     text-align: center;
     justify-self: center;
@@ -27,8 +28,6 @@
   }
   
   .returnButton {
-    margin-top: 610px;
-    margin-left: 370px;
     width: 200px;
     background-color:  rgb(30, 30, 100);
     color: rgb(255, 255, 255); 
