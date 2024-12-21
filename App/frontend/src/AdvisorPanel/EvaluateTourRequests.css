@@ -35,3 +35,55 @@
     margin-left: 3%;
     font-family: Arial, Helvetica, sans-serif;
   }
+  .rightInnerEvaluation
+  {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: calc(100vh - 120px); /* Adjust the height based on your layout (subtracting header/footer height) */
+    padding: 10px; /* Optional padding for inner content */
+    box-sizing: border-box; /* Include padding in width/height calculation */
+  }
+  .leftSideEvaluation{
+    width: 100%;
+
+  }
+  
+.rightSideEvaluation{
+  width: 100%;
+}
+/* Style for the toggle buttons container */
+.toggleButtons {
+  margin-top: 20px;
+  display: flex;
+  gap: 40px; /* Space between buttons */
+  margin-bottom: 20px; /* Space below the toggle buttons */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Base style for toggle buttons */
+.toggleButton {
+  padding: 8px 16px;
+  background-color: grey;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+
+  width: 200px;
+}
+
+/* Active state for the selected button */
+.toggleButton.active {
+  background-color: #1e1e64;
+}
+
+/* Hover effect for all buttons */
+.toggleButton:hover {
+  background-color: #333;
+}

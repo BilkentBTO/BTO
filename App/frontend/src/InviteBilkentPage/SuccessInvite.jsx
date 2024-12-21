@@ -1,101 +1,34 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { parseISO, formatISO } from "date-fns";
 
 function SuccessInvite() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [apiResponse, setApiResponse] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
 
-  const convertDateToUTC = (dateString) => {
-    if (!dateString) return null;
-    const parsedDate = new Date(`${dateString}T00:00:00`);
-    const isoString = parsedDate.toISOString().replace(".000Z", "Z");
-    console.log("Formatted Date (UTC):", isoString); // Debugging date format
-    return isoString;
-  };
-  useEffect(() => {
-    const formData = location.state?.formData || {};
-    console.log("FormData received:", formData);
-    console.log("DATE STRING: ", formData.dateOfVisit);
-    const dateOfVisitUTC = convertDateToUTC(formData.dateOfVisit);
-    formData.schoolCode = parseInt(formData.schoolCode, 10);
-    const registration = {
-      cityName: formData.cityName,
-      schoolCode: formData.schoolCode,
-      dateOfVisit: dateOfVisitUTC,
-      superVisorName: formData.superVisorName,
-      superVisorDuty: formData.superVisorDuty,
-      superVisorPhoneNumber: formData.superVisorPhoneNumber,
-      superVisorMailAddress: formData.superVisorMailAddress,
-      notes: formData.notes,
-    };
-    console.log("Registeration: ", registration);
-    const registerData = async () => {
-      try {
-        const response = await fetch("/api/register/fair", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(registration),
-        });
-        console.log("RESPONSE: ", response);
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `HTTP error! Status: ${response.status}, ${errorText}`
-          );
-        }
-
-        const responseData = await response.text();
-
-        console.log("Registration successful:", responseData);
-        setApiResponse(responseData);
-      } catch (error) {
-        console.error("Error registering data:", error.message);
-        setApiResponse(`Error: ${error.message}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (Object.keys(registration).length > 0) {
-      registerData();
-    } else {
-      console.error("No formData available");
-      navigate("/");
-    }
-  }, [location, navigate]);
+  const successMessage =
+    location.state?.successMessage || "No message available";
 
   const handleContinue = () => {
-    setShowPopup(true);
+    setShowPopup(true); // Show the popup when Continue is clicked
   };
 
   const closePopup = () => {
-    setShowPopup(false);
-    navigate("/");
+    setShowPopup(false); // Hide the popup
+    navigate("/"); // Navigate to the main page
   };
 
   return (
     <div style={styles.container}>
-      {isLoading ? (
-        <div style={styles.message}>Processing your request...</div>
-      ) : (
-        <div style={styles.response}>
-          <h2>
-            {apiResponse.includes("Error")
-              ? "Registration Failed"
-              : "Registration Successful!"}
-          </h2>
-          <p>{JSON.stringify(apiResponse, null, 2)}</p>
-          <button onClick={handleContinue} style={styles.button}>
-            Continue
-          </button>
-        </div>
-      )}
+      <div style={styles.response}>
+        <h2>Registration Successful!</h2>
+        <p>Your access code:</p>
+        <p style={styles.code}>{successMessage}</p>
+        <p>Save this code in a secure place!</p>
+        <button onClick={handleContinue} style={styles.button}>
+          Continue
+        </button>
+      </div>
 
       {showPopup && (
         <div style={styles.popupOverlay}>
