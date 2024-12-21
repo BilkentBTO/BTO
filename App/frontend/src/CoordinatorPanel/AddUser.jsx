@@ -24,6 +24,7 @@ function AddUser() {
         name: "",
         surname: "",
         username: "",
+        bilkentID: "",
         email: "",
         role: "", // Additional field for user role
         major: "", // Additional field for user role
@@ -55,6 +56,7 @@ function AddUser() {
       !formData.email ||
       !formData.role ||
       !formData.major ||
+      !formData.bilkentID ||
       !formData.currentYear
     ) {
       alert("Please fill in all the required fields.");
@@ -97,6 +99,7 @@ function AddUser() {
     const payload = {
       name: formData.name, // Correct capitalization
       surname: formData.surname,
+      username: formData.username,
       bilkentID: parseInt(formData.bilkentID, 10),
       majorCode: formData.majorCode,
       currentYear: parseInt(formData.currentYear, 10), // Ensure it's a number
@@ -117,8 +120,9 @@ function AddUser() {
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-        return response.json();
+        return response.text();
       })
+
       .then((data) => {
         console.log("User added successfully:", data);
         alert("User added successfully!");
@@ -151,7 +155,12 @@ function AddUser() {
       setFormData({
         name: selectedUser[1], // Map to the user's name
         surname: selectedUser[2], // Map to the user's surname
-        username: selectedUser[0], // Assuming Bilkent ID as username for demo
+        username: `${selectedUser[1]
+          .toLowerCase()
+          .replace(/\s+/g, "")}.${selectedUser[2]
+          .toLowerCase()
+          .replace(/\s+/g, "")}`,
+        bilkentID: selectedUser[0], // Assuming Bilkent ID as username for demo
         email: selectedUser[3], // Map to the user's email
         major: selectedUser[4],
         majorCode: selectedMajor ? selectedMajor.id : "", // Set majorCode if found
