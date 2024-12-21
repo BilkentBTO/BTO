@@ -1,4 +1,0 @@
-namespace backend.Mail
-{
-
-}

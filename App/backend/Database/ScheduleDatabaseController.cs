@@ -3,6 +3,7 @@ using BTO.Constrains;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using backend.Mail;
 
 namespace backend.Database
 {
@@ -10,11 +11,13 @@ namespace backend.Database
     {
         private readonly SystemDbContext _context;
         private readonly ILogger _logger;
+        private readonly MailController _mail;
 
-        public ScheduleDatabaseController(SystemDbContext context, ILoggerFactory loggerFactory)
+        public ScheduleDatabaseController(SystemDbContext context, ILoggerFactory loggerFactory, MailController mail)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
+            _mail = mail;
         }
 
         public async Task<bool> AddTour(string tourCode)
@@ -47,7 +50,7 @@ namespace backend.Database
                     return false;
                 }
 
-                Tour newTour = new Tour
+                Tour newTour = new()
                 {
                     TourRegistrationCode = tourCode,
                     TourRegistirationInfo = TourRegistration,
@@ -496,10 +499,13 @@ namespace backend.Database
                 return false;
             }
 
-            if (!timeBlock.AcceptTour(ScheduledTour, alternativeTour))
+            if (!timeBlock.AcceptTour(ScheduledTour, alternativeTour) || !await UpdateTimeBlock(timeBlock))
                 return false;
 
-            return await UpdateTimeBlock(timeBlock);
+            await _mail.TourCancelled(ScheduledTour);
+            await _mail.TourAccepted(alternativeTour);
+
+            return true;
         }
 
         public async Task<bool> AcceptTour(int timeBlockID, string tourCode)
@@ -517,7 +523,13 @@ namespace backend.Database
                 return true;
             }
             timeBlock.AcceptTour(tour);
-            return await UpdateTimeBlock(timeBlock);
+
+            if (!await UpdateTimeBlock(timeBlock))
+                return false;
+
+            await _mail.TourAccepted(tour);
+
+            return true;
         }
         public async Task<bool> RemoveTour(int timeBlockID, string tourCode)
         {
@@ -534,7 +546,13 @@ namespace backend.Database
                 return true;
             }
             timeBlock.RemoveTour(tour);
-            return await UpdateTimeBlock(timeBlock);
+
+            if(!await UpdateTimeBlock(timeBlock))
+                return false;
+
+            await _mail.TourCancelled(tour);
+
+            return true;
         }
     }
 }
