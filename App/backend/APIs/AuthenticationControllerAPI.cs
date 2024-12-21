@@ -94,13 +94,16 @@ namespace backend.Server.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            UserType userRole = await _controller.GetUserRoleByUserName(username);
-
+            Credential? credential = await _controller.GetCredentialRoleByUserName(username);
+            if (credential == null || string.IsNullOrEmpty(credential.Username))
+            {
+                return "";
+            }
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, userRole.ToString()),
+                new Claim("Username", credential.Username),
+                new Claim("UID", credential.UID.ToString()),
+                new Claim("UserType", credential.UserType.ToString()),
             };
 
             var token = new JwtSecurityToken(

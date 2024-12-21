@@ -25,14 +25,14 @@ namespace backend.Database
             return await _context.Credentials.OrderBy(c => c.Username).ToListAsync();
         }
 
-        public async Task<UserType> GetUserRoleByUserName(string username)
+        public async Task<Credential?> GetCredentialRoleByUserName(string username)
         {
             var user = await _context.Credentials.SingleOrDefaultAsync(c => c.Username == username);
             if (user == null)
             {
-                return UserType.Invalid;
+                return null;
             }
-            return user.UserType;
+            return user;
         }
 
         public async Task<LoginStatus> Login(string username, string plainPassword)
