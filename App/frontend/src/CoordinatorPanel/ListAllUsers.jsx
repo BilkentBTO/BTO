@@ -110,15 +110,15 @@ function ListAllUsers() {
 
   const getUserTypeString = (userType) => {
     switch (userType) {
-      case 0:
-        return "Admin";
       case 1:
-        return "Coordinator";
+        return "Admin";
       case 2:
-        return "Advisor";
+        return "Coordinator";
       case 3:
-        return "Guide";
+        return "Advisor";
       case 4:
+        return "Guide";
+      case 5:
         return "Candidate Guide";
       default:
         return "Unknown";
