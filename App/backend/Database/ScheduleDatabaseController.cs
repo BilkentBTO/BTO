@@ -202,6 +202,7 @@ namespace backend.Database
                     if (tourRegistration == null)
                     {
                         allTours.RemoveAt(i);
+                        continue;
                     }
                     else
                     {

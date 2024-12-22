@@ -558,19 +558,39 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
-        public async Task<bool> AcceptFairRegistration(string Code)
+        public async Task<ErrorTypes> AcceptFairRegistration(string Code)
         {
-            var registration = await _SystemContext.FairRegistrations.SingleOrDefaultAsync(r =>
-                r.Code == Code
-            );
-
-            if (registration == null)
+            if (await _SystemContext.Fairs.AnyAsync(t => t.FairRegistrationCode == Code))
             {
-                return false;
+                return ErrorTypes.FairAlreadyAccepted;
             }
-            registration.State = RegistrationState.Accepted;
+
+            FairRegistration? FairRegistration = await _SystemContext
+                .FairRegistrations.Include(r => r.School)
+                .FirstOrDefaultAsync(t => t.Code == Code);
+
+            if (FairRegistration == null)
+            {
+                return ErrorTypes.FairRegistrationNotFound;
+            }
+
+            if (FairRegistration.School == null)
+            {
+                return ErrorTypes.FairRegistrationNotLinkedWithSchool;
+            }
+
+            FairRegistration.State = RegistrationState.Accepted;
+
+            Fair newFair = new Fair
+            {
+                FairRegistrationCode = Code,
+                FairRegistirationInfo = FairRegistration,
+            };
+
+            await _SystemContext.Fairs.AddAsync(newFair);
             await _SystemContext.SaveChangesAsync();
-            return true;
+
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> RejectFairRegistration(string Code)

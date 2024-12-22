@@ -192,11 +192,8 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.AcceptFairRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+
+            return ErrorHandler.HandleError(result);
         }
 
         [HttpPost("fair/reject")]

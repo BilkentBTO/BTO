@@ -24,6 +24,9 @@ namespace backend.Models
         TourAlreadyAccepted = 17,
 
         TourRegistrationNotLinkedWithSchool = 18,
+
+        FairAlreadyAccepted = 19,
+        FairRegistrationNotLinkedWithSchool = 20,
     }
 
     public static class ErrorHandler
