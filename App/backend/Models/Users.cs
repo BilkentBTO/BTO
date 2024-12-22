@@ -1,8 +1,18 @@
+/// <summary>
+/// This file defines various user-related models, including different user roles (Admin, Coordinator, Advisor, Guide) and their properties.
+/// The `Major` class is also included to manage and display the available majors in the system.
+/// Constraints:
+/// - The `User` class and its derived classes (Guide, Advisor, Coordinator, Admin) share common properties like Name, Surname, Mail, and Major.
+/// - The `UserCreateRequest`, `UserCreate`, and `UserEdit` classes are used for creating and editing users.
+/// </summary>
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
 
 namespace backend.Models
 {
+    /// <summary>
+    /// Enum representing different types of users in the system.
+    /// </summary>
     public enum UserType
     {
         Invalid = 0,
@@ -14,6 +24,12 @@ namespace backend.Models
         Pending = 6,
     }
 
+    /// <summary>
+    /// Represents a major with a name and unique ID.
+    /// Provides a static list of all available majors.
+    /// Constraints:
+    /// - Major names are predefined and immutable.
+    /// </summary>
     public class Major
     {
         public string Name { get; }
@@ -70,6 +86,12 @@ namespace backend.Models
         }
     }
 
+    /// <summary>
+    /// Base class representing a user in the system with common properties like Name, Surname, Mail, and Major.
+    /// Constraints:
+    /// - All users must have a unique ID, Name, and Mail.
+    /// - The MajorCode must correspond to a valid major in the system.
+    /// </summary>
     public class User(string Name, string Surname, string Mail)
     {
         public int ID { get; set; }
@@ -78,10 +100,8 @@ namespace backend.Models
         public string Mail { get; set; } = Mail;
         public int? BilkentID { get; set; }
         public int MajorCode { get; set; }
-
         public string? AssignedTourCode { get; set; }
         public string? AssignedFairCode { get; set; }
-
         public List<DateTime> AvailableHours { get; set; } = new List<DateTime>();
 
         [NotMapped]
@@ -91,6 +111,11 @@ namespace backend.Models
         public UserType UserType { get; set; }
     }
 
+    /// <summary>
+    /// Represents a Guide user, which is a specific type of User with an additional property indicating if they are a candidate.
+    /// Constraints:
+    /// - Guide can either be a regular Guide or a Candidate Guide.
+    /// </summary>
     public class Guide : User
     {
         public bool IsCandidate { get; private set; }
@@ -102,24 +127,36 @@ namespace backend.Models
         }
     }
 
+    /// <summary>
+    /// Represents an Advisor user, a type of User without additional properties.
+    /// </summary>
     public class Advisor : User
     {
         public Advisor(string Name, string Surname, string Mail)
             : base(Name, Surname, Mail) { }
     }
 
+    /// <summary>
+    /// Represents a Coordinator user, a type of User without additional properties.
+    /// </summary>
     public class Coordinator : User
     {
         public Coordinator(string Name, string Surname, string Mail)
             : base(Name, Surname, Mail) { }
     }
 
+    /// <summary>
+    /// Represents an Admin user, a type of User without additional properties.
+    /// </summary>
     public class Admin : User
     {
         public Admin(string Name, string Surname, string Mail)
             : base(Name, Surname, Mail) { }
     }
 
+    /// <summary>
+    /// Class used for creating a user with required properties such as Name, Surname, MajorCode, and Mail.
+    /// </summary>
     public class UserCreateRequest
     {
         public string? Name { get; set; }
@@ -130,6 +167,9 @@ namespace backend.Models
         public string? Mail { get; set; }
     }
 
+    /// <summary>
+    /// Class used for creating a user with a UserType and additional properties.
+    /// </summary>
     public class UserCreate
     {
         public string? Username { get; set; }
@@ -142,6 +182,9 @@ namespace backend.Models
         public UserType UserType { get; set; }
     }
 
+    /// <summary>
+    /// Class used for editing an existing user's information.
+    /// </summary>
     public class UserEdit
     {
         public int? ID { get; set; }
@@ -150,6 +193,9 @@ namespace backend.Models
         public UserType UserType { get; set; }
     }
 
+    /// <summary>
+    /// Class representing the available hours of a user.
+    /// </summary>
     public class UserAvailableHours
     {
         public List<DateTime> AvailableHours { get; set; } = new List<DateTime>();
