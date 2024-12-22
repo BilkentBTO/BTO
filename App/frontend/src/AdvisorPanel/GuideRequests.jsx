@@ -11,23 +11,34 @@ function GuideRequests() {
   const [data, setData] = useState([]);
 
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  const headers = ["Guide Username", "Tour", "Status"];
+  const headers = ["Guide ID", "Guide Username", "Tour", "Status"];
 
   useEffect(() => {
     // Fetch data from API
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/apply/tour");
+        const response = await fetch("/api/apply/tour", {
+          method: "GET",
+        });
+
+        console.log("RESPONSE: ", response);
+
         if (!response.ok) {
           throw new Error("Failed to fetch guide tour requests.");
         }
         const result = await response.json();
+        console.log("RESULT: ", result);
         // Map the result into the format expected by the table
         const formattedData = result.map((item) => [
-          item.guideUID || "N/A", // Guide Username
+          item.guideUID,
+          item.guide
+            ? `${item.guide.name || "N/A"} ${item.guide.surname || "N/A"}`
+            : "N/A",
           item.tourCode || "N/A", // Tour Code
           item.guide ? "Pending" : "N/A", // Status
         ]);
+
+        console.log("FORMAT DATA: ", formattedData);
         setData(formattedData);
       } catch (error) {
         console.error("Error fetching guide tour requests:", error);
@@ -112,7 +123,7 @@ function GuideRequests() {
     try {
       const guideUID = selectedRow[0]; // Extract guide UID from selected row
       const response = await fetch(`/api/apply/tour/accept/${guideUID}`, {
-        method: "GET", // API method is GET
+        method: "POST", // API method is GET
       });
       if (response.ok) {
         alert("Request approved!");
@@ -131,7 +142,7 @@ function GuideRequests() {
     try {
       const guideUID = selectedRow[0]; // Extract guide UID from selected row
       const response = await fetch(`/api/apply/tour/reject/${guideUID}`, {
-        method: "GET", // API method is GET
+        method: "POST", // API method is GET
       });
       if (response.ok) {
         alert("Request denied!");

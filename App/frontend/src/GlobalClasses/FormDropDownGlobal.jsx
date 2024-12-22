@@ -33,7 +33,7 @@ const SearchableDropdown = ({
   }, [initialValue]);
 
   const handleSelectOption = (option) => {
-    setSearchQuery(option); // Update search query with selected option
+    setSearchQuery(""); // Update search query with selected option
     setSelectedValue(option); // Update the selected value
     onChange(option); // Trigger the onChange callback
     setIsOpen(false); // Keep the dropdown open
