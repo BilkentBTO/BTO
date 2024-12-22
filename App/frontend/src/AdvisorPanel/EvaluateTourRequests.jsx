@@ -564,7 +564,7 @@ function EvaluateTourRequests() {
                     ])}
                     onButtonClick={(row) => handleDelete(row[0])}
                     buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
-                    buttonName="Delete"
+                    defaultButtonName="Delete"
                   />
                 ) : (
                   <p className="noDataText">No Rejected School Tour Requests</p>

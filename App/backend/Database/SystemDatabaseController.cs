@@ -859,25 +859,32 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
-        public async Task<bool> UpdateUserAsync(User user)
+        public async Task<ErrorTypes> UpdateUserAsync(UserEdit userEdit)
         {
-            bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == user.ID);
-            if (!userExists)
+            if (userEdit.ID < 0)
             {
-                return false;
+                return ErrorTypes.InvalidUserName;
+            }
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == userEdit.ID);
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
             }
 
-            _SystemContext.Users.Attach(user);
-            _SystemContext.Entry(user).State = EntityState.Modified;
-            try
+            if (userEdit.CurrentYear != user.CurrentYear)
             {
-                return (await _SystemContext.SaveChangesAsync() > 0 ? true : false);
+                user.CurrentYear = userEdit.CurrentYear;
             }
-            catch (Exception exp)
+            if (userEdit.MajorCode != user.MajorCode)
             {
-                _logger.LogError($"Error in {nameof(UpdateUserAsync)}: " + exp.Message);
+                user.MajorCode = userEdit.MajorCode;
             }
-            return false;
+            if (userEdit.UserType != user.UserType)
+            {
+                user.UserType = userEdit.UserType;
+            }
+            await _SystemContext.SaveChangesAsync();
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> DeleteUserAsync(int id)

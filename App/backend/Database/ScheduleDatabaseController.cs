@@ -195,7 +195,11 @@ namespace backend.Database
                 {
                     var tour = allTours[i];
 
-                    if (tour.HasGuide())
+                    if (
+                        tour.HasGuide()
+                        || tour.TourRegistirationInfo == null
+                        || tour.TourRegistirationInfo.State != RegistrationState.Accepted
+                    )
                     {
                         allTours.RemoveAt(i);
                         continue;

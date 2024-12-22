@@ -119,22 +119,19 @@ namespace backend.Server.Controllers
             return ErrorHandler.HandleError(result);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(bool), 400)]
-        public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)
+        public async Task<ActionResult> UpdateUser([FromBody] UserEdit userEdit)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var status = await _controller.UpdateUserAsync(user);
-            if (!status)
-            {
-                return BadRequest("Unable to update user");
-            }
-            return Ok(status);
+            var status = await _controller.UpdateUserAsync(userEdit);
+
+            return ErrorHandler.HandleError(status);
         }
 
         [HttpDelete("{id}")]
