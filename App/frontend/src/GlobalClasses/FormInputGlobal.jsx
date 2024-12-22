@@ -29,15 +29,7 @@ function FormInputGlobal({
   const handleInputChange = (e) => {
     const { value } = e.target;
 
-    // Validation for specific input types
-    if (type === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        alert("Please enter a valid email address.");
-        return;
-      }
-    }
-
+    // For number type, validate immediately
     if (type === "number") {
       if (isNaN(value)) {
         alert("Only numeric values are allowed.");
@@ -45,8 +37,20 @@ function FormInputGlobal({
       }
     }
 
-    // Pass valid input to onChange handler
+    // Allow input for all types but validate on blur for email
     onChange(value);
+  };
+
+  const handleBlur = (e) => {
+    const { value } = e.target;
+
+    // Validate email only on blur
+    if (type === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        onChange(""); // Clear the invalid email value
+      }
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -92,6 +96,7 @@ function FormInputGlobal({
         onChange={(e) =>
           type === "date" ? handleDateChange(e) : handleInputChange(e)
         }
+        onBlur={handleBlur} // Validate email only on blur
         onKeyDown={handleKeyDown}
         min={type === "date" ? minDate : undefined} // Apply minDate for date type
         max={type === "date" ? maxDate : undefined} // Apply maxDate for date type
