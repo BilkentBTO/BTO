@@ -19,18 +19,20 @@ namespace backend.Server.Controllers
 
         #region VISITOR
 
-        // Add a new visitor
         [HttpPost("add")]
         public async Task<ActionResult> AddVisitor([FromBody] Visitor visitor)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _controller.AddVisitor(visitor))
+            bool isAdded = await _controller.AddVisitor(visitor);
+            if (!isAdded)
                 return BadRequest("Unable to add visitor.");
 
-            return Ok();
+            // Return the visitor ID after it is successfully added
+            return Ok(new { VisitorId = visitor.ID });
         }
+
 
         // Get visitor by ID
         [HttpGet("{id}")]

@@ -16,8 +16,7 @@ namespace backend.Database
         {
             _context = context;
         }
-
-        // Add a new visitor to the database
+         
         public async Task<bool> AddVisitor(Visitor visitor)
         {
             try
@@ -26,9 +25,11 @@ namespace backend.Database
                 {
                     return false;
                 }
+                
+                // Check if visitor already exists (you can change this condition as needed)
                 bool visitorExists = await _context.Visitors.AnyAsync(v =>
                     v.Name == visitor.Name && v.City == visitor.City);
-                
+
                 if (visitorExists)
                 {
                     return false;
@@ -36,13 +37,16 @@ namespace backend.Database
 
                 await _context.Visitors.AddAsync(visitor);
                 await _context.SaveChangesAsync();
+
+                // After saving changes, the visitor object will contain the ID
                 return true;
             }
             catch (Exception)
             {
                 return false;
             }
-        }
+}
+
 
         // Get a visitor by their ID
         public async Task<Visitor?> GetVisitorById(int id)
