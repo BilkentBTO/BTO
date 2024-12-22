@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -469,19 +470,65 @@ namespace backend.Database
                 return [];
             }
         }
-        /*
-        public async Task<List<User>> GetAllAvailableGuides()
+
+        public async Task<List<User>> GetAllAvailableGuides(string eventCode)
         {
             try
             {
-                
+                if (string.IsNullOrEmpty(eventCode))
+                {
+                    return new List<User>();
+                }
+                Registration? registration;
+                var type = eventCode[0];
+                switch (type)
+                {
+                    case 'T':
+                        registration = await _SystemContext
+                            .TourRegistrations.Include(r => r.School)
+                            .Include(r => r.TimeBlock)
+                            .SingleOrDefaultAsync(r => r.Code == eventCode);
+                        break;
+                    case 'F':
+                        registration = await _SystemContext
+                            .FairRegistrations.Include(r => r.School)
+                            .SingleOrDefaultAsync(r => r.Code == eventCode);
+                        break;
+                    case 'I':
+                        registration = await _SystemContext
+                            .IndividualRegistrations.Include(r => r.PreferredVisitTime)
+                            .SingleOrDefaultAsync(r => r.Code == eventCode);
+                        break;
+                    default:
+                        registration = null;
+                        break;
+                }
+                if (registration == null)
+                {
+                    return new List<User>();
+                }
+
+                DateTime time = registration.Time;
+
+                var users = await _SystemContext
+                    .Users.Where(u => u.UserType == UserType.Guide)
+                    .ToListAsync();
+
+                List<User> availableGuides = new List<User>();
+                foreach (var user in users)
+                {
+                    if (user.AvailableHours.Contains(time))
+                    {
+                        availableGuides.Add(user);
+                    }
+                }
+                return availableGuides;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                _logger.LogError($"Error in GetAllAvailableGuides: {ex.Message}");
                 return [];
             }
         }
-        */
     }
 }

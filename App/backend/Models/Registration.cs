@@ -13,6 +13,7 @@ namespace backend.Models
     {
         public string? Code { get; set; }
         public string? Type { get; set; }
+        public DateTime Time { get; set; }
     }
 
     public class TourRegistration : Registration
@@ -24,8 +25,6 @@ namespace backend.Models
         public int? SchoolCode { get; set; }
 
         public School? School { get; set; }
-
-        public DateTime Time { get; set; }
 
         public TimeBlock? TimeBlock { get; set; }
 
@@ -79,8 +78,6 @@ namespace backend.Models
 
         public School? School { get; set; }
 
-        public DateTime Time { get; set; }
-
         public string? SuperVisorName { get; set; }
 
         public string? SuperVisorDuty { get; set; }
@@ -118,8 +115,6 @@ namespace backend.Models
     public class IndividualRegistration : Registration
     {
         public IndividualRegistration() => this.Type = "Individual";
-
-        public DateTime DateOfVisit { get; set; }
 
         public TimeBlock? PreferredVisitTime { get; set; }
 

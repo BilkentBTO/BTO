@@ -45,6 +45,9 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: postgres
+    #command: >
+    #  postgres
+    #  -c idle_session_timeout=1000
     ports:
       - "5432:5432"
     healthcheck:

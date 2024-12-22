@@ -631,7 +631,7 @@ namespace backend.Database
             {
                 var registration = new IndividualRegistration
                 {
-                    DateOfVisit = request.DateOfVisit,
+                    Time = request.DateOfVisit,
                     IndividualName = request.IndividualName,
                     IndividualSurname = request.IndividualSurname,
                     IndividualMajorCode = request.IndividualPreferredMajorCode,

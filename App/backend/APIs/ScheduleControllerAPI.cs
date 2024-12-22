@@ -202,14 +202,14 @@ namespace backend.Server.Controllers
         #region GUIDE
         [HttpGet("available/guide")]
         //MAJOR TODO
-        public async Task<ActionResult> GetAllAvailableGuides()
+        public async Task<ActionResult> GetAllAvailableGuides(string eventCode)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            List<Fair> tours = await _controller.GetAllAvailableFairs();
+            List<User> guides = await _controller.GetAllAvailableGuides(eventCode);
 
-            return Ok(tours);
+            return Ok(guides);
         }
         #endregion
     }
