@@ -357,6 +357,7 @@ namespace backend.Database
                 {
                     Tour.RemoveGuide();
                 }
+                user.AssignedTourCode = null;
             }
             await _SystemContext.SaveChangesAsync();
 
