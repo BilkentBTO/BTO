@@ -38,6 +38,7 @@ function AssignGuideToFairs() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const apiData = await response.json();
+        console.log("API DATA: ", apiData);
         setData(apiData);
       } catch (error) {
         console.error("Error fetching tours data:", error.message);
@@ -58,12 +59,10 @@ function AssignGuideToFairs() {
     console.log("Available Guides: ", guides);
     setAssignedGuides(guides);
   };
-  const fetchAvailableGuides = async (eventCode) => {
+  const fetchAvailableGuides = async () => {
     try {
       // Make the API call with the eventCode as a query parameter
-      const guidesResponse = await fetch(
-        `/api/schedule/available/guide?eventCode=${eventCode}`
-      );
+      const guidesResponse = await fetch(`/api/user/filter/4`);
 
       // Check if the response is OK
       if (!guidesResponse.ok) {
@@ -123,9 +122,38 @@ function AssignGuideToFairs() {
   };
 
   const handleConfirm = async () => {
-    // IMPLEMENT !!!!!!!!!!!!!
-    alert(`Confirmed action with guide: ${dropdownValue}`);
-    setPopupType(null);
+    try {
+      if (!selectedFair || !dropdownValue) {
+        alert("Please select a valid guide and fair.");
+        return;
+      }
+
+      // Extract required details for API call
+      const fairCode = selectedFair.fairRegistrationCode; // Fair Code
+      const guideUID = dropdownValue; // Selected Guide ID
+
+      // Make API call to assign guide
+      const response = await fetch(
+        `/api/schedule/fair/${fairCode}/guide/${guideUID}`,
+        {
+          method: "PUT",
+        }
+      );
+
+      if (response.ok) {
+        alert(`Guide successfully assigned to Fair ${fairCode}.`);
+        // Refresh assigned guides after successful update
+        fetchAssignedGuides(fairCode);
+        setPopupType(null); // Close the popup
+      } else {
+        const errorDetails = await response.json();
+        console.error("Failed to assign guide:", errorDetails);
+        alert("Failed to assign guide. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error assigning guide:", error);
+      alert("An error occurred while assigning the guide.");
+    }
   };
 
   const handleDismiss = async (fairCode, guideUID) => {
