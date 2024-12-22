@@ -6,7 +6,7 @@ import FormTextAreaGlobal from "../GlobalClasses/FormTextAreaGlobal";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-function ViewIndividualSurvey() {
+function ViewSurvey() {
   const [cities, setCities] = useState([]); // Dynamic cities list
   const [schools, setSchools] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(null); // Timeout for debouncing
@@ -37,10 +37,10 @@ function ViewIndividualSurvey() {
     console.log(formData);
     // Validate required fields
     if (
-      !formData.name.trim() ||
-      !formData.surname.trim() ||
-      !formData.schoolName.trim() ||
-      !formData.cityName.trim() ||
+      !formData.name ||
+      !formData.surname ||
+      !formData.schoolName ||
+      !formData.cityName ||
       !formData.guideRating ||
       !formData.tourRating ||
       !formData.universityRating ||
@@ -49,8 +49,24 @@ function ViewIndividualSurvey() {
       alert("Please fill in all the required fields.");
       return;
     }
+    /*
+    const payloadVisitor = {
+      name: formData.name,
+      surname: formData.surname,
+      city: formData.city,
+      school: formData.schoolName,
+      //
+      dateOfVisit: startTimeUTC,
+      numberOfVisitors: parseInt(formData.visitorCount, 10),
+      superVisorName: formData.supervisorName,
+      superVisorDuty: formData.supervisorDuty,
+      superVisorPhoneNumber: formData.supervisorPhone,
+      superVisorMailAddress: formData.supervisorEmail,
+      notes: formData.notes,
+    };
+    */
     // Navigate to a new page with the form data
-    navigate("/successIndividualSurvey", { state: { formData } });
+    navigate("/successViewSurvey", { state: { formData } });
   };
 
   const fetchSchoolSuggestions = (query, city) => {
@@ -213,4 +229,4 @@ function ViewIndividualSurvey() {
   );
 }
 
-export default ViewIndividualSurvey;
+export default ViewSurvey;

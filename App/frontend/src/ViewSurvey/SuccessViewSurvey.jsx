@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function SuccessSchoolSurvey() {
+function SuccessViewSurvey() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
@@ -55,4 +55,4 @@ const styles = {
     fontSize: "1rem",
   },
 };
-export default SuccessSchoolSurvey;
+export default SuccessViewSurvey;
