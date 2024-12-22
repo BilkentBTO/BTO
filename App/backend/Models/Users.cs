@@ -140,4 +140,12 @@ namespace backend.Models
         public string? Mail { get; set; }
         public UserType UserType { get; set; }
     }
+
+    public class UserEdit
+    {
+        public int? ID { get; set; }
+        public int? CurrentYear { get; set; }
+        public int MajorCode { get; set; }
+        public UserType UserType { get; set; }
+    }
 }
