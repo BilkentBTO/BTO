@@ -491,7 +491,7 @@ namespace backend.Database
                 {
                     CityName = request.CityName,
                     SchoolCode = request.SchoolCode,
-                    DateOfVisit = request.DateOfVisit,
+                    Time = request.DateOfVisit,
                     SuperVisorName = request.SuperVisorName,
                     SuperVisorDuty = request.SuperVisorDuty,
                     SuperVisorPhoneNumber = request.SuperVisorPhoneNumber,
