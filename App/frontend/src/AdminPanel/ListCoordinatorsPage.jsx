@@ -69,7 +69,7 @@ function ListCoordinatorsPage() {
   };
 
   const getUserTypeString = (userType) => {
-    if (userType == 1) {
+    if (userType == 2) {
       return "Coordinator";
     } else {
       return "N/A";
