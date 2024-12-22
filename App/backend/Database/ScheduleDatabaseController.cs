@@ -110,7 +110,21 @@ namespace backend.Database
             {
                 return ErrorTypes.TourNotFound;
             }
+            if (Tour.AssignedGuideID == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
 
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u =>
+                u.ID == Tour.AssignedGuideID
+            );
+
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            user.AssignedTourCode = null;
             Tour.RemoveGuide();
 
             await _SystemContext.SaveChangesAsync();
