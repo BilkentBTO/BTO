@@ -43,10 +43,8 @@ import SuccessAddCoordinator from "./AdminPanel/SuccessAddCoordinator";
 import DataPanel from "./AdminPanel/DataPanel";
 import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
 import SurveyCodePage from "./SurveyCodePage/SurveyCodePage";
-import ViewSchoolSurvey from "./ViewSchoolSurvey/ViewSchoolSurvey";
-import ViewIndividualSurvey from "./ViewIndividualSurvey/ViewIndividualSurvey";
-import SuccessIndividualSurvey from "./ViewIndividualSurvey/SuccessIndividualSurvey";
-import SuccessSchoolSurvey from "./ViewSchoolSurvey/SuccessSchoolSurvey";
+import ViewSurvey from "./ViewSurvey/ViewSurvey";
+import SuccessViewSurvey from "./ViewSurvey/SuccessViewSurvey";
 
 function App() {
   return (
@@ -57,15 +55,10 @@ function App() {
       <Route path="/regChoice" element={<RegChoicePage />} />
       <Route path="/regCode" element={<RegCodePage />} />
       <Route path="/surveyCode" element={<SurveyCodePage />} />
-      <Route path="/viewSchoolSurvey" element={<ViewSchoolSurvey />} />
-      <Route path="/viewIndividualSurvey" element={<ViewIndividualSurvey />} />
+      <Route path="/viewSurvey" element={<ViewSurvey />} />
       <Route path="/joinBTO" element={<JoinBTOPage />} />
       <Route path="/inviteBilkent" element={<InviteBilkentPage />} />
-      <Route path="/successSchoolSurvey" element={<SuccessSchoolSurvey />} />
-      <Route
-        path="/successIndividualSurvey"
-        element={<SuccessIndividualSurvey />}
-      />
+      <Route path="/successViewSurvey" element={<SuccessViewSurvey />} />
       <Route
         path="/continueSchoolReg"
         element={<SchoolRegistrationContinuePage />}
