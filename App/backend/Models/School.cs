@@ -1,15 +1,29 @@
-﻿using System;
+﻿/// <summary>
+/// This file defines classes and data structures related to schools and cities.
+/// It includes the City struct that holds city information and distances, along with a CityData class that contains a list of predefined cities.
+/// The School class represents a school with its attributes and methods for calculating priority based on various factors such as persistence score, quality score, 
+/// and distance from a city.
+/// It also includes a SchoolSuggestion class for suggesting schools by name and code.
+/// </summary>
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 
 namespace backend.Models
 {
-    // https://www.kgm.gov.tr/sayfalar/kgm/sitetr/uzakliklar/illerarasimesafe.aspx
-
+    /// <summary>
+    /// https://www.kgm.gov.tr/sayfalar/kgm/sitetr/uzakliklar/illerarasimesafe.aspx
+    /// City struct to hold city data such as name, distance from a reference city, and city code.
+    /// This is used for associating schools with cities and calculating priorities based on distance.
+    /// </summary>
     public readonly record struct City(string name, int distance, int cityCode);
 
+    /// <summary>
+    /// Provides a static class that holds predefined city data for the system.
+    /// </summary>
     public static class CityData
     {
+        // List of predefined cities, their distances from Ankara, and city codes
         public static readonly City[] Cities =
         {
             new("Adana", 490, 1),
@@ -96,14 +110,30 @@ namespace backend.Models
         };
     }
 
+    /// <summary>
+    /// Represents a school with properties for persistence, quality scores, and associated city.
+    /// The class calculates the priority based on various factors like persistence, quality, and distance from the city.
+    /// </summary>
     public class School()
     {
+        // Persistence score of the school
         public int PersistanceScore { get; set; }
+
+        // Priority of the school
         public int Priority { get; set; }
+
+        // Quality score of the school
         public int QualityScore { get; set; }
+
+        // City name associated with the school
         public string? CityName { get; set; }
+
+        // City code for the school
         public int CityCode { get; set; }
 
+        /// <summary>
+        /// City information based on the CityName property, fetched from the CityData.
+        /// </summary>
         [NotMapped]
         public City City =>
             CityData.Cities.FirstOrDefault(c =>
@@ -114,26 +144,36 @@ namespace backend.Models
                     )
             );
 
+        // Unique school code
         public int SchoolCode { get; set; }
+
+        // Name of the school
         public string? SchoolName { get; set; }
 
+        // Constants for calculating priority
         public const float PERSISTANCE_MULTIPLIER = 1.5f;
         public const float QUALITY_MULTIPLIER = 2.0f;
         public const float DISTANCE_MULTIPLIER = 1.2f;
 
+        /// <summary>
+        /// Calculates the priority of the school based on persistence score, quality score, and distance from the city.
+        /// </summary>
         public int GetPriority() =>
             Convert.ToInt32(
                 PERSISTANCE_MULTIPLIER * PersistanceScore
                     + QUALITY_MULTIPLIER * QualityScore
                     + DISTANCE_MULTIPLIER * City.distance
             );
-
+        
+        /// <summary>
+        /// Calculates and updates the priority of the school.
+        /// </summary>
         public void CalculatePriority()
         {
             this.Priority = GetPriority();
         }
 
-        //Debug purposes
+        // Debug method to return school details as a string
         public override string ToString()
         {
             return $"School: {SchoolName ?? "N/A"}, "
@@ -145,6 +185,9 @@ namespace backend.Models
         }
     }
 
+    /// <summary>
+    /// Represents a suggestion for a school with basic information like name and code.
+    /// </summary>
     public class SchoolSuggestion
     {
         public string? SchoolName { get; set; }
