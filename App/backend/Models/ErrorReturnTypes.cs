@@ -28,6 +28,8 @@ namespace backend.Models
         FairNotFound = 21,
         FairDoesNotHaveTheSpecifiedGuide = 22,
         GuideAlreadyAddedToFair = 23,
+        QuizNotFound = 24,
+        InvalidSurveyForm = 25,
     }
 
     public static class ErrorHandler
@@ -130,7 +132,16 @@ namespace backend.Models
                     new { message = "The guide is already added to this fair." }
                 ),
 
-                _ => new StatusCodeResult(500), // Fallback for unexpected errors
+                ErrorTypes.QuizNotFound => new NotFoundObjectResult(
+                    new { message = "Quiz not found." }
+                ),
+
+                ErrorTypes.InvalidSurveyForm => new BadRequestObjectResult(
+                    new { message = "Invalid survey form." }
+                ),
+
+                // Default case: fallback for any unexpected ErrorTypes
+                _ => new StatusCodeResult(500),
             };
         }
     }

@@ -61,8 +61,6 @@ builder.Services.AddTransient<Seeder>();
 builder.Services.AddScoped<SystemDatabaseController>();
 builder.Services.AddScoped<ScheduleDatabaseController>();
 builder.Services.AddScoped<CredentialDatabaseController>();
-builder.Services.AddScoped<SurveyDatabaseController>();
-builder.Services.AddScoped<VisitorDatabaseController>();
 builder.Services.AddScoped<QuizDatabaseController>();
 
 builder.Services.AddEndpointsApiExplorer();

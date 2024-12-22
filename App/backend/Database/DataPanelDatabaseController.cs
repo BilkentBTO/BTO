@@ -1,20 +1,16 @@
 using backend.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace backend.Database
 {
-    public class DataPanelDatabaseController
+    public static class DataPanelDatabaseController
     {
-        private readonly SystemDbContext _SystemContext;
-        private readonly ILogger _logger;
-
-        public DataPanelDatabaseController(
-            SystemDbContext SystemContext,
-            ILoggerFactory loggerFactory
-        )
+        /// <summary>
+        /// Logs information about a tour to the database.
+        /// </summary>
+        public static async Task LogTour(SystemDbContext systemContext, Tour tour)
         {
-            _SystemContext = SystemContext;
-            _logger = loggerFactory.CreateLogger("DataPanelDatabaseController");
+            await systemContext.PastTours.AddAsync(tour);
         }
     }
 }

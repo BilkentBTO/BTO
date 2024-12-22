@@ -36,15 +36,9 @@ namespace backend.Database
         //Settings
         public DbSet<Setting> Setting { get; set; }
 
-        public DbSet<Quiz> Quizzes { get; set; }
-
-        public DbSet<Quiz> VisitorAnswer { get; set; }
-
-        // Surveys
-
         // Surveys and related entities
+        public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Survey> Surveys { get; set; }
-        public DbSet<Visitor> Visitors { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
@@ -83,9 +77,13 @@ namespace backend.Database
 
             modelBuilder.Entity<Survey>().HasKey(s => s.ID);
 
-            modelBuilder.Entity<Visitor>().HasKey(v => v.ID);
+            modelBuilder.Entity<Quiz>().HasKey(s => s.Code);
 
-            modelBuilder.Entity<VisitorAnswer>().HasKey(v => v.ID);
+            modelBuilder
+                .Entity<Quiz>()
+                .HasMany(q => q.Surveys)
+                .WithOne(s => s.Quiz)
+                .HasForeignKey(s => s.QuizCode);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);

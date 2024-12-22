@@ -423,6 +423,13 @@ namespace backend.Database
                 Priority = TourRegistration.School.Priority,
             };
 
+            newTour.QuizCode = GenerateSurveyCode();
+
+            Quiz quiz = new Quiz();
+            quiz.Code = newTour.QuizCode;
+            quiz.SchoolCode = newTour.TourRegistirationInfo.SchoolCode;
+
+            await _SystemContext.Quizzes.AddAsync(quiz);
             await _SystemContext.Tours.AddAsync(newTour);
             await _SystemContext.SaveChangesAsync();
 
@@ -1179,6 +1186,12 @@ namespace backend.Database
             }
             foundTour.FillTourRegistrationInfo(TourRegistration);
             return foundTour;
+        }
+
+        private string GenerateSurveyCode()
+        {
+            var randomSuffix = new Random().Next(1000, 9999);
+            return $"Q-{randomSuffix}";
         }
     }
 }
