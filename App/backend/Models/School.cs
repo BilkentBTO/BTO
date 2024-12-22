@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// This file defines classes and data structures related to schools and cities.
 /// It includes the City struct that holds city information and distances, along with a CityData class that contains a list of predefined cities.
-/// The School class represents a school with its attributes and methods for calculating priority based on various factors such as persistence score, quality score, 
+/// The School class represents a school with its attributes and methods for calculating priority based on various factors such as persistence score, quality score,
 /// and distance from a city.
 /// It also includes a SchoolSuggestion class for suggesting schools by name and code.
 /// </summary>
@@ -164,7 +164,7 @@ namespace backend.Models
                     + QUALITY_MULTIPLIER * QualityScore
                     + DISTANCE_MULTIPLIER * City.distance
             );
-        
+
         /// <summary>
         /// Calculates and updates the priority of the school.
         /// </summary>
