@@ -7,22 +7,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function ViewSurvey() {
-  const [cities, setCities] = useState([]); // Dynamic cities list
-  const [schools, setSchools] = useState([]);
-  const [typingTimeout, setTypingTimeout] = useState(null); // Timeout for debouncing
   const navigate = useNavigate();
-  const [schoolQuery, setSchoolQuery] = useState(""); // Current school search query
   const location = useLocation();
-  const [selectedCity, setSelectedCity] = useState(""); // Selected city
 
+  const surveyCode = location.state?.surveyCode || {};
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
     return (
       location?.state?.formData || {
         name: "",
         surname: "",
-        schoolName: "",
-        cityName: "",
         guideRating: "",
         tourRating: "",
         universityRating: "",
@@ -33,14 +27,12 @@ function ViewSurvey() {
   });
 
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(formData);
     // Validate required fields
     if (
       !formData.name ||
       !formData.surname ||
-      !formData.schoolName ||
-      !formData.cityName ||
       !formData.guideRating ||
       !formData.tourRating ||
       !formData.universityRating ||
@@ -49,96 +41,38 @@ function ViewSurvey() {
       alert("Please fill in all the required fields.");
       return;
     }
-    /*
+
     const payload = {
       name: formData.name,
       surname: formData.surname,
-      city: formData.city,
-      school: formData.schoolName,
-      //
-      dateOfVisit: startTimeUTC,
-      numberOfVisitors: parseInt(formData.visitorCount, 10),
-      superVisorName: formData.supervisorName,
-      superVisorDuty: formData.supervisorDuty,
-      superVisorPhoneNumber: formData.supervisorPhone,
-      superVisorMailAddress: formData.supervisorEmail,
-      notes: formData.notes,
+      rateGuide: formData.guideRating,
+      rateTour: formData.tourRating,
+      rateBilkent: formData.universityRating,
+      applyToBilkent: formData.preferBilkent,
+      comments: formData.comment,
     };
-    */
-    // Navigate to a new page with the form data
-    navigate("/successViewSurvey", { state: { formData } });
-  };
 
-  const fetchSchoolSuggestions = (query, city) => {
-    if (!query || !city) {
-      setSchools([]); // Clear suggestions if input or city is missing
-      return;
-    }
-
-    fetch(
-      `/api/Schools/autocompleteWithFilter?query=${encodeURIComponent(
-        query
-      )}&cityName=${encodeURIComponent(city)}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API Response Data:", data);
-
-        // Map both schoolName and schoolCode into objects
-        const schoolData = data.map((school) => ({
-          name: school.schoolName,
-          id: school.schoolCode,
-        }));
-
-        setSchools(schoolData);
-      })
-      .catch((error) => {
-        console.error("Error fetching school suggestions:", error);
+    try {
+      console.log("Payload being sent: ", JSON.stringify(payload));
+      const response = await fetch(`api/quiz/fill/${surveyCode}`, {
+        //CHANGE
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload), // Send fixed payload
       });
-  };
 
-  useEffect(() => {
-    document.title = "View Survey - BTO";
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+        throw new Error(errorData.title || "Failed to register user.");
+      }
 
-    fetch("/api/Schools/cities")
-      .then((response) => response.json())
-      .then((data) => setCities(data))
-      .catch((error) => console.error("Error fetching cities:", error));
-  }, []);
-
-  // Handle change in the city dropdown
-  const handleCityChange = (value) => {
-    setSelectedCity(value);
-    handleChange("schoolName", "");
-    handleChange("cityName", value);
-    setSchools([]); // Reset schools when city changes
-    setSchoolQuery(""); // Reset query as well
-  };
-
-  // Handle query input with debouncing
-  const handleSchoolQueryChange = (value) => {
-    setSchoolQuery(value);
-    console.log(schoolQuery);
-
-    // Debounce API call
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-
-    const timeout = setTimeout(() => {
-      fetchSchoolSuggestions(value, selectedCity);
-    }, 300); // 300ms delay for debounce
-
-    setTypingTimeout(timeout);
-  };
-
-  const handleSchoolChange = (selectedSchoolName) => {
-    const selectedSchool = schools.find(
-      (school) => school.name === selectedSchoolName
-    );
-
-    if (selectedSchool) {
-      handleChange("schoolName", selectedSchool.name); // Save school name
+      // Navigate to success page
+      console.log("Registration successful");
+      navigate("/successViewSurvey", { state: { formData } });
+    } catch (error) {
+      console.error("Error:", error.message);
+      alert(`Survey failed: ${error.message}`);
     }
   };
 
@@ -166,23 +100,6 @@ function ViewSurvey() {
             type="text"
             value={formData.surname}
             onChange={(value) => handleChange("surname", value)}
-          />
-
-          {/* City Dropdown */}
-          <FormDropDownGlobal
-            arr={cities} // Pass city names
-            question="City*"
-            onChange={handleCityChange} // Call to update both name and ID
-            initialValue={formData.cityName}
-          />
-
-          {/* School Dropdown */}
-          <FormDropDownGlobal
-            arr={schools.map((school) => school.name)} // Pass school names
-            question="School Name*"
-            onChange={handleSchoolChange} // Call to update both name and ID
-            initialValue={formData.schoolName}
-            onInput={(e) => handleSchoolQueryChange(e.target.value)} // For search query
           />
 
           {/* Ratings */}

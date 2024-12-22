@@ -32,7 +32,7 @@ function SurveyCodePage() {
       console.log("API Response:", data);
 
       navigate("/viewSurvey", {
-        state: { surveyData: data },
+        state: { surveyCode },
       });
     } catch (error) {
       console.error("Error fetching survey:", error);
