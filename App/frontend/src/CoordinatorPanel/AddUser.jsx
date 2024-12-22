@@ -87,10 +87,10 @@ function AddUser() {
     fetchMajors();
   });
   const roleMapping = {
-    Admin: 0,
-    Coordinator: 1,
-    Advisor: 2,
-    Guide: 3,
+    Admin: 1,
+    Coordinator: 2,
+    Advisor: 3,
+    Guide: 4,
   };
   const handleConfirm = () => {
     // Proceed with form submission (save data, navigate, etc.)
