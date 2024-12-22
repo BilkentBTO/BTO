@@ -9,7 +9,7 @@
 .innerSchoolRegPage{
     display: flex;
     flex-direction:column;
-    margin-top:2%;
+    margin-top:1%;
 }
 
 .submitButton {
