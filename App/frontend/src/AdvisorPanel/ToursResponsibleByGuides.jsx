@@ -13,8 +13,24 @@ function ToursResponsibleByGuides() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [guides, setGuides] = useState([]);
-  const [selectedGuide, setSelectedGuide] = useState(null);
   const [formData, setFormData] = useState(() => {
+    return (
+      location?.state?.formData || {
+        guideId: "",
+        guideName: "",
+        name: "",
+        surname: "",
+        mail: "",
+        bilkentID: "",
+        majorCode: "",
+        major: "",
+        currentYear: "",
+        workHours: "",
+        userType: "",
+      }
+    );
+  });
+  const [selectedGuideDetails, setSelectedGuideDetails] = useState(() => {
     return (
       location?.state?.formData || {
         guideId: "",
@@ -35,9 +51,29 @@ function ToursResponsibleByGuides() {
   const headers = ["Tour", "Guide Name", "Guide Surname", "Guide Username"];
   const [tableData, setTableData] = useState([]);
 
-  const handleRowClick = (rowData) => {
+  const handleRowClick = (rowData, guideFullName) => {
     // Set the selected row and show popup
     setSelectedRow(rowData);
+
+    // Find the guide using the full name
+    const guideDetails = guides.find(
+      (guide) => `${guide.name} ${guide.surname}` === guideFullName
+    );
+    console.log("GUIDE DETAILS: ", guideDetails);
+    console.log("ROW DATA: ", rowData);
+    // Set the selected guide details
+    setSelectedGuideDetails({
+      guideId: guideDetails.id || "N/A",
+      guideName: guideDetails.name || "N/A",
+      surname: guideDetails.surname || "N/A",
+      mail: guideDetails.mail || "N/A",
+      bilkentID: guideDetails.bilkentID || "N/A",
+      majorCode: guideDetails.major?.id || "N/A",
+      major: guideDetails.major?.name || "N/A",
+      currentYear: guideDetails.currentYear || "N/A",
+      workHours: guideDetails.workHours || "N/A",
+      userType: guideDetails.userType || "N/A",
+    });
     setIsPopupVisible(true);
   };
 
@@ -179,14 +215,15 @@ function ToursResponsibleByGuides() {
     );
 
     if (guideProfile) {
+      console.log("GUIDE: ", guideProfile);
       setFormData({
         guideId: guideProfile.id || "N/A",
         guideName: guideProfile.name || "N/A",
         surname: guideProfile.surname || "N/A",
         mail: guideProfile.mail || "N/A",
         bilkentID: guideProfile.bilkentID || "N/A",
-        majorCode: guideProfile.majorCode || "N/A",
-        major: guideProfile.major || "N/A",
+        majorCode: guideProfile.major?.id || "N/A",
+        major: guideProfile.major?.name || "N/A",
         currentYear: guideProfile.currentYear || "N/A",
         workHours: guideProfile.workHours || "N/A",
         userType: guideProfile.userType || "N/A",
@@ -209,7 +246,9 @@ function ToursResponsibleByGuides() {
             <TableWithButtons
               headers={headers}
               data={tableData}
-              onButtonClick={handleRowClick}
+              onButtonClick={(rowData) =>
+                handleRowClick(rowData, `${rowData[1]} ${rowData[2]}`)
+              }
               buttonStyle={buttonStyle} // Pass custom button style
               buttonName={buttonName}
             />
@@ -227,45 +266,83 @@ function ToursResponsibleByGuides() {
               <p>
                 <strong>Tour:</strong> {selectedRow[0]}
               </p>
-
+              <h3>New Guide</h3>
+              <FormDropDownGlobal
+                arr={guides.map((guide) => `${guide.name} ${guide.surname}`)}
+                question="Select a Guide"
+                onChange={handleFormChange}
+              />
               <div className="comparisonTables">
                 {/* Left Table: Current Guide */}
                 <div className="tableSectionCompare">
                   <h3>Current Guide</h3>
-                  <table className="comparisonTable">
-                    <tbody>
-                      <tr>
-                        <td>
-                          <strong>Name:</strong>
-                        </td>
-                        <td>{selectedRow[1]}</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>Surname:</strong>
-                        </td>
-                        <td>{selectedRow[2]}</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>Username:</strong>
-                        </td>
-                        <td>{selectedRow[3]}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  {selectedGuideDetails ? (
+                    <table className="comparisonTable">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <strong>Name:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.guideName}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Surname:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.surname}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Username:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.mail}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Bilkent ID:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.bilkentID || "N/A"}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Major Code:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.majorCode || "N/A"}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Major:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.major || "N/A"}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Current Year:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.currentYear || "N/A"}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Work Hours:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.workHours || "N/A"}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>User Type:</strong>
+                          </td>
+                          <td>{selectedGuideDetails.userType || "N/A"}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p>No guide selected</p>
+                  )}
                 </div>
 
                 {/* Right Table: New Guide */}
                 <div className="tableSectionCompare">
-                  <h3>New Guide</h3>
-                  <FormDropDownGlobal
-                    arr={guides.map(
-                      (guide) => `${guide.name} ${guide.surname}`
-                    )}
-                    question="Select a Guide"
-                    onChange={handleFormChange}
-                  />
+                  <h3>Selected Guide</h3>
                   {formData.guideId && (
                     <table className="comparisonTable">
                       <tbody>
@@ -273,7 +350,7 @@ function ToursResponsibleByGuides() {
                           <td>
                             <strong>Name:</strong>
                           </td>
-                          <td>{formData.name}</td>
+                          <td>{formData.guideName}</td>
                         </tr>
                         <tr>
                           <td>
