@@ -370,6 +370,7 @@ namespace backend.Database
             User foundGuide = user;
 
             Fair.AddGuide(foundGuide);
+            foundGuide.AssignedFairCode = Fair.FairRegistrationCode;
 
             await _SystemContext.SaveChangesAsync();
 
@@ -391,7 +392,6 @@ namespace backend.Database
             {
                 return ErrorTypes.FairNotFound;
             }
-
             bool isRemoved = Fair.RemoveGuide(newGuideUID);
 
             if (!isRemoved)

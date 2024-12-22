@@ -93,13 +93,41 @@ namespace backend.Server.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id}", Name = "GetUsersRoute")]
+        [HttpGet("{id}")]
         //[Authorize(Policy = "Admin&Coordinator")]
         [ProducesResponseType(typeof(User), 200)]
         [ProducesResponseType(typeof(User), 404)]
         public async Task<ActionResult> GetUserByID(int id)
         {
             var customer = await _controller.GetUserAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return Ok(customer);
+        }
+
+        [HttpGet("{id}/tour")]
+        //[Authorize(Policy = "Admin&Coordinator")]
+        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(typeof(User), 404)]
+        public async Task<ActionResult> GetTourOfUser(int id)
+        {
+            var customer = await _controller.GetTourOfUser(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return Ok(customer);
+        }
+
+        [HttpGet("{id}/fair")]
+        //[Authorize(Policy = "Admin&Coordinator")]
+        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(typeof(User), 404)]
+        public async Task<ActionResult> GetFairOfUser(int id)
+        {
+            var customer = await _controller.GetFairOfUser(id);
             if (customer == null)
             {
                 return NotFound();
