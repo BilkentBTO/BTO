@@ -3,6 +3,7 @@ import "./DataPanel.css"; // Reuse the existing styles
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+import PieChartGlobal from "../GlobalClasses/PieChartGlobal";
 
 function DataPanel() {
   const headers = [
@@ -68,7 +69,6 @@ function DataPanel() {
             buttonName="Details"
           />
         </div>
-
         {/* Popup Component */}
         {showPopup && (
           <div className="popupOverlay">
@@ -114,6 +114,7 @@ function DataPanel() {
                   </tr>
                 </tbody>
               </table>
+              <PieChartGlobal></PieChartGlobal>
               <button
                 onClick={closePopup}
                 style={{
