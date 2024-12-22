@@ -310,6 +310,14 @@ namespace backend.Database
                 _logger.LogError($"Can't find fair, fair with code {fairCode} does not exist.");
                 return null;
             }
+            FairRegistration? FairRegistration = await _SystemContext
+                .FairRegistrations.Include(r => r.School)
+                .FirstOrDefaultAsync(t => t.Code == fairCode);
+            if (FairRegistration == null)
+            {
+                return null;
+            }
+            foundFair.FillFairRegistrationInfo(FairRegistration);
             return foundFair;
         }
 
