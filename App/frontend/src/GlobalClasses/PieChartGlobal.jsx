@@ -1,5 +1,4 @@
 import React from "react";
-import "./PieChartGlobal.css";
 import { PieChart, Pie, Sector, Cell, Tooltip } from "recharts";
 
 function PieChartGlobal(
