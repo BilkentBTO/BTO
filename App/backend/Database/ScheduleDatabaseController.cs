@@ -140,12 +140,12 @@ namespace backend.Database
 
             User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.ID == newGuideUID);
 
-            if (user == null || user.UserType != UserType.Guide)
+            if (user == null)
             {
                 return ErrorTypes.UserNotFound;
             }
 
-            Guide foundGuide = (Guide)user;
+            User foundGuide = user;
 
             Tour.AssignGuide(foundGuide);
 
@@ -337,6 +337,70 @@ namespace backend.Database
                 _logger.LogError($"Error in UpdateFairInfo: {ex.Message}");
                 return false;
             }
+        }
+
+        public async Task<ErrorTypes> AddGuideToFair(string FairCode, int newGuideUID)
+        {
+            if (string.IsNullOrEmpty(FairCode))
+            {
+                return ErrorTypes.InvalidTourCode;
+            }
+
+            if (newGuideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            Fair? Fair = await _SystemContext.Fairs.SingleOrDefaultAsync(t =>
+                t.FairRegistrationCode == FairCode
+            );
+
+            if (Fair == null)
+            {
+                return ErrorTypes.FairNotFound;
+            }
+
+            User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.ID == newGuideUID);
+
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            User foundGuide = user;
+
+            Fair.AddGuide(foundGuide);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
+        }
+
+        public async Task<ErrorTypes> RemoveGuideFromFair(string FairCode, int newGuideUID)
+        {
+            if (string.IsNullOrEmpty(FairCode))
+            {
+                return ErrorTypes.InvalidFairCode;
+            }
+
+            Fair? Fair = await _SystemContext.Fairs.SingleOrDefaultAsync(t =>
+                t.FairRegistrationCode == FairCode
+            );
+
+            if (Fair == null)
+            {
+                return ErrorTypes.FairNotFound;
+            }
+
+            bool isRemoved = Fair.RemoveGuide(newGuideUID);
+
+            if (!isRemoved)
+            {
+                return ErrorTypes.FairDoesNotHaveTheSpecifiedGuide;
+            }
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
         }
 
         public async Task<List<Fair>> GetAllFairs()

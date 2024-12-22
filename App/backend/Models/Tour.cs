@@ -32,7 +32,7 @@ namespace backend.Models
             this.TourRegistirationInfo = registration;
         }
 
-        public void AssignGuide(Guide guide)
+        public void AssignGuide(User guide)
         {
             if (HasGuide())
                 RemoveGuide();

@@ -86,12 +86,12 @@ namespace backend.Database
 
             User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.ID == GuideUID);
 
-            if (user == null || user.UserType != UserType.Guide)
+            if (user == null)
             {
                 return ErrorTypes.UserNotFound;
             }
 
-            Guide foundGuide = (Guide)user;
+            User foundGuide = user;
 
             Tour.AssignGuide(foundGuide);
 

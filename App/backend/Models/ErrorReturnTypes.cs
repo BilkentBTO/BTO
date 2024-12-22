@@ -22,11 +22,11 @@ namespace backend.Models
         IndividualRegistrationNotFound = 15,
         WrongGuideIDForTour = 16,
         TourAlreadyAccepted = 17,
-
         TourRegistrationNotLinkedWithSchool = 18,
-
         FairAlreadyAccepted = 19,
         FairRegistrationNotLinkedWithSchool = 20,
+        FairNotFound = 21,
+        FairDoesNotHaveTheSpecifiedGuide = 22,
     }
 
     public static class ErrorHandler

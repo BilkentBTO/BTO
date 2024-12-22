@@ -13,14 +13,30 @@ namespace backend.Models
 
         [NotMapped]
         public FairRegistration? FairRegistirationInfo { get; set; }
-        private readonly List<int> AssignedGuideIDs = [];
+        public List<int>? AssignedGuideIDs { get; set; } = new();
         private readonly List<Comment> Comments = [];
 
-        public bool AddGuide(Guide guide)
+        public bool AddGuide(User guide)
         {
+            if (AssignedGuideIDs == null)
+            {
+                AssignedGuideIDs = new List<int>();
+            }
             if (AssignedGuideIDs.Contains(guide.ID))
                 return false;
             AssignedGuideIDs.Add(guide.ID);
+            return true;
+        }
+
+        public bool RemoveGuide(int guideUID)
+        {
+            if (AssignedGuideIDs == null)
+            {
+                AssignedGuideIDs = new List<int>();
+            }
+            if (!AssignedGuideIDs.Contains(guideUID))
+                return false;
+            AssignedGuideIDs.Remove(guideUID);
             return true;
         }
 
@@ -28,10 +44,6 @@ namespace backend.Models
         {
             this.FairRegistirationInfo = registration;
         }
-
-        public bool RemoveCandidateGuide(Guide guide) => AssignedGuideIDs.Remove(guide.ID);
-
-        public bool CandidateGuideAssigned(Guide guide) => AssignedGuideIDs.Contains(guide.ID);
 
         public void AddComment(Comment comment) => Comments.Add(comment);
 

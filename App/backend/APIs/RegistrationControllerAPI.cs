@@ -213,6 +213,18 @@ namespace backend.Server.Controllers
         }
 
         [HttpGet("fair")]
+        public async Task<ActionResult> GetFairRegistration(string Code)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetFairRegistration(Code);
+            return Ok(result);
+        }
+
+        [HttpGet("fair/registrations")]
         public async Task<ActionResult> GetAllFairRegistrations()
         {
             if (!ModelState.IsValid)
@@ -231,18 +243,6 @@ namespace backend.Server.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _controller.GetAllFairRegistrationsFiltered(state);
-            return Ok(result);
-        }
-
-        [HttpGet("fair/registration")]
-        public async Task<ActionResult> GetFairRegistration(string Code)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = await _controller.GetFairRegistration(Code);
             return Ok(result);
         }
 
