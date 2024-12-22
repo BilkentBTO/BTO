@@ -31,7 +31,7 @@ function AssignGuideToFairs() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/register/fair/getregistrations/1");
+        const response = await fetch("/api/schedule/availablefairs");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -53,7 +53,7 @@ function AssignGuideToFairs() {
   };
 
   const handleDismissGuide = () => {
-    // IMPLEMENT !!!!!!!
+    setPopupType("dismiss");
   };
 
   const handleAssignGuide = () => {
@@ -65,7 +65,13 @@ function AssignGuideToFairs() {
     setPopupType(null);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    // IMPLEMENT !!!!!!!!!!!!!
+    alert(`Confirmed action with guide: ${dropdownValue}`);
+    setPopupType(null);
+  };
+
+  const handleDismiss = async () => {
     // IMPLEMENT !!!!!!!!!!!!!
     alert(`Confirmed action with guide: ${dropdownValue}`);
     setPopupType(null);
@@ -82,14 +88,14 @@ function AssignGuideToFairs() {
             <TableWithButtons
               headers={headers}
               data={data.map((item) => [
-                item.school.schoolName || "N/A",
-                item.cityName || "N/A",
-                item.dateOfVisit || "N/A",
-                item.superVisorName || "N/A",
-                item.superVisorDuty || "N/A",
-                item.superVisorPhoneNumber || "N/A",
-                item.superVisorMailAddress || "N/A",
-                item.notes || "N/A",
+                item.fairRegistirationInfo.school.schoolName || "N/A",
+                item.fairRegistirationInfo.cityName || "N/A",
+                item.fairRegistirationInfo.dateOfVisit || "N/A",
+                item.fairRegistirationInfo.superVisorName || "N/A",
+                item.fairRegistirationInfo.superVisorDuty || "N/A",
+                item.fairRegistirationInfo.superVisorPhoneNumber || "N/A",
+                item.fairRegistirationInfo.superVisorMailAddress || "N/A",
+                item.fairRegistirationInfo.notes || "N/A",
               ])}
               onButtonClick={(row) => handleRowClick(row)}
               buttonStyle={{
@@ -108,7 +114,7 @@ function AssignGuideToFairs() {
               buttonName="Manage Guide"
             />
           ) : (
-            <p className="noDataText">No Users</p>
+            <p className="noDataText">No Fairs</p>
           )}
         </div>
 
@@ -217,9 +223,61 @@ function AssignGuideToFairs() {
                         transition:
                           "background-color 0.3s ease, transform 0.2s ease",
                       }}
-                      onClick={handleConfirm}
+                      onClick={() => handleConfirm()}
                     >
                       Assign
+                    </button>
+                    <button
+                      className="popupButton closeButton"
+                      style={{
+                        padding: "8px 16px",
+                        backgroundColor: "grey",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        width: "100%",
+                        maxWidth: "120px",
+                        textAlign: "center",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onClick={handleClosePopup}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
+              {popupType === "dismiss" && (
+                <>
+                  <h2>Dismiss Guide</h2>
+                  <FormDropDownGlobal
+                    arr={guides}
+                    question="Select a guide to dismiss"
+                    onChange={(value) => setDropdownValue(value)}
+                  />
+                  <div className="popupActions">
+                    <button
+                      className="popupButton"
+                      style={{
+                        padding: "8px 16px",
+                        backgroundColor: "red",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        width: "100%",
+                        maxWidth: "120px",
+                        textAlign: "center",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      onClick={() => handleDismiss()}
+                    >
+                      Dismiss
                     </button>
                     <button
                       className="popupButton closeButton"
