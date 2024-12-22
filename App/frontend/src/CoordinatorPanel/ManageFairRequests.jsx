@@ -25,15 +25,15 @@ function ManageFairRequests() {
     const fetchData = async () => {
       // Fetch data for school requests
       try {
-        const pending = await fetch(
-          "/api/register/fair/getregistrations/0"
-        ).then((res) => res.json());
-        const accepted = await fetch(
-          "/api/register/fair/getregistrations/1"
-        ).then((res) => res.json());
-        const rejected = await fetch(
-          "/api/register/fair/getregistrations/2"
-        ).then((res) => res.json());
+        const pending = await fetch("/api/register/fair/registrations/0").then(
+          (res) => res.json()
+        );
+        const accepted = await fetch("/api/register/fair/registrations/1").then(
+          (res) => res.json()
+        );
+        const rejected = await fetch("/api/register/fair/registrations/2").then(
+          (res) => res.json()
+        );
         console.log("PENDING: ", pending);
         console.log("ACCEPTED: ", accepted);
         console.log("REJECTED: ", rejected);
