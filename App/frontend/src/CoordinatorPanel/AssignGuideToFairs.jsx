@@ -10,6 +10,7 @@ import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AssignGuideToFairs() {
   const headers = [
+    "Fair ID",
     "School Name",
     "City",
     "Date of Visit",
@@ -25,6 +26,7 @@ function AssignGuideToFairs() {
   const [popupType, setPopupType] = useState(null); // "dismiss" or "assign"
   const [dropdownValue, setDropdownValue] = useState("");
   const [tourGuides, setTourGuides] = useState([]);
+  const [assignedGuides, setAssignedGuides] = useState([]);
   const [availableGuides, setAvailableGuides] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,44 +49,63 @@ function AssignGuideToFairs() {
     fetchData();
   }, []);
 
-  const handleRowClick = (row) => {
-    setSelectedFair(row);
+  const fetchAssignedGuides = async (fairId) => {
+    const guidesResponse = await fetch(`/api/schedule/fair/${fairId}/guide`);
+    if (!guidesResponse.ok) {
+      throw new Error(`HTTP error! Status: ${guidesResponse.status}`);
+    }
+    const guides = await guidesResponse.json();
+    console.log("Available Guides: ", guides);
+    setAssignedGuides(guides);
+  };
+  const fetchAvailableGuides = async (eventCode) => {
+    try {
+      // Make the API call with the eventCode as a query parameter
+      const guidesResponse = await fetch(
+        `/api/schedule/available/guide?eventCode=${eventCode}`
+      );
 
-    const fetchAvailableGuides = async () => {
-      try {
-        const response = await fetch(
-          `/api/schedule/fair/${selectedFair.code}/guide`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const apiData = await response.json();
-        setAvailableGuides(apiData);
-      } catch (error) {
-        console.error("Error fetching tours data:", error.message);
-      } finally {
-        setIsLoading(false);
+      // Check if the response is OK
+      if (!guidesResponse.ok) {
+        throw new Error(`HTTP error! Status: ${guidesResponse.status}`);
       }
-    };
 
-    const fetchTourGuides = async () => {
-      try {
-        const response = await fetch("/api/user/filter/4"); //CHANGE
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const apiData = await response.json();
-        setTourGuides(apiData);
-      } catch (error) {
-        console.error("Error fetching tours data:", error.message);
-      } finally {
-        setIsLoading(false);
+      // Parse the response data
+      const guides = await guidesResponse.json();
+      console.log("Available Guides: ", guides);
+
+      // Update the state with the available guides
+      setAvailableGuides(guides);
+    } catch (error) {
+      console.error("Error fetching available guides: ", error.message);
+    }
+  };
+
+  const handleRowClick = async (row) => {
+    console.log("Selected Row: ", row);
+
+    // Extract the Fair ID from the row data
+    const fairId = row[0]; // Assuming the first column in the row is the Fair ID
+    console.log("Fair ID: ", fairId);
+
+    try {
+      // Fetch details for the selected fair
+      const response = await fetch(`/api/schedule/fair/${fairId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+      const fairDetails = await response.json();
+      console.log("Fair Details: ", fairDetails);
 
-    fetchTourGuides();
-    fetchAvailableGuides();
+      // Update the state with fetched fair details
+      setSelectedFair(fairDetails);
 
+      // Fetch available guides for the selected fair
+    } catch (error) {
+      console.error("Error fetching fair or guides data: ", error.message);
+    }
+    fetchAvailableGuides(fairId);
+    fetchAssignedGuides(fairId);
     setPopupType(null);
   };
 
@@ -108,16 +129,18 @@ function AssignGuideToFairs() {
   };
 
   const handleDismiss = async (fairCode, guideUID) => {
+    console.log("FAIR CODE DELETE: ", fairCode);
+    console.log("GUIDE ID DELETE: ", guideUID);
+
     try {
       await fetch(`/api/schedule/fair/${fairCode}/guide/${guideUID}`, {
         method: "DELETE",
       });
-      fetchTourRequests();
+      fetchAssignedGuides(fairCode);
     } catch (error) {
       console.error("Error deleting registration:", error);
     }
     setPopupType(null);
-    refresh();
   };
 
   const refresh = () => {
@@ -135,6 +158,7 @@ function AssignGuideToFairs() {
             <TableWithButtons
               headers={headers}
               data={data.map((item) => [
+                item.fairRegistrationCode || "N/A",
                 item.fairRegistirationInfo.school.schoolName || "N/A",
                 item.fairRegistirationInfo.cityName || "N/A",
                 item.fairRegistirationInfo.dateOfVisit || "N/A",
@@ -172,13 +196,60 @@ function AssignGuideToFairs() {
                 <>
                   <h2>Fair Information</h2>
                   <p>
-                    <strong>School Name:</strong> {selectedFair[0]}
+                    <strong>Fair Registration Code:</strong>{" "}
+                    {selectedFair?.fairRegistrationCode || "N/A"}
                   </p>
                   <p>
-                    <strong>City:</strong> {selectedFair[1]}
+                    <strong>School Name:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.school?.schoolName ||
+                      "N/A"}
                   </p>
                   <p>
-                    <strong>Date of Visit:</strong> {selectedFair[2]}
+                    <strong>City:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.school?.city?.name ||
+                      "N/A"}
+                  </p>
+                  <p>
+                    <strong>Distance to City:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.school?.city
+                      ?.distance || "N/A"}{" "}
+                    km
+                  </p>
+                  <p>
+                    <strong>Date of Visit:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.time
+                      ? new Date(
+                          selectedFair.fairRegistirationInfo.time
+                        ).toLocaleString()
+                      : "N/A"}
+                  </p>
+                  <p>
+                    <strong>Supervisor Name:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.superVisorName ||
+                      "N/A"}
+                  </p>
+                  <p>
+                    <strong>Supervisor Duty:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.superVisorDuty ||
+                      "N/A"}
+                  </p>
+                  <p>
+                    <strong>Supervisor Phone:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo
+                      ?.superVisorPhoneNumber || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Supervisor Email:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo
+                      ?.superVisorMailAddress || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Notes:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.notes || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Fair Type:</strong>{" "}
+                    {selectedFair?.fairRegistirationInfo?.type || "N/A"}
                   </p>
                   <div className="popupActions">
                     <button
@@ -249,9 +320,19 @@ function AssignGuideToFairs() {
                 <>
                   <h2>Assign Guide</h2>
                   <FormDropDownGlobal
-                    arr={availableGuides.map((guide) => guide.name)}
-                    question="Select a guide to assign"
-                    onChange={(value) => setDropdownValue(value)}
+                    arr={availableGuides.map(
+                      (guide) => `${guide.name} ${guide.surname}`
+                    )}
+                    question="Select a guide to dismiss"
+                    onChange={(selectedValue) => {
+                      const selectedGuide = availableGuides.find(
+                        (guide) =>
+                          `${guide.name} ${guide.surname}` === selectedValue
+                      ); // Find the guide by name + surname
+                      if (selectedGuide) {
+                        setDropdownValue(selectedGuide.id); // Set dropdownValue to the ID
+                      }
+                    }}
                   />
                   <div className="popupActions">
                     <button
@@ -301,9 +382,19 @@ function AssignGuideToFairs() {
                 <>
                   <h2>Dismiss Guide</h2>
                   <FormDropDownGlobal
-                    arr={tourGuides.map((guide) => guide.name)}
+                    arr={assignedGuides.map(
+                      (guide) => `${guide.name} ${guide.surname}`
+                    )}
                     question="Select a guide to dismiss"
-                    onChange={(value) => setDropdownValue(value)}
+                    onChange={(selectedValue) => {
+                      const selectedGuide = assignedGuides.find(
+                        (guide) =>
+                          `${guide.name} ${guide.surname}` === selectedValue
+                      ); // Find the guide by name + surname
+                      if (selectedGuide) {
+                        setDropdownValue(selectedGuide.id); // Set dropdownValue to the ID
+                      }
+                    }}
                   />
                   <div className="popupActions">
                     <button
@@ -323,7 +414,10 @@ function AssignGuideToFairs() {
                           "background-color 0.3s ease, transform 0.2s ease",
                       }}
                       onClick={() =>
-                        handleDismiss(selectedFair.fairCode, dropdownValue)
+                        handleDismiss(
+                          selectedFair.fairRegistrationCode,
+                          dropdownValue
+                        )
                       }
                     >
                       Dismiss
