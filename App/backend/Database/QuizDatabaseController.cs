@@ -50,7 +50,7 @@ namespace backend.Database
 
         private async Task<(string Name, string Surname)> GetVisitorByIdAsync(int visitorId)
         {
-            await Task.Delay(10); 
+            await Task.Delay(10);
             return ($"Name_{visitorId}", $"Surname_{visitorId}");
         }
 
@@ -70,13 +70,15 @@ namespace backend.Database
 
             if (quiz == null || !quiz.IsStarted || quiz.IsFinished)
             {
-                return false; 
+                return false;
             }
 
-            var existingAnswer = quiz.VisitorAnswer.FirstOrDefault(va => va.VisitorId == visitorAnswer.VisitorId);
+            var existingAnswer = quiz.VisitorAnswer.FirstOrDefault(va =>
+                va.VisitorId == visitorAnswer.VisitorId
+            );
             if (existingAnswer != null)
             {
-                return false; 
+                return false;
             }
 
             quiz.VisitorAnswer.Add(visitorAnswer);
@@ -87,19 +89,14 @@ namespace backend.Database
 
         public async Task<Quiz?> GetQuizByCodeAsync(string code)
         {
-            return await _context.Quizzes
-                .Include(q => q.VisitorAnswer) 
+            return await _context
+                .Quizzes.Include(q => q.VisitorAnswer)
                 .FirstOrDefaultAsync(q => q.Code == code);
         }
 
         public async Task<List<Quiz>> GetAllQuizzesAsync()
         {
-            return await _context.Quizzes
-                .Include(q => q.VisitorAnswer)
-                .ToListAsync();
+            return await _context.Quizzes.Include(q => q.VisitorAnswer).ToListAsync();
         }
-
-        
-        
     }
 }

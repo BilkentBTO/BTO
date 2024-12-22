@@ -99,6 +99,17 @@ namespace backend.Server.Controllers
             return Ok(tours);
         }
 
+        [HttpPost("tour/end")]
+        public async Task<ActionResult> EndTour(string Code)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<Tour> tours = await _controller.GetAllAvailableTours();
+
+            return Ok(tours);
+        }
+
         #endregion
 
         #region FAIR

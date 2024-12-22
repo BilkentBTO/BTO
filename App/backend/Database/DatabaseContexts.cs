@@ -27,13 +27,17 @@ namespace backend.Database
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Fair> Fairs { get; set; }
 
+        public DbSet<Tour> PastTours { get; set; }
+        public DbSet<Tour> PastFairs { get; set; }
+
         //Credentials
         public DbSet<Credential> Credentials { get; set; }
+
         //Settings
         public DbSet<Setting> Setting { get; set; }
 
         public DbSet<Quiz> Quizzes { get; set; }
-        
+
         public DbSet<Quiz> VisitorAnswer { get; set; }
 
         // Surveys

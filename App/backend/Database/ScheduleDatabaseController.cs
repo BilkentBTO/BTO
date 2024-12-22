@@ -530,5 +530,43 @@ namespace backend.Database
                 return [];
             }
         }
+
+        public async Task<ErrorTypes> EndTour(string tourCode)
+        {
+            var tourRegistrations = await _SystemContext
+                .TourRegistrations.Where(r => r.Code == tourCode)
+                .ToListAsync();
+
+            if (tourRegistrations.Any())
+            {
+                _SystemContext.TourRegistrations.RemoveRange(tourRegistrations);
+            }
+            var tours = await _SystemContext
+                .Tours.Where(t => t.TourRegistrationCode == tourCode)
+                .ToListAsync();
+
+            if (tours.Any())
+            {
+                _SystemContext.Tours.RemoveRange(tours);
+            }
+
+            var guideTourApplications = await _SystemContext
+                .GuideTourApplication.Where(a =>
+                    tours.Any(t => t.TourRegistrationCode == a.TourCode)
+                )
+                .ToListAsync();
+
+            if (guideTourApplications.Any())
+            {
+                _SystemContext.GuideTourApplication.RemoveRange(guideTourApplications);
+            }
+            foreach (var tour in tours)
+            {
+                _SystemContext.PastTours.Add(tour);
+            }
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
+        }
     }
 }
