@@ -377,7 +377,11 @@ namespace backend.Database
 
             User foundGuide = user;
 
-            Fair.AddGuide(foundGuide);
+            bool AddResult = Fair.AddGuide(foundGuide);
+            if (!AddResult)
+            {
+                return ErrorTypes.GuideAlreadyAddedToFair;
+            }
             foundGuide.AssignedFairCode = Fair.FairRegistrationCode;
 
             await _SystemContext.SaveChangesAsync();
@@ -409,6 +413,36 @@ namespace backend.Database
             await _SystemContext.SaveChangesAsync();
 
             return ErrorTypes.Success;
+        }
+
+        public async Task<List<User>> GetAllGuidesOfFair(string FairCode)
+        {
+            if (string.IsNullOrEmpty(FairCode))
+            {
+                return new List<User>();
+            }
+
+            Fair? Fair = await _SystemContext.Fairs.SingleOrDefaultAsync(t =>
+                t.FairRegistrationCode == FairCode
+            );
+
+            if (Fair == null || Fair.AssignedGuideIDs == null)
+            {
+                return new List<User>();
+            }
+
+            List<User> result = new List<User>();
+
+            foreach (var guideUID in Fair.AssignedGuideIDs)
+            {
+                var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == guideUID);
+                if (User == null)
+                {
+                    continue;
+                }
+                result.Add(User);
+            }
+            return result;
         }
 
         public async Task<List<Fair>> GetAllFairs()
