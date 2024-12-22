@@ -13,6 +13,7 @@ function ToursResponsibleByGuides() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [guides, setGuides] = useState([]);
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState(() => {
     return (
       location?.state?.formData || {
@@ -56,7 +57,7 @@ function ToursResponsibleByGuides() {
     setSelectedRow(rowData);
 
     // Find the guide using the full name
-    const guideDetails = guides.find(
+    const guideDetails = users.find(
       (guide) => `${guide.name} ${guide.surname}` === guideFullName
     );
     console.log("GUIDE DETAILS: ", guideDetails);
@@ -178,7 +179,19 @@ function ToursResponsibleByGuides() {
         console.error("Error fetching tours and user details:", error);
       }
     };
-
+    const fetchAllUsers = async () => {
+      try {
+        const usersResponse = await fetch("/api/user");
+        if (!usersResponse.ok) {
+          throw new Error(`Failed to fetch users: ${usersResponse.status}`);
+        }
+        const usersData = await usersResponse.json();
+        console.log("Fetched Users:", usersData); // Debugging
+        setUsers(usersData); // Store all users in `guides`
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
     const fetchGuides = async () => {
       try {
         const guidesResponse = await fetch("/api/user/filter/4");
@@ -191,7 +204,7 @@ function ToursResponsibleByGuides() {
         console.error("Error fetching guides:", error);
       }
     };
-
+    fetchAllUsers();
     fetchGuides();
     fetchToursAndUsers();
   }, []);

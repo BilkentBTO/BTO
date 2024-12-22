@@ -105,6 +105,7 @@
   border: 1px solid #ccc;
   padding: 8px;
   font-size: 14px;
+  width: 100%;
 }
 
 .toursGuidePopup .comparisonTable tr:nth-child(even) {
