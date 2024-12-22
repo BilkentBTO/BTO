@@ -3,218 +3,165 @@ import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import Table from "../GlobalClasses/Table";
-import profileImage from "../assets/profile_image.png";
+import { jwtDecode } from "jwt-decode";
 import "./EditAvailableHoursPage.css";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function EditAvailableHoursPage() {
   const navigate = useNavigate();
-  const [showPopup, setShowPopup] = useState(false); // To show popup
-  const [popupMessage, setPopupMessage] = useState(""); // Popup message state
+
+  // Predefined hours
+  const hours = ["09:00", "11:00", "13:00", "16:00"];
+  const headers = ["Date", "Time", "State"];
+
+  // State variables
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [data, setData] = useState([]);
+  const [busyHours, setBusyHours] = useState([]); // Tracks Busy hours
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [guideUID, setGuideUID] = useState(null);
+
+  // Fetch data and pre-fill table
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const UID = decodedToken["UID"];
+        setGuideUID(UID);
+
+        fetch(`/api/user/${UID}`)
+          .then((response) => {
+            if (!response.ok)
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json();
+          })
+          .then((userData) => {
+            const preFilledData = userData.availableHours.map((hour) => {
+              const [datePart, timePart] = hour.split("T");
+              const formattedTime = timePart.substring(0, 5);
+              return [datePart, formattedTime, "Available"];
+            });
+            setData(preFilledData);
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error);
+          });
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        navigate("/login");
+      }
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  // Handle adding a new row
+  // Handle adding a new row
+  const handleAddRow = (state) => {
+    if (!date || !time) {
+      alert("Please select both date and time.");
+      return;
+    }
+
+    if (state === "Busy") {
+      const updatedData = data.filter(
+        (row) => !(row[0] === date && row[1] === time)
+      );
+      setData(updatedData);
+      setBusyHours((prev) => [
+        ...prev,
+        `${date}T${time}:00Z`, // Remove milliseconds
+      ]);
+      console.log("BUSY HOURS: ", busyHours);
+    } else if (state === "Available") {
+      const newRow = [date, time, state];
+      const existingRow = data.find(
+        (row) => row[0] === date && row[1] === time
+      );
+
+      if (existingRow) {
+        alert("This time slot is already available.");
+        return;
+      }
+
+      setData((prevData) => [...prevData, newRow]);
+    }
+  };
+
+  // Handle updating the available hours
+  const handleUpdateHours = async () => {
+    const availableHours = data
+      .filter((row) => row[2] === "Available")
+      .map((row) => `${row[0]}T${row[1]}:00Z`); // Remove milliseconds
+
+    console.log("AVAL: ", availableHours);
+    const deleteRequestBody = { busyHours };
+    console.log("DELETE: ", deleteRequestBody);
+
+    try {
+      if (availableHours.length > 0) {
+        await fetch(`/api/user/${guideUID}/hours`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ availableHours }),
+        });
+      }
+
+      if (busyHours.length > 0) {
+        console.log("BUSY HOURS 2: ", busyHours);
+        await fetch(`/api/user/${guideUID}/hours`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ availableHours: busyHours }), // Corrected payload
+        });
+
+        setBusyHours([]); // Clear busyHours after successful deletion
+      }
+      alert("Table Changed");
+    } catch (error) {
+      console.error("Error updating hours:", error);
+      alert("Error updating hours.");
+    }
+  };
+
+  // Popup functions
   const showConfirmationPopup = () => {
     setPopupMessage("Are you sure you want to update?");
     setShowPopup(true);
   };
 
-  // Handle confirmation action (redirect to GuidePanel)
   const handleConfirm = () => {
+    handleUpdateHours();
     setShowPopup(false);
-    navigate("/guidePanel"); // Redirect to the GuidePanel page
   };
 
-  // Handle cancellation of the popup
-  const handleCancel = () => {
-    setShowPopup(false); // Just close the popup without action
-  };
-  const Popup = ({ message, onConfirm, onCancel }) => {
-    return (
-      <div className="popup-overlay">
-        <div className="popup-content">
-          <p>{message}</p>
-          <div className="popup-buttons">
-            <button onClick={onConfirm}>Yes</button>
-            <button onClick={onCancel}>No</button>
-          </div>
+  const handleCancel = () => setShowPopup(false);
+
+  const Popup = ({ message, onConfirm, onCancel }) => (
+    <div className="editAvailableHours-popup-overlay">
+      <div className="editAvailableHours-popup-content">
+        <p>{message}</p>
+        <div className="editAvailableHours-popup-buttons">
+          <button
+            onClick={onConfirm}
+            className="editAvailableHours-popup-confirm"
+          >
+            Yes
+          </button>
+          <button
+            onClick={onCancel}
+            className="editAvailableHours-popup-cancel"
+          >
+            No
+          </button>
         </div>
       </div>
-    );
-  };
-
-  const hours = [
-    "8.00",
-    "8.30",
-    "9.00",
-    "9.30",
-    "10.00",
-    "10.30",
-    "11.00",
-    "11.30",
-    "12.00",
-    "12.30",
-    "13.00",
-    "13.30",
-    "14.00",
-    "14.30",
-    "15.00",
-    "15.30",
-    "16.00",
-    "16.30",
-    "17.00",
-    "17.30",
-    "18.00",
-    "18.30",
-    "19.00",
-    "19.30",
-    "20.00",
-    "20.30",
-    "21.00",
-  ];
-
-  const headers = ["Date", "Time Interval", "State"];
-
-  // State for form inputs
-  const [date, setDate] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
-
-  // State for table data
-  const [data, setData] = useState([]);
-
-  // Handle adding a new row to the table
-  const handleAddRow = (stateValue) => {
-    console.log("Button clicked with state:", stateValue);
-
-    // Validate inputs
-    if (!date || !start || !end) {
-      console.log("Validation failed: missing inputs");
-      alert("Please fill in all fields before adding.");
-      return;
-    }
-
-    // Convert time strings to comparable values
-    const convertToMinutes = (time) => {
-      const [hours, minutes] = time.split(".").map(Number);
-      return hours * 60 + minutes;
-    };
-
-    const startMinutes = convertToMinutes(start);
-    const endMinutes = convertToMinutes(end);
-
-    if (endMinutes <= startMinutes) {
-      alert("Select End time that is after Start time");
-      return;
-    }
-
-    const timeInterval = start + "-" + end;
-    console.log("Validation passed");
-
-    const newRow = [date, timeInterval, stateValue];
-
-    setData((prevData) => {
-      // Check if the row already exists in the data
-      const existingRowIndex = prevData.findIndex(
-        (row) =>
-          row[0] === newRow[0] && // Check if date matches
-          row[1] === newRow[1] // Check if timeInterval matches
-      );
-
-      if (existingRowIndex !== -1) {
-        // If the row exists and the new state is "Available"
-        if (stateValue === "Available") {
-          // Check if it was not set to "Busy" before
-          if (prevData[existingRowIndex][2] !== "Busy") {
-            alert(
-              "This time slot cannot be set to Available unless it is first set to Busy."
-            );
-            return prevData; // Don't modify the data
-          }
-
-          // If it was "Busy", remove the row and add the "Available" state
-          const updatedData = prevData.filter(
-            (_, index) => index !== existingRowIndex
-          );
-          console.log("Row removed. Updated data array:", updatedData);
-          return updatedData; // Remove the "Busy" entry, do not add the "Available"
-        }
-
-        // If the row already exists and the state isn't "Available", no further action needed
-        alert("This entry already exists.");
-        return prevData;
-      }
-
-      if (stateValue === "Available") {
-        alert("It is already available");
-        return prevData;
-      }
-
-      // If the row doesn't exist, add it as a new entry
-      const updatedData = [...prevData, newRow];
-
-      // Sort the updated data array by date and then by time interval
-      updatedData.sort((a, b) => {
-        // Compare by date first
-        const dateA = new Date(a[0]);
-        const dateB = new Date(b[0]);
-        if (dateA.getTime() !== dateB.getTime()) {
-          return dateA.getTime() - dateB.getTime();
-        }
-
-        // If the dates are the same, compare by time interval
-        const [startA, endA] = a[1].split("-").map(convertToMinutes);
-        const [startB, endB] = b[1].split("-").map(convertToMinutes);
-
-        // Compare start times
-        return startA - startB;
-      });
-
-      console.log("New row added. Updated and sorted data array:", updatedData);
-      return updatedData;
-    });
-  };
-
-  const buttonStyleBusy = {
-    padding: "8px 16px",
-    backgroundColor: "red",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-    width: "100%",
-    maxWidth: "120px",
-    textAlign: "center",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  };
-
-  const buttonStyleAvailable = {
-    padding: "8px 16px",
-    backgroundColor: "green",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-    width: "100%",
-    maxWidth: "120px",
-    textAlign: "center",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  };
-
-  const buttonStyleUpdate = {
-    padding: "8px 16px",
-    backgroundColor: "#1e1e64",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-    width: "100%",
-    maxWidth: "120px",
-    textAlign: "center",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  };
+    </div>
+  );
 
   return (
     <div className="editAvailableHours">
@@ -224,70 +171,63 @@ function EditAvailableHoursPage() {
         <div className="innerEditPage">
           <div className="leftInner">
             <div className="form">
-              {/* Date Input */}
               <FormInputGlobal
-                question={"Select Date to Modify"}
+                question="Select Date:"
                 type="date"
                 value={date}
                 onChange={setDate}
               />
-
-              {/* Dropdown for Time Interval */}
               <FormDropDownGlobal
-                question="Select Start:"
+                question="Select Time:"
                 arr={hours}
-                value={start}
-                onChange={setStart}
+                value={time}
+                onChange={setTime}
               />
-              <FormDropDownGlobal
-                question="Select End:"
-                arr={hours}
-                value={end}
-                onChange={setEnd}
-              />
-
-              {/* Buttons to set state and add data */}
               <div className="buttonEditSection">
                 <button
-                  style={buttonStyleBusy}
-                  className="busyButton"
                   onClick={() => handleAddRow("Busy")}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "red",
+                    color: "white",
+                  }}
                 >
                   Set Busy
                 </button>
                 <button
-                  style={buttonStyleAvailable}
-                  className="availableButton"
                   onClick={() => handleAddRow("Available")}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "green",
+                    color: "white",
+                  }}
                 >
                   Set Available
                 </button>
                 <button
-                  style={buttonStyleUpdate}
-                  className="updateTableButton"
                   onClick={showConfirmationPopup}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#1e1e64",
+                    color: "white",
+                  }}
                 >
                   Update Table
                 </button>
               </div>
-              <p className="descr">*Available Hours are not shown</p>
             </div>
           </div>
-
-          {/* Table Section */}
           <div className="rightInner">
             <Table data={data} headers={headers} />
           </div>
         </div>
-        <div className="editPopUp">
-          {showPopup && (
-            <Popup
-              message={popupMessage}
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-            />
-          )}
-        </div>
+        {showPopup && (
+          <Popup
+            message={popupMessage}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+          />
+        )}
       </div>
     </div>
   );
