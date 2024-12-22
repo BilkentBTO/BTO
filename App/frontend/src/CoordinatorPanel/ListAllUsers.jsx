@@ -66,8 +66,35 @@ function ListAllUsers() {
     handleCloseManageAdvisorPopup();
   };
 
-  const handlePromoteUser = () => {
-    alert(`User ${selectedUser[2]} has been promoted!`);
+  const handlePromoteUser = async (id) => {
+    // Build the request body with correct key names
+    const payload = {
+      id: id,
+      userType: 4,
+    };
+
+    try {
+      console.log("Payload being sent: ", JSON.stringify(payload));
+      const response = await fetch("/api/user", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload), // Send fixed payload
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+        throw new Error(errorData.title || "Failed to register user.");
+      }
+
+      // Navigate to success page
+      console.log("Promotion successful");
+    } catch (error) {
+      console.error("Error:", error.message);
+      alert(`Registration failed: ${error.message}`);
+    }
+    handleClosePopup();
+    refresh();
   };
 
   const handleDateChange = (value) => {
@@ -211,7 +238,7 @@ function ListAllUsers() {
                       transition:
                         "background-color 0.3s ease, transform 0.2s ease",
                     }}
-                    onClick={handleManageAdvisor}
+                    onClick={() => handleManageAdvisor}
                   >
                     Manage Advisor
                   </button>
@@ -232,7 +259,7 @@ function ListAllUsers() {
                       transition:
                         "background-color 0.3s ease, transform 0.2s ease",
                     }}
-                    onClick={handlePromoteUser}
+                    onClick={() => handlePromoteUser(selectedUser[0])}
                   >
                     Promote
                   </button>
