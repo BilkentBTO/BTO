@@ -59,6 +59,10 @@ namespace backend.Database
                     {
                         await InsertVisitorSampleData(SystemDbContext);
                     }
+                    if (!await SystemDbContext.Quizzes.AnyAsync())
+                    {
+                        await InsertQuizSampleData(SystemDbContext);
+                    }
                     /*
                     if (!await SystemDbContext.Tours.AnyAsync())
                     {
@@ -152,75 +156,35 @@ namespace backend.Database
             }
         }
 
-        // Insert sample survey data
         public async Task InsertSurveySampleData(SystemDbContext db)
         {
-            var surveys = new List<Survey>
+            if (!db.Surveys.Any())
             {
-                new Survey
+                var sampleSurvey1 = new Survey
                 {
-                    Title = "General Knowledge Survey",
-                    Questions = new List<Question>
+                    Title = "Sample Survey for School Tour",
+                    Questions = new List<string>
                     {
-                        new Question
-                        {
-                            QuestionText = "What is the capital of France?",
-                            TimeLimitInSeconds = 30,
-                            Options = new List<Option>
-                            {
-                                new Option { OptionLabel = "A", OptionText = "Berlin" },
-                                new Option { OptionLabel = "B", OptionText = "Madrid" },
-                                new Option { OptionLabel = "C", OptionText = "Paris" },
-                                new Option { OptionLabel = "D", OptionText = "Rome" },
-                            },
-                            CorrectAnswers = new List<string> { "C" },
-                        },
-                        new Question
-                        {
-                            QuestionText = "Which planet is known as the Red Planet?",
-                            TimeLimitInSeconds = 30,
-                            Options = new List<Option>
-                            {
-                                new Option { OptionLabel = "A", OptionText = "Earth" },
-                                new Option { OptionLabel = "B", OptionText = "Mars" },
-                                new Option { OptionLabel = "C", OptionText = "Jupiter" },
-                                new Option { OptionLabel = "D", OptionText = "Saturn" },
-                            },
-                            CorrectAnswers = new List<string> { "B" },
-                        },
-                    },
-                },
-                new Survey
-                {
-                    Title = "Science Quiz",
-                    Questions = new List<Question>
-                    {
-                        new Question
-                        {
-                            QuestionText = "What is the chemical symbol for water?",
-                            TimeLimitInSeconds = 20,
-                            Options = new List<Option>
-                            {
-                                new Option { OptionLabel = "A", OptionText = "H2O" },
-                                new Option { OptionLabel = "B", OptionText = "O2" },
-                                new Option { OptionLabel = "C", OptionText = "CO2" },
-                                new Option { OptionLabel = "D", OptionText = "NaCl" },
-                            },
-                            CorrectAnswers = new List<string> { "A" },
-                        },
-                    },
-                },
-            };
+                        "Rate guide (out of 10)",
+                        "Rate tour (out of 10)",
+                        "Rate Bilkent (out of 10)",
+                        "Would you apply to Bilkent? (out of 10)"
+                    }
+                };
+                await db.Surveys.AddAsync(sampleSurvey1);
 
-            db.Surveys.AddRange(surveys);
-            try
-            {
+                var sampleSurvey2 = new Survey
+                {
+                    Title = "Sample Survey for School Tour",
+                    Questions = new List<string>
+                    {
+                        "Rate guide (out of 10)",
+                        "Rate fair (out of 10)",
+                        "Would you apply to Bilkent? (out of 10)"
+                    }
+                };
+                await db.Surveys.AddAsync(sampleSurvey2);
                 await db.SaveChangesAsync();
-            }
-            catch (Exception exp)
-            {
-                _logger.LogError($"Error in {nameof(SystemDbSeeder)}: " + exp.Message);
-                throw;
             }
         }
 
@@ -234,9 +198,7 @@ namespace backend.Database
                     Surname = "Doe",
                     City = "New York",
                     School = "NYU",
-                    GuideName = "Alice",
-                    GuideRating = 4,
-                    Comment = "Great experience!",
+                    GuideUID = 20,
                 },
                 new Visitor
                 {
@@ -244,9 +206,7 @@ namespace backend.Database
                     Surname = "Smith",
                     City = "Los Angeles",
                     School = "UCLA",
-                    GuideName = "Bob",
-                    GuideRating = 4,
-                    Comment = "Interesting tour.",
+                    GuideUID = 31,
                 },
                 new Visitor
                 {
@@ -254,9 +214,7 @@ namespace backend.Database
                     Surname = "Johnson",
                     City = "Chicago",
                     School = "University of Chicago",
-                    GuideName = "Charlie",
-                    GuideRating = 2,
-                    Comment = "Loved it!",
+                    GuideUID = 23,
                 },
                 new Visitor
                 {
@@ -264,9 +222,7 @@ namespace backend.Database
                     Surname = "Davis",
                     City = "San Francisco",
                     School = "Stanford University",
-                    GuideName = "Dave",
-                    GuideRating = 1,
-                    Comment = "Very informative.",
+                    GuideUID = 4,
                 },
             };
 
@@ -281,5 +237,29 @@ namespace backend.Database
                 throw;
             }
         }
+
+        public async Task InsertQuizSampleData(SystemDbContext db)
+        {
+            if (await db.Visitors.AnyAsync() || await db.Quizzes.AnyAsync())
+            {
+                return;
+            }
+            var quiz1 = new Quiz
+            {
+                Code = "QZ123",
+                IsStarted = true,
+                IsFinished = false
+            };
+            var quiz2 = new Quiz
+            {
+                Code = "QZ124",
+                IsStarted = true,
+                IsFinished = false
+            };
+            db.Quizzes.Add(quiz1);
+            db.Quizzes.Add(quiz2);
+            await db.SaveChangesAsync();
+        }
+        
     }
 }

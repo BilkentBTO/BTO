@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using backend;
 using backend.Database;
+using backend.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -62,6 +63,7 @@ builder.Services.AddScoped<ScheduleDatabaseController>();
 builder.Services.AddScoped<CredentialDatabaseController>();
 builder.Services.AddScoped<SurveyDatabaseController>();
 builder.Services.AddScoped<VisitorDatabaseController>();
+builder.Services.AddScoped<QuizDatabaseController>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

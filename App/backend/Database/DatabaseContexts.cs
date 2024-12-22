@@ -29,16 +29,17 @@ namespace backend.Database
 
         //Credentials
         public DbSet<Credential> Credentials { get; set; }
-
         //Settings
         public DbSet<Setting> Setting { get; set; }
+
+        public DbSet<Quiz> Quizzes { get; set; }
+        
+        public DbSet<Quiz> VisitorAnswer { get; set; }
 
         // Surveys
 
         // Surveys and related entities
         public DbSet<Survey> Surveys { get; set; }
-        public DbSet<Question> Questions { get; set; }
-        public DbSet<Option> Options { get; set; }
         public DbSet<Visitor> Visitors { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
@@ -78,11 +79,9 @@ namespace backend.Database
 
             modelBuilder.Entity<Survey>().HasKey(s => s.ID);
 
-            modelBuilder.Entity<Question>().HasKey(q => q.ID);
-
-            modelBuilder.Entity<Option>().HasKey(o => o.ID);
-
             modelBuilder.Entity<Visitor>().HasKey(v => v.ID);
+
+            modelBuilder.Entity<VisitorAnswer>().HasKey(v => v.ID);
 
             var schools = ReadSchoolsFromCsv("./Database/TurkeySchoolData.csv");
             modelBuilder.Entity<School>().HasData(schools);
