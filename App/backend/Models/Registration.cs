@@ -155,7 +155,7 @@ namespace backend.Models
             var randomSuffix = new Random().Next(1000, 9999);
             this.Code = $"F-{this.CityName}{randomSuffix}";
         }
-        
+
         /// <summary>
         /// Fills in the school details for the fair registration.
         /// </summary>

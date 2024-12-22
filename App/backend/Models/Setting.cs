@@ -1,6 +1,6 @@
 /// <summary>
-/// This file defines the Setting class, which contains configuration values related to tours. 
-/// It includes a constant for the allowed concurrent tour count, as well as an instance property to 
+/// This file defines the Setting class, which contains configuration values related to tours.
+/// It includes a constant for the allowed concurrent tour count, as well as an instance property to
 /// configure it.
 /// </summary>
 namespace BTO.Setting

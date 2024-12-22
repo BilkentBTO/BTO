@@ -139,6 +139,17 @@ namespace backend.Database
                 return ErrorTypes.TourNotFound;
             }
 
+            if (Tour.AssignedGuideID != null)
+            {
+                User? pastUser = await _SystemContext.Users.SingleOrDefaultAsync(u =>
+                    u.ID == Tour.AssignedGuideID
+                );
+
+                if (pastUser != null)
+                {
+                    pastUser.AssignedTourCode = null;
+                }
+            }
             User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.ID == newGuideUID);
 
             if (user == null)
@@ -149,6 +160,8 @@ namespace backend.Database
             User foundGuide = user;
 
             Tour.AssignGuide(foundGuide);
+
+            user.AssignedTourCode = Tour.TourRegistrationCode;
 
             await _SystemContext.SaveChangesAsync();
 
