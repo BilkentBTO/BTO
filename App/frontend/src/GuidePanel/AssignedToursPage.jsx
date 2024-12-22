@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AssignedToursPage() {
+  const [guideUID, setGuideUID] = useState("");
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
   const [selectedTour, setSelectedTour] = useState(null); // State to track the selected tour
@@ -26,48 +28,6 @@ function AssignedToursPage() {
     "Notes",
   ];
 
-  const data = [
-    [
-      "1",
-      "TED Ankara",
-      "Ankara",
-      "30.03.2025",
-      "18.00",
-      "25",
-      "Ege Ertem",
-      "Principal",
-      "123124",
-      "mail@mail.com",
-      "Note note note",
-    ],
-    [
-      "2",
-      "Ankara Atatürk Lisesi",
-      "Ankara",
-      "30.03.2025",
-      "11.00",
-      "11",
-      "Can Kütükoğlu",
-      "Principal",
-      "123124",
-      "mail@mail.com",
-      "Note note note",
-    ],
-    [
-      "3",
-      "Jale Tezer",
-      "Ankara",
-      "30.03.2025",
-      "17.00",
-      "56",
-      "Bora Akoğuz",
-      "Principal",
-      "123124",
-      "mail@mail.com",
-      "Note note note",
-    ],
-  ];
-
   const buttonStyle = {
     padding: "8px 16px",
     backgroundColor: "red",
@@ -81,6 +41,49 @@ function AssignedToursPage() {
     textAlign: "center",
     transition: "background-color 0.3s ease, transform 0.2s ease",
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    console.log(token);
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token); // Decode the token
+
+        // Extract the name claim
+        const UID = decodedToken["UID"];
+        setGuideUID(UID || "Unknown");
+
+        // Extract the role claim (adjust based on your JWT structure)
+
+        console.log("Decoded Token:", decodedToken);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        navigate("/login"); // Redirect to login if token is invalid
+      }
+    } else {
+      console.log("No token found");
+      navigate("/login"); // Redirect to login if no token is found
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/user/${guideUID}/tour`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setData(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const buttonName = "Remove";
 
@@ -105,13 +108,22 @@ function AssignedToursPage() {
         <HeaderPanelGlobal name={"GUIDE PANEL"} />
         <div>
           <h1 className="assignedToursHeading">Assigned Tours</h1>
-          <TableWithButtons
-            headers={headers}
-            data={data}
-            onButtonClick={handleRemoveClick} // Pass row index to the handler
-            buttonStyle={buttonStyle}
-            buttonName={buttonName}
-          />
+          {data.length > 0 ? (
+            <TableWithButtons
+              headers={headers}
+              data={data.map((item) => [
+                item.tourRegistrationCode || "N/A", // Tour ID
+                new Date(item.time).toLocaleDateString() || "N/A", // Date
+                item.tourRegistirationInfo?.school?.schoolName || "N/A", // School
+                item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
+              ])}
+              onButtonClick={handleRemoveClick} // Pass row index to the handler
+              buttonStyle={buttonStyle}
+              buttonName={buttonName}
+            />
+          ) : (
+            <p className="noDataText">No Users</p>
+          )}
         </div>
         {/* Confirmation Popup */}
         {showPopup && (
