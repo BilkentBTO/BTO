@@ -5,7 +5,7 @@ namespace backend.Models
         public string? TourCode { get; set; }
         public Tour? Tour { get; set; }
         public int GuideUID { get; set; }
-        public Guide? Guide { get; set; }
+        public User? Guide { get; set; }
     }
 
     public class GuideTourApplicationRequest()

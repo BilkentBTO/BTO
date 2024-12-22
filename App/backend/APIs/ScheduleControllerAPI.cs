@@ -102,18 +102,29 @@ namespace backend.Server.Controllers
         #endregion
 
         #region FAIR
-        [HttpPost("fair/{fairCode}")]
-        public async Task<ActionResult> AddFair(string fairCode)
+        /*
+        [HttpPut("fair/{fairCode}/fair/{fairUID}")]
+        public async Task<ActionResult> AddGuideToFair(string tourCode, int guideUID)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _controller.AddFair(fairCode))
-                return BadRequest("Unable to add fair.");
+            var result = await _controller.ChangeGuideOfTour(tourCode, guideUID);
 
-            return Ok();
+            return ErrorHandler.HandleError(result);
         }
 
+        [HttpDelete("fair/{fairCode}/guide/{guideUID}")]
+        public async Task<ActionResult> RemoveGuideFromFair(string fairCode, int guideUID)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controller.RemoveGuideFromTour(tourCode);
+
+            return ErrorHandler.HandleError(result);
+        }
+        */
         [HttpDelete("fair/{fairCode}")]
         public async Task<ActionResult> RemoveFair(string fairCode)
         {

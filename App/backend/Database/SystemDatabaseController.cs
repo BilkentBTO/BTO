@@ -125,7 +125,7 @@ namespace backend.Database
                     continue;
                 }
                 application.Tour = linkedTour;
-                application.Guide = (Guide)linkedUser;
+                application.Guide = linkedUser;
                 result.Add(application);
             }
 
@@ -356,6 +356,15 @@ namespace backend.Database
 
             _SystemContext.TourRegistrations.Remove(tourRegistration);
 
+            var tour = await _SystemContext.Tours.FirstOrDefaultAsync(t =>
+                t.TourRegistrationCode == Code
+            );
+
+            if (tour != null)
+            {
+                _SystemContext.Tours.Remove(tour);
+            }
+
             await _SystemContext.SaveChangesAsync();
 
             return ErrorTypes.Success;
@@ -550,7 +559,14 @@ namespace backend.Database
             {
                 return ErrorTypes.FairRegistrationNotFound;
             }
+            var fair = await _SystemContext.Fairs.FirstOrDefaultAsync(f =>
+                f.FairRegistrationCode == Code
+            );
 
+            if (fair != null)
+            {
+                _SystemContext.Fairs.Remove(fair);
+            }
             _SystemContext.FairRegistrations.Remove(fairRegistration);
 
             await _SystemContext.SaveChangesAsync();

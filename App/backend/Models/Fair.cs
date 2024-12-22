@@ -9,7 +9,6 @@ namespace backend.Models
 {
     public class Fair()
     {
-        public DateTime? Time { get; set; }
         public string? FairRegistrationCode { get; set; }
 
         [NotMapped]

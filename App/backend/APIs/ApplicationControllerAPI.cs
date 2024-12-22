@@ -40,7 +40,7 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("tour/accept/{guideUID}")]
+        [HttpPost("tour/accept/{guideUID}")]
         public async Task<ActionResult> AcceptGuideTourApplications(int guideUID)
         {
             if (!ModelState.IsValid)
@@ -51,7 +51,7 @@ namespace backend.Server.Controllers
             return ErrorHandler.HandleError(result);
         }
 
-        [HttpGet("tour/reject/{guideUID}")]
+        [HttpPost("tour/reject/{guideUID}")]
         public async Task<ActionResult> RejectGuideTourApplications(int guideUID)
         {
             if (!ModelState.IsValid)
