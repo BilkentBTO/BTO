@@ -194,17 +194,6 @@ namespace backend.Database
                 for (int i = allTours.Count - 1; i >= 0; i--)
                 {
                     var tour = allTours[i];
-
-                    if (
-                        tour.HasGuide()
-                        || tour.TourRegistirationInfo == null
-                        || tour.TourRegistirationInfo.State != RegistrationState.Accepted
-                    )
-                    {
-                        allTours.RemoveAt(i);
-                        continue;
-                    }
-
                     var tourRegistration = await _SystemContext
                         .TourRegistrations.Include(r => r.School)
                         .Include(r => r.TimeBlock)
@@ -217,6 +206,16 @@ namespace backend.Database
                     else
                     {
                         tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+
+                    if (
+                        tour.HasGuide()
+                        || tour.TourRegistirationInfo == null
+                        || tour.TourRegistirationInfo.State != RegistrationState.Accepted
+                    )
+                    {
+                        allTours.RemoveAt(i);
+                        continue;
                     }
                 }
                 return allTours;
