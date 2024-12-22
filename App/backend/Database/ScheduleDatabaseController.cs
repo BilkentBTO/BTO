@@ -562,7 +562,7 @@ namespace backend.Database
             }
             foreach (var tour in tours)
             {
-                _SystemContext.PastTours.Add(tour);
+                await DataPanelDatabaseController.LogTour(_SystemContext, tour);
             }
             await _SystemContext.SaveChangesAsync();
 

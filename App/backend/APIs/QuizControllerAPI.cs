@@ -1,6 +1,6 @@
 using backend.Database;
-using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
@@ -8,82 +8,32 @@ namespace backend.Controllers
     [Route("api/quiz")]
     public class QuizController : ControllerBase
     {
-        private readonly QuizDatabaseController _quizDb;
-        private readonly VisitorDatabaseController _visitorDb;
+        private readonly QuizDatabaseController _controller;
 
-        public QuizController(QuizDatabaseController quizDb, VisitorDatabaseController visitorDb)
+        public QuizController(QuizDatabaseController quizController)
         {
-            _quizDb = quizDb;
-            _visitorDb = visitorDb;
+            _controller = quizController;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateQuiz([FromQuery] int surveyId)
+        [HttpGet("validate/{quizCode}")]
+        public async Task<IActionResult> ValidateQuiz(string quizCode)
         {
-            var code = await _quizDb.CreateQuizAsync(surveyId);
-            return Ok(new { Code = code });
+            var result = await _controller.ValidateQuizCode(quizCode);
+
+            return ErrorHandler.HandleError(result);
         }
 
-        [HttpPut("{code}/start")]
-        public async Task<IActionResult> StartQuiz(string code)
+        [HttpPost("fill/{quizCode}")]
+        public async Task<IActionResult> FillSurvey(string quizCode, [FromBody] SurveyForm form)
         {
-            var success = await _quizDb.StartQuizAsync(code);
-            return success ? Ok("Quiz started.") : BadRequest("Cannot start quiz.");
-        }
-
-        [HttpPut("{code}/end")]
-        public async Task<IActionResult> EndQuiz(string code)
-        {
-            var success = await _quizDb.EndQuizAsync(code);
-            return success ? Ok("Quiz ended.") : BadRequest("Cannot end quiz.");
-        }
-
-        
-        [HttpPost("{code}/add-visitor-answer")]
-        public async Task<IActionResult> AddVisitorAnswer(string code, [FromBody] VisitorAnswer visitorAnswer)
-        {
-            // Validate input fields
-            if (visitorAnswer == null)
+            if (form == null)
             {
-                return BadRequest("VisitorAnswer cannot be null.");
-            }
-            if (visitorAnswer.VisitorId <= 0)
-            {
-                return BadRequest("VisitorId must be greater than 0.");
-            }
-            if (visitorAnswer.answers == null || !visitorAnswer.answers.Any())
-            {
-                return BadRequest("Answers must contain at least one answer.");
+                return BadRequest("Invalid survey form.");
             }
 
-            bool success = await _quizDb.AddVisitorAnswerAsync(code, visitorAnswer);
+            var result = await _controller.FillSurveyForQuiz(quizCode, form);
 
-            if (!success)
-            {
-                return BadRequest("Could not add VisitorAnswer. Check if the quiz exists, is started, and not finished.");
-            }
-
-            return Ok("VisitorAnswer added successfully.");
+            return ErrorHandler.HandleError(result);
         }
-
-        [HttpGet("{code}")]
-        public async Task<IActionResult> GetQuizByCode(string code)
-        {
-            var quiz = await _quizDb.GetQuizByCodeAsync(code);
-            if (quiz == null)
-            {
-                return NotFound("Quiz not found.");
-            }
-            return Ok(quiz);
-        }
-
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllQuizzes()
-        {
-            var quizzes = await _quizDb.GetAllQuizzesAsync();
-            return Ok(quizzes);
-        }
-
-        
     }
 }

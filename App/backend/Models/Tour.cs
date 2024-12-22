@@ -15,6 +15,7 @@ namespace backend.Models
     {
         // The unique registration code for the tour.
         public string? TourRegistrationCode { get; set; }
+        public string? QuizCode { get; set; }
 
         // Tour registration information (non-mapped).
         [NotMapped]
