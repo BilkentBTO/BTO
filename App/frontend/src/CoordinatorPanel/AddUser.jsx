@@ -91,6 +91,7 @@ function AddUser() {
     Coordinator: 2,
     Advisor: 3,
     Guide: 4,
+    Candidate: 5,
   };
   const handleConfirm = () => {
     // Proceed with form submission (save data, navigate, etc.)
@@ -211,7 +212,7 @@ function AddUser() {
     fetchUserData();
   }, []);
 
-  const roles = ["Guide", "Advisor", "Coordinator"];
+  const roles = ["Candidate", "Guide", "Advisor", "Coordinator"];
 
   const headers = ["Bilkent ID", "Name", "Surname", "Email", "Major", "Year"];
 
@@ -240,7 +241,7 @@ function AddUser() {
 
                   <FormInputGlobal
                     question="Bilkent ID*"
-                    type="text"
+                    type="number"
                     value={formData.bilkentID}
                     onChange={(value) => handleChange("bilkentID", value)}
                   />
