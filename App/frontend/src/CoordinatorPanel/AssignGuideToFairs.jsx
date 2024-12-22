@@ -24,9 +24,9 @@ function AssignGuideToFairs() {
   const [selectedFair, setSelectedFair] = useState(null);
   const [popupType, setPopupType] = useState(null); // "dismiss" or "assign"
   const [dropdownValue, setDropdownValue] = useState("");
-
-  const guides = ["Can", "Ege", "Bora"];
-  const allGuides = [...guides, "Ertu", "Kerem"];
+  const [tourGuides, setTourGuides] = useState([]);
+  const [availableGuides, setAvailableGuides] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +49,43 @@ function AssignGuideToFairs() {
 
   const handleRowClick = (row) => {
     setSelectedFair(row);
-    setPopupType(null); // Ensure no popup is open initially
+
+    const fetchAvailableGuides = async () => {
+      try {
+        const response = await fetch(
+          `/api/schedule/fair/${selectedFair.code}/guide`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setAvailableGuides(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const fetchTourGuides = async () => {
+      try {
+        const response = await fetch("/api/user/filter/4"); //CHANGE
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setTourGuides(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTourGuides();
+    fetchAvailableGuides();
+
+    setPopupType(null);
   };
 
   const handleDismissGuide = () => {
@@ -71,10 +107,21 @@ function AssignGuideToFairs() {
     setPopupType(null);
   };
 
-  const handleDismiss = async () => {
-    // IMPLEMENT !!!!!!!!!!!!!
-    alert(`Confirmed action with guide: ${dropdownValue}`);
+  const handleDismiss = async (fairCode, guideUID) => {
+    try {
+      await fetch(`/api/schedule/fair/${fairCode}/guide/${guideUID}`, {
+        method: "DELETE",
+      });
+      fetchTourRequests();
+    } catch (error) {
+      console.error("Error deleting registration:", error);
+    }
     setPopupType(null);
+    refresh();
+  };
+
+  const refresh = () => {
+    window.location.reload();
   };
 
   return (
@@ -202,7 +249,7 @@ function AssignGuideToFairs() {
                 <>
                   <h2>Assign Guide</h2>
                   <FormDropDownGlobal
-                    arr={allGuides}
+                    arr={availableGuides.map((guide) => guide.name)}
                     question="Select a guide to assign"
                     onChange={(value) => setDropdownValue(value)}
                   />
@@ -254,7 +301,7 @@ function AssignGuideToFairs() {
                 <>
                   <h2>Dismiss Guide</h2>
                   <FormDropDownGlobal
-                    arr={guides}
+                    arr={tourGuides.map((guide) => guide.name)}
                     question="Select a guide to dismiss"
                     onChange={(value) => setDropdownValue(value)}
                   />
@@ -275,7 +322,9 @@ function AssignGuideToFairs() {
                         transition:
                           "background-color 0.3s ease, transform 0.2s ease",
                       }}
-                      onClick={() => handleDismiss()}
+                      onClick={() =>
+                        handleDismiss(selectedFair.fairCode, dropdownValue)
+                      }
                     >
                       Dismiss
                     </button>
