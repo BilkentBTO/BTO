@@ -197,7 +197,20 @@ namespace backend.Server.Controllers
 
             return Ok(tours);
         }
+        #endregion
 
+        #region GUIDE
+        [HttpGet("available/guide")]
+        //MAJOR TODO
+        public async Task<ActionResult> GetAllAvailableGuides()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<Fair> tours = await _controller.GetAllAvailableFairs();
+
+            return Ok(tours);
+        }
         #endregion
     }
 }

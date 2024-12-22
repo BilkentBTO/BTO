@@ -228,53 +228,6 @@ namespace backend.Database
             }
         }
 
-        public async Task<bool> AddFair(string fairCode)
-        {
-            try
-            {
-                if (await _SystemContext.Fairs.AnyAsync(f => f.FairRegistrationCode == fairCode))
-                {
-                    _logger.LogError($"Can't add fair, fair with code {fairCode} already exist.");
-                    return false;
-                }
-                bool fairRegistrationExists = await _SystemContext.FairRegistrations.AnyAsync(f =>
-                    f.Code == fairCode
-                );
-                if (!fairRegistrationExists)
-                {
-                    return false;
-                }
-                FairRegistration? FairRegistration =
-                    await _SystemContext.FairRegistrations.FirstOrDefaultAsync(f =>
-                        f.Code == fairCode
-                    );
-
-                if (FairRegistration == null)
-                {
-                    return false;
-                }
-                if (FairRegistration.School == null)
-                {
-                    return false;
-                }
-
-                Fair newFair = new Fair
-                {
-                    FairRegistrationCode = fairCode,
-                    FairRegistirationInfo = FairRegistration,
-                };
-
-                await _SystemContext.Fairs.AddAsync(newFair);
-                await _SystemContext.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in AddFair: {ex.Message}");
-                return false;
-            }
-        }
-
         public async Task<bool> RemoveFair(string fairCode)
         {
             try
@@ -516,5 +469,19 @@ namespace backend.Database
                 return [];
             }
         }
+        /*
+        public async Task<List<User>> GetAllAvailableGuides()
+        {
+            try
+            {
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+        */
     }
 }

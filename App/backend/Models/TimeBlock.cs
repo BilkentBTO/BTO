@@ -2,11 +2,6 @@ using BTO.Setting;
 
 namespace backend.Models
 {
-    public struct Availability
-    {
-        private int DailySchedule { get; set; }
-    }
-
     public class TimeBlock
     {
         public DateTime Time { get; set; }

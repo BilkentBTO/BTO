@@ -82,6 +82,8 @@ namespace backend.Models
         public string? AssignedTourCode { get; set; }
         public string? AssignedFairCode { get; set; }
 
+        public List<DateTime> AvailableHours { get; set; } = new List<DateTime>();
+
         [NotMapped]
         public Major? Major => Major.AllMajors.FirstOrDefault(m => m.Id == MajorCode);
         public int? CurrentYear { get; set; }
@@ -93,14 +95,10 @@ namespace backend.Models
     {
         public bool IsCandidate { get; private set; }
 
-        [Column(TypeName = "jsonb")]
-        public Availability[] Schedule { get; private set; }
-
         public Guide(string Name, string Surname, string Mail, bool isCandidate = false)
             : base(Name, Surname, Mail)
         {
             IsCandidate = isCandidate;
-            Schedule = new Availability[4];
         }
     }
 
@@ -150,5 +148,10 @@ namespace backend.Models
         public int? CurrentYear { get; set; }
         public int MajorCode { get; set; }
         public UserType UserType { get; set; }
+    }
+
+    public class UserAvailableHours
+    {
+        public List<DateTime> AvailableHours { get; set; } = new List<DateTime>();
     }
 }

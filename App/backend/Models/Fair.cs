@@ -14,7 +14,6 @@ namespace backend.Models
         [NotMapped]
         public FairRegistration? FairRegistirationInfo { get; set; }
         public List<int>? AssignedGuideIDs { get; set; } = new();
-        private readonly List<Comment> Comments = [];
 
         public bool AddGuide(User guide)
         {
@@ -44,13 +43,5 @@ namespace backend.Models
         {
             this.FairRegistirationInfo = registration;
         }
-
-        public void AddComment(Comment comment) => Comments.Add(comment);
-
-        public void RemoveComment(int ID) => Comments.RemoveAll(c => c.ID == ID);
-
-        public void RemoveAllComments() => Comments.Clear();
-
-        public Comment[] GetComments() => Comments.ToArray();
     }
 }

@@ -36,6 +36,14 @@ namespace backend.Mail
 
         public async Task<bool> TourCancelled(Tour tour)
         {
+            if (
+                tour == null
+                || tour.TourRegistirationInfo == null
+                || tour.TourRegistirationInfo.School == null
+            )
+            {
+                return false;
+            }
             TourRegistration info = tour.TourRegistirationInfo;
             var email = new TransactionalEmailBuilder()
                 .WithFrom(SenderMailAddress)

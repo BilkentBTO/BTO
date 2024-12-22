@@ -174,5 +174,37 @@ namespace backend.Server.Controllers
             }
             return Ok(status);
         }
+
+        [HttpPost("{userID}/hours")]
+        public async Task<ActionResult> AddAvailableHoursToGuide(
+            int userID,
+            [FromBody] UserAvailableHours availability
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.AddAvailableHoursToGuide(userID, availability);
+
+            return ErrorHandler.HandleError(result);
+        }
+
+        [HttpDelete("{userID}/hours")]
+        public async Task<ActionResult> DeleteAvailableHoursFromGuide(
+            int userID,
+            [FromBody] UserAvailableHours availability
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.RemoveAvailableHoursFromGuide(userID, availability);
+
+            return ErrorHandler.HandleError(result);
+        }
     }
 }

@@ -802,11 +802,6 @@ namespace backend.Database
                 .ToListAsync();
         }
 
-        public async Task<School?> GetSchoolByName(string name)
-        {
-            return await _SystemContext.Schools.SingleOrDefaultAsync(s => s.SchoolName == name);
-        }
-
         public async Task<List<User>> GetUsersAsync()
         {
             return await _SystemContext.Users.OrderBy(c => c.Name).ToListAsync();
@@ -929,6 +924,26 @@ namespace backend.Database
                     UserType = userCreate.UserType,
                 };
             }
+            else if (userCreate.UserType == UserType.Coordinator)
+            {
+                newUser = new Coordinator(userCreate.Name, userCreate.Surname, userCreate.Mail)
+                {
+                    BilkentID = userCreate.BilkentID,
+                    MajorCode = userCreate.MajorCode,
+                    CurrentYear = userCreate.CurrentYear,
+                    UserType = userCreate.UserType,
+                };
+            }
+            else if (userCreate.UserType == UserType.Admin)
+            {
+                newUser = new Admin(userCreate.Name, userCreate.Surname, userCreate.Mail)
+                {
+                    BilkentID = userCreate.BilkentID,
+                    MajorCode = userCreate.MajorCode,
+                    CurrentYear = userCreate.CurrentYear,
+                    UserType = userCreate.UserType,
+                };
+            }
             else
             {
                 newUser = new User(userCreate.Name, userCreate.Surname, userCreate.Mail)
@@ -1012,6 +1027,48 @@ namespace backend.Database
                 _logger.LogError($"Error in {nameof(DeleteUserAsync)}: " + exp.Message);
             }
             return false;
+        }
+
+        public async Task<ErrorTypes> AddAvailableHoursToGuide(
+            int UID,
+            UserAvailableHours availability
+        )
+        {
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == UID);
+
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            var newDates = availability
+                .AvailableHours.Where(d => !user.AvailableHours.Contains(d))
+                .ToList();
+
+            user.AvailableHours.AddRange(newDates);
+
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
+        }
+
+        public async Task<ErrorTypes> RemoveAvailableHoursFromGuide(
+            int UID,
+            UserAvailableHours availability
+        )
+        {
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == UID);
+
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            user.AvailableHours.RemoveAll(d => availability.AvailableHours.Contains(d));
+
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> MakeUserRegistrationRequest(UserCreateRequest request)
