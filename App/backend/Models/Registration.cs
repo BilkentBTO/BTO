@@ -79,7 +79,7 @@ namespace backend.Models
 
         public School? School { get; set; }
 
-        public DateTime DateOfVisit { get; set; }
+        public DateTime Time { get; set; }
 
         public string? SuperVisorName { get; set; }
 
