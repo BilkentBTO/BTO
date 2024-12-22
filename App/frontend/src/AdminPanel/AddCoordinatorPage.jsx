@@ -88,7 +88,7 @@ function AddCoordinator() {
       bilkentID: parseInt(formData.bilkentID, 10),
       majorCode: formData.majorCode,
       currentYear: parseInt(formData.currentYear, 10),
-      userType: 1, // UserType for Coordinator
+      userType: 2, // UserType for Coordinator
     };
 
     console.log("Submitting payload:", payload);
@@ -160,7 +160,7 @@ function AddCoordinator() {
               />
               <FormInputGlobal
                 question="Bilkent ID*"
-                type="text"
+                type="number"
                 value={formData.bilkentID}
                 onChange={(value) => handleChange("bilkentID", value)}
               />

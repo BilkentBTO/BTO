@@ -13,7 +13,7 @@ function ListCoordinatorsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/user/filter/1");
+        const response = await fetch("/api/user/filter/2");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

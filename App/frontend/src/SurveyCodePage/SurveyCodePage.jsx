@@ -15,7 +15,7 @@ function SurveyCodePage() {
   // Function to fetch survey data
   const handleViewSurvey = async () => {
     // TEST IF CLAUSE, DELETE LATER
-    if (true) {
+    if (false) {
       navigate("/viewSchoolSurvey");
     } else {
       navigate("/viewIndividualSurvey");
