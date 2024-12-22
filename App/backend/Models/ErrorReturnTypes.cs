@@ -27,6 +27,7 @@ namespace backend.Models
         FairRegistrationNotLinkedWithSchool = 20,
         FairNotFound = 21,
         FairDoesNotHaveTheSpecifiedGuide = 22,
+        GuideAlreadyAddedToFair = 23,
     }
 
     public static class ErrorHandler
@@ -123,6 +124,10 @@ namespace backend.Models
 
                 ErrorTypes.FairDoesNotHaveTheSpecifiedGuide => new BadRequestObjectResult(
                     new { message = "The fair does not have the specified guide." }
+                ),
+
+                ErrorTypes.GuideAlreadyAddedToFair => new ConflictObjectResult(
+                    new { message = "The guide is already added to this fair." }
                 ),
 
                 _ => new StatusCodeResult(500), // Fallback for unexpected errors

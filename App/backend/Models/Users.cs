@@ -79,6 +79,9 @@ namespace backend.Models
         public int? BilkentID { get; set; }
         public int MajorCode { get; set; }
 
+        public string? AssignedTourCode { get; set; }
+        public string? AssignedFairCode { get; set; }
+
         [NotMapped]
         public Major? Major => Major.AllMajors.FirstOrDefault(m => m.Id == MajorCode);
         public int? CurrentYear { get; set; }

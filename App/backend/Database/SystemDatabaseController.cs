@@ -94,6 +94,7 @@ namespace backend.Database
             User foundGuide = user;
 
             Tour.AssignGuide(foundGuide);
+            foundGuide.AssignedTourCode = Tour.TourRegistrationCode;
 
             await _SystemContext.SaveChangesAsync();
 
@@ -814,6 +815,69 @@ namespace backend.Database
         public async Task<User?> GetUserAsync(int id)
         {
             return await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
+        }
+
+        public async Task<Tour?> GetTourOfUser(int id)
+        {
+            var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
+
+            if (User == null || User.AssignedTourCode == null)
+            {
+                return null;
+            }
+
+            var Tour = await _SystemContext.Tours.SingleOrDefaultAsync(t =>
+                t.TourRegistrationCode == User.AssignedTourCode
+            );
+
+            if (Tour == null)
+            {
+                return null;
+            }
+
+            TourRegistration? TourRegistration = await _SystemContext
+                .TourRegistrations.Include(r => r.School)
+                .Include(r => r.TimeBlock)
+                .FirstOrDefaultAsync(t => t.Code == Tour.TourRegistrationCode);
+
+            if (TourRegistration == null)
+            {
+                return null;
+            }
+
+            Tour.FillTourRegistrationInfo(TourRegistration);
+
+            return Tour;
+        }
+
+        public async Task<Fair?> GetFairOfUser(int id)
+        {
+            var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
+
+            if (User == null || User.AssignedFairCode == null)
+            {
+                return null;
+            }
+
+            var Fair = await _SystemContext.Fairs.SingleOrDefaultAsync(t =>
+                t.FairRegistrationCode == User.AssignedTourCode
+            );
+
+            if (Fair == null)
+            {
+                return null;
+            }
+
+            var fairRegistration = await _SystemContext
+                .FairRegistrations.Include(r => r.School)
+                .FirstOrDefaultAsync(r => r.Code == Fair.FairRegistrationCode);
+
+            if (fairRegistration == null)
+            {
+                return null;
+            }
+            Fair.FillFairRegistrationInfo(fairRegistration);
+            return Fair;
         }
 
         public async Task<List<User>> GetUserFilteredAsync(UserType id)

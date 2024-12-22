@@ -310,6 +310,14 @@ namespace backend.Database
                 _logger.LogError($"Can't find fair, fair with code {fairCode} does not exist.");
                 return null;
             }
+            FairRegistration? FairRegistration = await _SystemContext
+                .FairRegistrations.Include(r => r.School)
+                .FirstOrDefaultAsync(t => t.Code == fairCode);
+            if (FairRegistration == null)
+            {
+                return null;
+            }
+            foundFair.FillFairRegistrationInfo(FairRegistration);
             return foundFair;
         }
 
@@ -369,7 +377,12 @@ namespace backend.Database
 
             User foundGuide = user;
 
-            Fair.AddGuide(foundGuide);
+            bool AddResult = Fair.AddGuide(foundGuide);
+            if (!AddResult)
+            {
+                return ErrorTypes.GuideAlreadyAddedToFair;
+            }
+            foundGuide.AssignedFairCode = Fair.FairRegistrationCode;
 
             await _SystemContext.SaveChangesAsync();
 
@@ -391,7 +404,6 @@ namespace backend.Database
             {
                 return ErrorTypes.FairNotFound;
             }
-
             bool isRemoved = Fair.RemoveGuide(newGuideUID);
 
             if (!isRemoved)
@@ -401,6 +413,36 @@ namespace backend.Database
             await _SystemContext.SaveChangesAsync();
 
             return ErrorTypes.Success;
+        }
+
+        public async Task<List<User>> GetAllGuidesOfFair(string FairCode)
+        {
+            if (string.IsNullOrEmpty(FairCode))
+            {
+                return new List<User>();
+            }
+
+            Fair? Fair = await _SystemContext.Fairs.SingleOrDefaultAsync(t =>
+                t.FairRegistrationCode == FairCode
+            );
+
+            if (Fair == null || Fair.AssignedGuideIDs == null)
+            {
+                return new List<User>();
+            }
+
+            List<User> result = new List<User>();
+
+            foreach (var guideUID in Fair.AssignedGuideIDs)
+            {
+                var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == guideUID);
+                if (User == null)
+                {
+                    continue;
+                }
+                result.Add(User);
+            }
+            return result;
         }
 
         public async Task<List<Fair>> GetAllFairs()

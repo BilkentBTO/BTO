@@ -103,6 +103,17 @@ namespace backend.Server.Controllers
 
         #region FAIR
 
+        [HttpGet("fair/{fairCode}/guide")]
+        public async Task<ActionResult> GetAllGuidesOfFair(string fairCode)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _controller.GetAllGuidesOfFair(fairCode);
+
+            return Ok(result);
+        }
+
         [HttpPut("fair/{fairCode}/guide/{guideUID}")]
         public async Task<ActionResult> AddGuideToFair(string fairCode, int guideUID)
         {
