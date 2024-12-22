@@ -6,16 +6,23 @@ import "./SurveyCodePage.css";
 import returnButton from "../assets/return.png";
 
 function SurveyCodePage() {
-  const [registrationCode, setRegistrationCode] = useState(""); // Input field state
+  const [surveyCode, setSurveyCode] = useState(""); // Input field state
   const [isPopupVisible, setIsPopupVisible] = useState(false); // Popup visibility
   const [popupMessage, setPopupMessage] = useState(""); // Popup message
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
-  // Function to fetch registration data
-  const handleViewRegistration = async () => {
-    if (!registrationCode.trim()) {
-      setPopupMessage("Please enter a valid registration code.");
+  // Function to fetch survey data
+  const handleViewSurvey = async () => {
+    // TEST IF CLAUSE, DELETE LATER
+    if (true) {
+      navigate("/viewSchoolSurvey");
+    } else {
+      navigate("/viewIndividualSurvey");
+    }
+    /*
+    if (!surveyCode.trim()) {
+      setPopupMessage("Please enter a valid survey code.");
       setIsPopupVisible(true);
       return;
     }
@@ -23,7 +30,7 @@ function SurveyCodePage() {
     setIsLoading(true); // Show loading state
     try {
       const response = await fetch(
-        `api/register/general?Code=${registrationCode}`
+        `api/register/general?Code=${surveyCode}` // CHANGE ACCORDING TO ERTUGRUL
       );
 
       if (!response.ok) {
@@ -31,21 +38,25 @@ function SurveyCodePage() {
       }
 
       const data = await response.json();
-      console.log("API Response:", data); // Log the API response
+      console.log("API Response:", data);
 
-      // Navigate to the next page with the API response
-      navigate("/viewRegistrationDetails", {
-        state: { registrationData: data },
-      });
+      if (true) { // CHANGE ACCORDING TO ERTUGRUL
+        navigate("/viewSchoolSurvey", {
+          state: { surveyData: data },
+        });
+      } else {
+        navigate("/viewIndividualSurvey", {
+          state: { surveyData: data },
+        });
+      }
     } catch (error) {
-      console.error("Error fetching registration:", error);
-      setPopupMessage(
-        "Failed to retrieve registration. Please check the code."
-      );
+      console.error("Error fetching survey:", error);
+      setPopupMessage("Failed to retrieve survey. Please check the code.");
       setIsPopupVisible(true);
     } finally {
       setIsLoading(false); // Stop loading
     }
+    */
   };
 
   const closePopup = () => {
@@ -66,12 +77,12 @@ function SurveyCodePage() {
             type="text"
             className="regCodePageInputField"
             placeholder="Type Code"
-            value={registrationCode}
-            onChange={(e) => setRegistrationCode(e.target.value)}
+            value={surveyCode}
+            onChange={(e) => setSurveyCode(e.target.value)}
           />
           <button
             className="regCodePageInputButton"
-            onClick={handleViewRegistration}
+            onClick={handleViewSurvey}
             disabled={isLoading}
           >
             {isLoading ? "Loading..." : "View Survey"}
