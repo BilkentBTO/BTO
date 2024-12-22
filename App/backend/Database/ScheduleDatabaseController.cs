@@ -342,15 +342,23 @@ namespace backend.Database
                 return ErrorTypes.UserNotFound;
             }
 
-            User foundGuide = user;
-
-            bool AddResult = Fair.AddGuide(foundGuide);
+            bool AddResult = Fair.AddGuide(user);
             if (!AddResult)
             {
                 return ErrorTypes.GuideAlreadyAddedToFair;
             }
-            foundGuide.AssignedFairCode = Fair.FairRegistrationCode;
-
+            user.AssignedFairCode = Fair.FairRegistrationCode;
+            if (user.AssignedTourCode != null)
+            {
+                Tour? Tour = await _SystemContext.Tours.SingleOrDefaultAsync(t =>
+                    t.TourRegistrationCode == user.AssignedTourCode
+                );
+                if (Tour != null)
+                {
+                    Tour.RemoveGuide();
+                }
+                user.AssignedTourCode = null;
+            }
             await _SystemContext.SaveChangesAsync();
 
             return ErrorTypes.Success;

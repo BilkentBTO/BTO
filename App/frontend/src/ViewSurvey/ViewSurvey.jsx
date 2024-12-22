@@ -98,7 +98,7 @@ function ViewSurvey() {
   };
 
   useEffect(() => {
-    document.title = "School Tour Registration - BTO";
+    document.title = "View Survey - BTO";
 
     fetch("/api/Schools/cities")
       .then((response) => response.json())
@@ -151,7 +151,7 @@ function ViewSurvey() {
 
   return (
     <div className="schoolRegistrationPage">
-      <HeaderGlobal name={"INDIVIDUAL TOUR SURVEY"} />
+      <HeaderGlobal name={"TOUR SURVEY"} />
       <div className="innerSchoolRegPage">
         <div className="schoolRegForm">
           {/* Name */}
