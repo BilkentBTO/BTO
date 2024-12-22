@@ -120,7 +120,7 @@ namespace backend.Database
                     continue;
                 }
                 User? linkedUser = await GetUserAsync(application.GuideUID);
-                if (linkedUser == null || linkedUser.UserType != UserType.Guide)
+                if (linkedUser == null)
                 {
                     continue;
                 }

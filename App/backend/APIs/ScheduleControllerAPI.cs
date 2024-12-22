@@ -165,6 +165,17 @@ namespace backend.Server.Controllers
             return Ok(fairs);
         }
 
+        [HttpGet("availablefairs")]
+        public async Task<ActionResult> GetAllAvailableFairs()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<Fair> tours = await _controller.GetAllAvailableFairs();
+
+            return Ok(tours);
+        }
+
         #endregion
     }
 }

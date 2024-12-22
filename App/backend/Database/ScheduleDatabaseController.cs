@@ -369,68 +369,45 @@ namespace backend.Database
             }
         }
 
-        /*
-        public async Task<bool> TimeBlockExists(int timeID)
+        public async Task<List<Fair>> GetAllAvailableFairs()
         {
             try
             {
-                return await _SystemContext.TimeBlocks.AnyAsync(t => t.ID == timeID);
+                var allFairs = await _SystemContext.Fairs.ToListAsync();
+
+                for (int i = allFairs.Count - 1; i >= 0; i--)
+                {
+                    var fair = allFairs[i];
+
+                    var fairRegistration = await _SystemContext
+                        .FairRegistrations.Include(r => r.School)
+                        .FirstOrDefaultAsync(r => r.Code == fair.FairRegistrationCode);
+
+                    if (fairRegistration == null)
+                    {
+                        allFairs.RemoveAt(i);
+                    }
+                    else
+                    {
+                        fair.FillFairRegistrationInfo(fairRegistration);
+                    }
+
+                    if (
+                        fair.FairRegistirationInfo == null
+                        || fair.FairRegistirationInfo.State != RegistrationState.Accepted
+                    )
+                    {
+                        allFairs.RemoveAt(i);
+                        continue;
+                    }
+                }
+                return allFairs;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in AddTimeBlock: {ex.Message}");
-                return false;
+                _logger.LogError($"Error in GetAllFairs: {ex.Message}");
+                return [];
             }
         }
-
-        public async Task<bool> TimeBlockExists(DateTime day, int timeBlockIndex)
-        {
-            if (timeBlockIndex < 0 || timeBlockIndex >= TimeConstrains.TimeBlocksPerDay)
-                return false;
-            day = new DateTime(day.Year, day.Month, day.Day);
-            return await TimeBlockExists(TimeBlock.GetID(day, timeBlockIndex));
-        }
-
-        public async Task<TimeBlock?> GetTimeBlock(int timeID)
-        {
-            TimeBlock? foundTB = await _SystemContext.TimeBlocks.FirstOrDefaultAsync(t =>
-                t.ID == timeID
-            );
-            if (foundTB == null)
-            {
-                _logger.LogError($"Can't find time block, timeID {timeID} does not exist.");
-            }
-            return foundTB;
-        }
-
-        public async Task<TimeBlock?> GetTimeBlock(DateTime day, int timeBlockIndex)
-        {
-            if (timeBlockIndex < 0 || timeBlockIndex >= TimeConstrains.TimeBlocksPerDay)
-                return null;
-            day = new DateTime(day.Year, day.Month, day.Day);
-            return await GetTimeBlock(TimeBlock.GetID(day, timeBlockIndex));
-        }
-
-        public async Task<bool> UpdateTimeBlock(TimeBlock timeBlock)
-        {
-            if (!await _SystemContext.TimeBlocks.AnyAsync(t => t.ID == timeBlock.ID))
-            {
-                return false;
-            }
-
-            _SystemContext.TimeBlocks.Attach(timeBlock);
-            _SystemContext.Entry(timeBlock).State = EntityState.Modified;
-
-            try
-            {
-                return await _SystemContext.SaveChangesAsync() > 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in UpdateTimeBlock: {ex.Message}");
-                return false;
-            }
-        }
-        */
     }
 }
