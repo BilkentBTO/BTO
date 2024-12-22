@@ -26,7 +26,6 @@ namespace backend.Database
                     return false;
                 }
                 
-                // Check if visitor already exists (you can change this condition as needed)
                 bool visitorExists = await _context.Visitors.AnyAsync(v =>
                     v.Name == visitor.Name && v.City == visitor.City);
 
@@ -34,18 +33,15 @@ namespace backend.Database
                 {
                     return false;
                 }
-
                 await _context.Visitors.AddAsync(visitor);
                 await _context.SaveChangesAsync();
-
-                // After saving changes, the visitor object will contain the ID
                 return true;
             }
             catch (Exception)
             {
                 return false;
             }
-}
+        }
 
 
         // Get a visitor by their ID

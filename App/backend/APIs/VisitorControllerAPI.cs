@@ -29,7 +29,6 @@ namespace backend.Server.Controllers
             if (!isAdded)
                 return BadRequest("Unable to add visitor.");
 
-            // Return the visitor ID after it is successfully added
             return Ok(new { VisitorId = visitor.ID });
         }
 
