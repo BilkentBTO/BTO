@@ -15,7 +15,7 @@ namespace backend.Server.Controllers
             _controller = controller;
         }
 
-        // Create a new survey with questions and options
+        // Create a new survey with questions
         [HttpPost("create")]
         public async Task<ActionResult> CreateSurvey([FromBody] Survey survey)
         {
@@ -28,16 +28,47 @@ namespace backend.Server.Controllers
 
             return Ok(new { SurveyId = surveyId });
         }
-
-        // Get survey by ID
+    
         [HttpGet("{surveyId}")]
-        public async Task<ActionResult> GetSurvey(int surveyId)
+        public async Task<IActionResult> GetSurvey(int surveyId)
         {
             var survey = await _controller.GetSurveyAsync(surveyId);
+
             if (survey == null)
+            {
                 return NotFound("Survey not found.");
+            }
 
             return Ok(survey);
+        }
+
+        //Get all surveys
+        [HttpGet]
+        public async Task<IActionResult> GetAllSurveys()
+        {
+            var surveys = await _controller.GetAllSurveysAsync();
+            
+            if (surveys == null || surveys.Count == 0)
+            {
+                return NotFound("No surveys found.");
+            }
+
+            return Ok(surveys);
+        }
+
+        //Get the number of questions in a specific survey by ID
+        [HttpGet("{surveyId}/question-count")]
+        public async Task<IActionResult> GetSurveyQuestionCount(int surveyId)
+        {
+            var survey = await _controller.GetSurveyAsync(surveyId);
+
+            if (survey == null)
+            {
+                return NotFound("Survey not found.");
+            }
+
+            int questionCount = survey.Questions.Count;
+            return Ok(new { SurveyId = surveyId, QuestionCount = questionCount });
         }
     }
 }

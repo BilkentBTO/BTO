@@ -12,7 +12,6 @@ namespace backend.Database
             _context = context;
         }
 
-        // Add a new survey with questions and options
         public async Task<int> AddSurveyAsync(Survey survey)
         {
             try
@@ -27,13 +26,15 @@ namespace backend.Database
             }
         }
 
-        // Get survey by ID, including questions and options
         public async Task<Survey?> GetSurveyAsync(int surveyId)
         {
-            return await _context.Surveys
-                .Include(s => s.Questions)
-                .ThenInclude(q => q.Options)
-                .FirstOrDefaultAsync(s => s.ID == surveyId);
+            var survey = await _context.Surveys.FirstOrDefaultAsync(s => s.ID == surveyId);
+            return survey;
+        }
+
+        public async Task<List<Survey>> GetAllSurveysAsync()
+        {
+            return await _context.Surveys.ToListAsync();
         }
     }
 }
