@@ -22,7 +22,7 @@ function SurveyCodePage() {
 
     setIsLoading(true); // Show loading state
     try {
-      const response = await fetch(`api/quiz/validate?quizCode=${surveyCode}`);
+      const response = await fetch(`api/quiz/validate/${surveyCode}`);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
