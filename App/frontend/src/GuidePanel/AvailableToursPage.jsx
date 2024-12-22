@@ -20,11 +20,12 @@ function AvailableToursPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/register/tour/registrations/1");
+        const response = await fetch("/api/schedule/availableTours");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const apiData = await response.json();
+        console.log(apiData);
         setData(apiData);
       } catch (error) {
         console.error("Error fetching tours data:", error.message);
@@ -37,7 +38,9 @@ function AvailableToursPage() {
   }, []);
 
   const handleRowClick = (rowData) => {
-    const selectedTourData = data.find((item) => item.code === rowData[0]);
+    const selectedTourData = data.find(
+      (item) => item.tourRegistrationCode === rowData[0]
+    );
     setSelectedTour(selectedTourData); // Track the clicked tour
     setShowPopup(true); // Show popup
   };
@@ -74,7 +77,7 @@ function AvailableToursPage() {
     console.log("TOUR: ", selectedTour.code);
 
     const payload = {
-      tourCode: selectedTour.code, // Pass the tour code from the selected tour
+      tourCode: selectedTour.tourRegistrationCode, // Pass the tour code from the selected tour
       guideUID: guideUID, // Replace with the actual guide UID from your app's state or context
     };
 
@@ -135,10 +138,10 @@ function AvailableToursPage() {
             <TableWithButtons
               headers={headers}
               data={data.map((item) => [
-                item.code || "N/A", // Tour ID
-                new Date(item.dateOfVisit).toLocaleDateString() || "N/A", // Date
-                item.school?.schoolName || "N/A", // School
-                item.numberOfVisitors || "N/A", // Number of Visitors
+                item.tourRegistrationCode || "N/A", // Tour ID
+                new Date(item.time).toLocaleDateString() || "N/A", // Date
+                item.tourRegistirationInfo?.school?.schoolName || "N/A", // School
+                item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
               ])}
               onButtonClick={handleRowClick}
               buttonStyle={buttonStyle}
@@ -164,23 +167,50 @@ function AvailableToursPage() {
                 >
                   <tbody>
                     {Object.entries({
-                      "Tour ID": selectedTour.code || "N/A",
-                      School: selectedTour.school?.schoolName || "N/A",
-                      City: selectedTour.cityName || "N/A",
-                      Date:
-                        new Date(
-                          selectedTour.dateOfVisit
-                        ).toLocaleDateString() || "N/A",
-                      Time: selectedTour.preferredVisitTime?.id || "N/A",
+                      "Tour ID": selectedTour?.tourRegistrationCode || "N/A",
+                      "School Name":
+                        selectedTour?.tourRegistirationInfo?.school
+                          ?.schoolName || "N/A",
+                      City:
+                        selectedTour?.tourRegistirationInfo?.school?.city
+                          ?.name || "N/A",
+                      Date: selectedTour?.tourRegistirationInfo?.time
+                        ? new Date(
+                            selectedTour.tourRegistirationInfo.time
+                          ).toLocaleDateString()
+                        : "N/A",
+                      Time: selectedTour?.tourRegistirationInfo?.time
+                        ? new Date(
+                            selectedTour.tourRegistirationInfo.time
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "N/A",
                       "Number of Visitors":
-                        selectedTour.numberOfVisitors || "N/A",
-                      Supervisor: selectedTour.superVisorName || "N/A",
-                      "Supervisor Duty": selectedTour.superVisorDuty || "N/A",
+                        selectedTour?.tourRegistirationInfo?.numberOfVisitors ||
+                        "N/A",
+                      "Supervisor Name":
+                        selectedTour?.tourRegistirationInfo?.superVisorName ||
+                        "N/A",
+                      "Supervisor Duty":
+                        selectedTour?.tourRegistirationInfo?.superVisorDuty ||
+                        "N/A",
                       "Supervisor Phone Number":
-                        selectedTour.superVisorPhoneNumber || "N/A",
-                      "Supervisor Mail":
-                        selectedTour.superVisorMailAddress || "N/A",
-                      Notes: selectedTour.notes || "N/A",
+                        selectedTour?.tourRegistirationInfo
+                          ?.superVisorPhoneNumber || "N/A",
+                      "Supervisor Email":
+                        selectedTour?.tourRegistirationInfo
+                          ?.superVisorMailAddress || "N/A",
+                      Notes:
+                        selectedTour?.tourRegistirationInfo?.notes || "N/A",
+                      "Priority Score":
+                        selectedTour?.tourRegistirationInfo?.school?.priority ||
+                        "N/A",
+                      "Distance to City (km)":
+                        selectedTour?.tourRegistirationInfo?.school?.city
+                          ?.distance || "N/A",
+                      Type: selectedTour?.tourRegistirationInfo?.type || "N/A",
                     }).map(([key, value]) => (
                       <tr key={key}>
                         <td
