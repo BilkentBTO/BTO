@@ -17,6 +17,7 @@
   }
   
   .popupContent {
+    justify-items: center;
     background: white;
     padding: 60px;
     border-radius: 10px;
