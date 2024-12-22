@@ -13,6 +13,7 @@ function ToursResponsibleByGuides() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [guides, setGuides] = useState([]);
+  const [availableGuides, setAvailableGuides] = useState([]);
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState(() => {
     return (
@@ -56,25 +57,60 @@ function ToursResponsibleByGuides() {
     // Set the selected row and show popup
     setSelectedRow(rowData);
 
+    const fetchAvailableGuidesForEvent = async (eventCode) => {
+      try {
+        const availableGuidesResponse = await fetch(
+          `/api/schedule/available/guide?eventCode=${eventCode}`
+        );
+        if (!availableGuidesResponse.ok) {
+          throw new Error(
+            `Failed to fetch available guides for event ${eventCode}: ${availableGuidesResponse.status}`
+          );
+        }
+        const availableGuidesData = await availableGuidesResponse.json();
+        console.log(
+          `Available Guides for Event ${eventCode}:`,
+          availableGuidesData
+        );
+        return availableGuidesData; // Return the available guides
+      } catch (error) {
+        console.error("Error fetching available guides:", error);
+        return [];
+      }
+    };
+
+    // Example usage for a specific event code
+    const fetchAndSetAvailableGuides = async () => {
+      const eventCode = rowData[0]; // Replace with actual eventCode
+      const availableGuides = await fetchAvailableGuidesForEvent(eventCode);
+      setAvailableGuides(availableGuides); // Update the state with available guides
+    };
+
     // Find the guide using the full name
-    const guideDetails = users.find(
-      (guide) => `${guide.name} ${guide.surname}` === guideFullName
-    );
-    console.log("GUIDE DETAILS: ", guideDetails);
+
+    if (guideFullName != "Unassigned Unassigned") {
+      const guideDetails = users.find(
+        (guide) => `${guide.name} ${guide.surname}` === guideFullName
+      );
+      console.log("GUIDE DETAILS: ", guideDetails);
+      console.log("ROW DATA: ", rowData);
+      // Set the selected guide details
+      setSelectedGuideDetails({
+        guideId: guideDetails.id || "N/A",
+        guideName: guideDetails.name || "N/A",
+        surname: guideDetails.surname || "N/A",
+        mail: guideDetails.mail || "N/A",
+        bilkentID: guideDetails.bilkentID || "N/A",
+        majorCode: guideDetails.major?.id || "N/A",
+        major: guideDetails.major?.name || "N/A",
+        currentYear: guideDetails.currentYear || "N/A",
+        workHours: guideDetails.workHours || "N/A",
+        userType: guideDetails.userType || "N/A",
+      });
+    }
     console.log("ROW DATA: ", rowData);
-    // Set the selected guide details
-    setSelectedGuideDetails({
-      guideId: guideDetails.id || "N/A",
-      guideName: guideDetails.name || "N/A",
-      surname: guideDetails.surname || "N/A",
-      mail: guideDetails.mail || "N/A",
-      bilkentID: guideDetails.bilkentID || "N/A",
-      majorCode: guideDetails.major?.id || "N/A",
-      major: guideDetails.major?.name || "N/A",
-      currentYear: guideDetails.currentYear || "N/A",
-      workHours: guideDetails.workHours || "N/A",
-      userType: guideDetails.userType || "N/A",
-    });
+
+    fetchAndSetAvailableGuides();
     setIsPopupVisible(true);
   };
 
@@ -204,6 +240,7 @@ function ToursResponsibleByGuides() {
         console.error("Error fetching guides:", error);
       }
     };
+
     fetchAllUsers();
     fetchGuides();
     fetchToursAndUsers();
@@ -281,7 +318,9 @@ function ToursResponsibleByGuides() {
               </p>
               <h3>New Guide</h3>
               <FormDropDownGlobal
-                arr={guides.map((guide) => `${guide.name} ${guide.surname}`)}
+                arr={availableGuides.map(
+                  (guide) => `${guide.name} ${guide.surname}`
+                )}
                 question="Select a Guide"
                 onChange={handleFormChange}
               />
