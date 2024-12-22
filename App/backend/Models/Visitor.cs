@@ -14,8 +14,7 @@ namespace backend.Models
         public string? Surname { get; set; }
         public string? City { get; set; }
         public string? School { get; set; }
-        public string? GuideName { get; set; }
-        public int GuideRating { get; set; }
-        public string? Comment { get; set; }
+        public int GuideUID { get; set; }
+        
     }
 }
