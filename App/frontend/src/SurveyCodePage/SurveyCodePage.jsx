@@ -14,9 +14,6 @@ function SurveyCodePage() {
 
   // Function to fetch survey data
   const handleViewSurvey = async () => {
-    // TEST IF CLAUSE, DELETE LATER
-    navigate("/viewSurvey");
-    /*
     if (!surveyCode.trim()) {
       setPopupMessage("Please enter a valid survey code.");
       setIsPopupVisible(true);
@@ -25,9 +22,7 @@ function SurveyCodePage() {
 
     setIsLoading(true); // Show loading state
     try {
-      const response = await fetch(
-        `api/register/general?Code=${surveyCode}` // CHANGE ACCORDING TO ERTUGRUL
-      );
+      const response = await fetch(`api/quiz/validate?quizCode=${surveyCode}`);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -36,11 +31,9 @@ function SurveyCodePage() {
       const data = await response.json();
       console.log("API Response:", data);
 
-      
-        navigate("/viewSurvey", {
-          state: { surveyData: data },
-        });
-      
+      navigate("/viewSurvey", {
+        state: { surveyData: data },
+      });
     } catch (error) {
       console.error("Error fetching survey:", error);
       setPopupMessage("Failed to retrieve survey. Please check the code.");
@@ -48,7 +41,6 @@ function SurveyCodePage() {
     } finally {
       setIsLoading(false); // Stop loading
     }
-    */
   };
 
   const closePopup = () => {
