@@ -105,9 +105,9 @@ namespace backend.Server.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            List<Tour> tours = await _controller.GetAllAvailableTours();
+            var result = await _controller.EndTour(Code);
 
-            return Ok(tours);
+            return ErrorHandler.HandleError(result);
         }
 
         #endregion
