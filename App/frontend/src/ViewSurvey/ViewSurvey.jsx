@@ -50,7 +50,7 @@ function ViewSurvey() {
       return;
     }
     /*
-    const payloadVisitor = {
+    const payload = {
       name: formData.name,
       surname: formData.surname,
       city: formData.city,

@@ -128,7 +128,7 @@ function EvaluateTourRequests() {
     "School Name": "school.schoolName",
     Priority: "school.priority",
     City: "cityName",
-    "Date of Visit": "dateOfVisit",
+    "Date of Visit": "timeBlock.time",
     "Number of Visitors": "numberOfVisitors",
     "Supervisor Name": "superVisorName",
     "Supervisor Duty": "superVisorDuty",
