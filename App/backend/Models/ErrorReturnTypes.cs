@@ -46,7 +46,7 @@ namespace backend.Models
                 ),
 
                 ErrorTypes.TourRegistrationNotFound => new NotFoundObjectResult(
-                    new { message = "Tour Registration not found." }
+                    new { message = "Tour registration not found." }
                 ),
 
                 ErrorTypes.InvalidTourCode => new BadRequestObjectResult(
@@ -79,6 +79,50 @@ namespace backend.Models
 
                 ErrorTypes.GuideAlreadyAppliedToTour => new ConflictObjectResult(
                     new { message = "Guide has already applied to this or another tour." }
+                ),
+
+                ErrorTypes.FairRegistrationNotFound => new NotFoundObjectResult(
+                    new { message = "Fair registration not found." }
+                ),
+
+                ErrorTypes.InvalidFairCode => new BadRequestObjectResult(
+                    new { message = "Invalid fair code provided." }
+                ),
+
+                ErrorTypes.InvalidIndividualCode => new BadRequestObjectResult(
+                    new { message = "Invalid individual code provided." }
+                ),
+
+                ErrorTypes.IndividualRegistrationNotFound => new NotFoundObjectResult(
+                    new { message = "Individual registration not found." }
+                ),
+
+                ErrorTypes.WrongGuideIDForTour => new BadRequestObjectResult(
+                    new { message = "Wrong guide ID for the specified tour." }
+                ),
+
+                ErrorTypes.TourAlreadyAccepted => new ConflictObjectResult(
+                    new { message = "Tour has already been accepted." }
+                ),
+
+                ErrorTypes.TourRegistrationNotLinkedWithSchool => new BadRequestObjectResult(
+                    new { message = "Tour registration is not linked with the specified school." }
+                ),
+
+                ErrorTypes.FairAlreadyAccepted => new ConflictObjectResult(
+                    new { message = "Fair has already been accepted." }
+                ),
+
+                ErrorTypes.FairRegistrationNotLinkedWithSchool => new BadRequestObjectResult(
+                    new { message = "Fair registration is not linked with the specified school." }
+                ),
+
+                ErrorTypes.FairNotFound => new NotFoundObjectResult(
+                    new { message = "Fair not found." }
+                ),
+
+                ErrorTypes.FairDoesNotHaveTheSpecifiedGuide => new BadRequestObjectResult(
+                    new { message = "The fair does not have the specified guide." }
                 ),
 
                 _ => new StatusCodeResult(500), // Fallback for unexpected errors
