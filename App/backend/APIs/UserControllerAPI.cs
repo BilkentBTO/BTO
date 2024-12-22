@@ -147,7 +147,7 @@ namespace backend.Server.Controllers
             return ErrorHandler.HandleError(result);
         }
 
-        [HttpPut("")]
+        [HttpPut()]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(bool), 400)]
         public async Task<ActionResult> UpdateUser([FromBody] UserEdit userEdit)
@@ -189,6 +189,32 @@ namespace backend.Server.Controllers
             var result = await _controller.AddAvailableHoursToGuide(userID, availability);
 
             return ErrorHandler.HandleError(result);
+        }
+
+        [HttpPut("{userID}/responsibleday/{day}")]
+        public async Task<ActionResult> ChangeResponsibleDay(int userID, DayOfWeek day)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.ChangeResponsibleDayOfUser(userID, day);
+
+            return ErrorHandler.HandleError(result);
+        }
+
+        [HttpGet("{userID}/responsibletours")]
+        public async Task<ActionResult> GetResponsibleTours(int userID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetResponsibleToursOfUser(userID);
+
+            return Ok(result);
         }
 
         [HttpDelete("{userID}/hours")]

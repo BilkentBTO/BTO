@@ -1,11 +1,12 @@
 /// <summary>
-/// Defines the `Tour` class, which encapsulates the management of tours, 
-/// including guide assignments and candidate guides. 
-/// It includes methods to assign and remove guides, add and remove candidate guides, and check the status of these assignments. 
+/// Defines the `Tour` class, which encapsulates the management of tours,
+/// including guide assignments and candidate guides.
+/// It includes methods to assign and remove guides, add and remove candidate guides, and check the status of these assignments.
 /// Additionally, the class handles tour registration information and priority.
 /// </summary>
 
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace backend.Models
 {
     /// <summary>
@@ -35,7 +36,6 @@ namespace backend.Models
         /// </summary>
         /// <returns>True if a guide is assigned; otherwise, false.</returns>
         public bool HasGuide() => AssignedGuideID != null;
-
 
         /// <summary>
         /// Fills the tour registration information.

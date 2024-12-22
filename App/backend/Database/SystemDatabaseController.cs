@@ -1009,6 +1009,60 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        public async Task<ErrorTypes> ChangeResponsibleDayOfUser(int UID, DayOfWeek day)
+        {
+            if (UID < 0)
+            {
+                return ErrorTypes.InvalidUserName;
+            }
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == UID);
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            user.ResponsibleDay = day;
+
+            return ErrorTypes.Success;
+        }
+
+        public async Task<List<Tour>> GetResponsibleToursOfUser(int UID)
+        {
+            if (UID < 0)
+            {
+                return new List<Tour>();
+            }
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == UID);
+            if (user == null)
+            {
+                return new List<Tour>();
+            }
+
+            List<Tour> allTours = await _SystemContext
+                .Tours.Where(t => t.TourRegistirationInfo != null)
+                .ToListAsync();
+
+            List<Tour> responsibleTours = new List<Tour>();
+
+            foreach (var tour in allTours)
+            {
+                if (tour.TourRegistirationInfo == null)
+                {
+                    continue;
+                }
+                if (tour.TourRegistirationInfo.TimeBlock == null)
+                {
+                    continue;
+                }
+                if (tour.TourRegistirationInfo.TimeBlock.Time.DayOfWeek != user.ResponsibleDay)
+                {
+                    continue;
+                }
+                responsibleTours.Add(tour);
+            }
+            return responsibleTours;
+        }
+
         public async Task<bool> DeleteUserAsync(int id)
         {
             bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == id);
