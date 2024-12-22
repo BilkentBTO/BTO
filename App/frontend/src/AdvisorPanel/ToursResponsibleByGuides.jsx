@@ -14,7 +14,23 @@ function ToursResponsibleByGuides() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [guides, setGuides] = useState([]);
   const [selectedGuide, setSelectedGuide] = useState(null);
-  const [formData, setFormData] = useState({ guideName: "", guideId: null });
+  const [formData, setFormData] = useState(() => {
+    return (
+      location?.state?.formData || {
+        guideId: "",
+        guideName: "",
+        name: "",
+        surname: "",
+        mail: "",
+        bilkentID: "",
+        majorCode: "",
+        major: "",
+        currentYear: "",
+        workHours: "",
+        userType: "",
+      }
+    );
+  });
   // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const headers = ["Tour", "Guide Name", "Guide Surname", "Guide Username"];
   const [tableData, setTableData] = useState([]);
@@ -52,6 +68,7 @@ function ToursResponsibleByGuides() {
           `Successfully assigned ${formData.guideName} to tour ${tourCode}.`
         );
         setIsPopupVisible(false);
+        window.location.reload();
       } else {
         console.error("Failed to assign guide:", response.statusText);
         alert("Failed to assign guide. Please try again.");
@@ -128,7 +145,7 @@ function ToursResponsibleByGuides() {
 
     const fetchGuides = async () => {
       try {
-        const guidesResponse = await fetch("/api/user/filter/3");
+        const guidesResponse = await fetch("/api/user/filter/4");
         if (!guidesResponse.ok) {
           throw new Error(`Failed to fetch guides: ${guidesResponse.status}`);
         }
@@ -163,10 +180,19 @@ function ToursResponsibleByGuides() {
 
     if (guideProfile) {
       setFormData({
-        guideName: `${guideProfile.name} ${guideProfile.surname}`,
-        guideId: guideProfile.id,
+        guideId: guideProfile.id || "N/A",
+        guideName: guideProfile.name || "N/A",
+        surname: guideProfile.surname || "N/A",
+        mail: guideProfile.mail || "N/A",
+        bilkentID: guideProfile.bilkentID || "N/A",
+        majorCode: guideProfile.majorCode || "N/A",
+        major: guideProfile.major || "N/A",
+        currentYear: guideProfile.currentYear || "N/A",
+        workHours: guideProfile.workHours || "N/A",
+        userType: guideProfile.userType || "N/A",
       });
     }
+    console.log("FORM DATA: ", formData);
   };
   const buttonName = "Edit";
 
@@ -193,29 +219,118 @@ function ToursResponsibleByGuides() {
         </div>
 
         {/* Popup Modal */}
+        {/* Popup Modal */}
         {isPopupVisible && (
-          <div className="popupOverlay">
-            <div className="popupContent">
+          <div className="popupOverlayCompare toursGuidePopup">
+            <div className="popupContentCompare">
               <h2>Change Guides</h2>
               <p>
                 <strong>Tour:</strong> {selectedRow[0]}
               </p>
 
-              {/* Plain Text for Current Guide */}
-              <p>
-                <strong>Current Guide:</strong> {selectedRow[1]}{" "}
-                {selectedRow[2]}
-              </p>
+              <div className="comparisonTables">
+                {/* Left Table: Current Guide */}
+                <div className="tableSectionCompare">
+                  <h3>Current Guide</h3>
+                  <table className="comparisonTable">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <strong>Name:</strong>
+                        </td>
+                        <td>{selectedRow[1]}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Surname:</strong>
+                        </td>
+                        <td>{selectedRow[2]}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Username:</strong>
+                        </td>
+                        <td>{selectedRow[3]}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-              {/* Dropdown for New Guide */}
-              <FormDropDownGlobal
-                arr={guides.map((guide) => `${guide.name} ${guide.surname}`)}
-                question="Change to*"
-                onChange={handleFormChange}
-              />
+                {/* Right Table: New Guide */}
+                <div className="tableSectionCompare">
+                  <h3>New Guide</h3>
+                  <FormDropDownGlobal
+                    arr={guides.map(
+                      (guide) => `${guide.name} ${guide.surname}`
+                    )}
+                    question="Select a Guide"
+                    onChange={handleFormChange}
+                  />
+                  {formData.guideId && (
+                    <table className="comparisonTable">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <strong>Name:</strong>
+                          </td>
+                          <td>{formData.name}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Surname:</strong>
+                          </td>
+                          <td>{formData.surname}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Username:</strong>
+                          </td>
+                          <td>{formData.mail}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Bilkent ID:</strong>
+                          </td>
+                          <td>{formData.bilkentID}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Major Code:</strong>
+                          </td>
+                          <td>{formData.majorCode}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Major:</strong>
+                          </td>
+                          <td>{formData.major}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Current Year:</strong>
+                          </td>
+                          <td>{formData.currentYear}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>Work Hours:</strong>
+                          </td>
+                          <td>{formData.workHours}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <strong>User Type:</strong>
+                          </td>
+                          <td>{formData.userType}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
 
               {/* Actions */}
-              <div className="popupActions">
+              <div className="popupActionsCompare">
                 <button
                   onClick={saveChanges}
                   style={{ ...buttonStyle, backgroundColor: "green" }}
