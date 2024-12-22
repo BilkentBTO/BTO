@@ -871,15 +871,15 @@ namespace backend.Database
                 return ErrorTypes.UserNotFound;
             }
 
-            if (userEdit.CurrentYear != user.CurrentYear)
+            if (userEdit.CurrentYear != 0 && userEdit.CurrentYear != user.CurrentYear)
             {
                 user.CurrentYear = userEdit.CurrentYear;
             }
-            if (userEdit.MajorCode != user.MajorCode)
+            if (userEdit.MajorCode != 0 && userEdit.MajorCode != user.MajorCode)
             {
                 user.MajorCode = userEdit.MajorCode;
             }
-            if (userEdit.UserType != user.UserType)
+            if (userEdit.UserType != UserType.Invalid && userEdit.UserType != user.UserType)
             {
                 user.UserType = userEdit.UserType;
             }

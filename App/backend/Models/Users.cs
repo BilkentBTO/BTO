@@ -5,13 +5,13 @@ namespace backend.Models
 {
     public enum UserType
     {
-        Admin = 0,
-        Coordinator = 1,
-        Advisor = 2,
-        Guide = 3,
-        CandidateGuide = 4,
-        Pending = 5,
-        Invalid = 6,
+        Invalid = 0,
+        Admin = 1,
+        Coordinator = 2,
+        Advisor = 3,
+        Guide = 4,
+        CandidateGuide = 5,
+        Pending = 6,
     }
 
     public class Major
