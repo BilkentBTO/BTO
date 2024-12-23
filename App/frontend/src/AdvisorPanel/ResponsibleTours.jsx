@@ -47,23 +47,32 @@ function ResponsibleTours() {
           throw new Error(`Failed to fetch tours: ${response.status}`);
         }
 
-        // Parse and transform data for the table
         const tours = await response.json();
+
+        console.log("TOURS: ", tours);
+
         const transformedData = tours.map((tour) => [
-          tour.tourID || "N/A",
-          tour.school || "N/A",
-          tour.city || "N/A",
-          new Date(tour.date).toLocaleDateString() || "N/A",
-          new Date(tour.time).toLocaleTimeString() || "N/A",
-          tour.numberOfVisitors || "N/A",
-          tour.supervisor || "N/A",
-          tour.supervisorDuty || "N/A",
-          tour.supervisorPhoneNumber || "N/A",
-          tour.supervisorMail || "N/A",
-          tour.rating || "N/A",
-          tour.notes || "N/A",
+          tour.tourRegistrationCode || "N/A", // Tour ID
+          tour.tourRegistirationInfo?.school?.schoolName || "N/A", // School Name
+          tour.tourRegistirationInfo?.cityName || "N/A", // City
+          new Date(tour.tourRegistirationInfo?.time).toLocaleDateString() ||
+            "N/A", // Date
+
+          new Date(tour.tourRegistirationInfo?.time).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "UTC",
+          }) || "N/A", // Time
+          tour.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
+          tour.tourRegistirationInfo?.superVisorName || "N/A", // Supervisor Name
+          tour.tourRegistirationInfo?.superVisorDuty || "N/A", // Supervisor Duty
+          tour.tourRegistirationInfo?.superVisorPhoneNumber || "N/A", // Supervisor Phone Number
+          tour.tourRegistirationInfo?.superVisorMailAddress || "N/A", // Supervisor Email
+          tour.quizCode || "N/A", // Quiz Code or Rating
+          tour.tourRegistirationInfo?.notes || "N/A", // Notes
         ]);
 
+        console.log("Transformed Data: ", transformedData);
         setData(transformedData);
       } catch (error) {
         console.error("Error fetching responsible tours: ", error);
