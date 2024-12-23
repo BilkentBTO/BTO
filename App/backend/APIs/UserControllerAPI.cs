@@ -179,12 +179,21 @@ namespace backend.Server.Controllers
         [ProducesResponseType(typeof(User), 404)]
         public async Task<ActionResult> GetTourOfUser(int id)
         {
-            var customer = await _controller.GetTourOfUser(id);
-            if (customer == null)
+            var tour = await _controller.GetTourOfUser(id);
+            var individualTour = await _controller.GetIndividualTourOfUser(id);
+
+            if (tour == null && individualTour == null)
             {
                 return NotFound();
             }
-            return Ok(customer);
+            if (tour != null)
+            {
+                return Ok(tour);
+            }
+            else
+            {
+                return Ok(individualTour);
+            }
         }
 
         /// <summary>
