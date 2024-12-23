@@ -6,15 +6,21 @@ import "./HeaderPanelGlobal.css";
 
 function HeaderPanelGlobal({ name }) {
   const navigate = useNavigate();
+
+  const uppercase = (text) => {
+    return text.toUpperCase();
+  };
+
   const handleProfileClick = () => {
     console.log("Profile button clicked!");
-    navigate("/userPage"); // Navigate to the root page
+    navigate("/userPage");
   };
 
   return (
     <header className="headerPanelGlobal">
-      <h1 className="headerPanelGlobalTitle">{name}</h1>
+      <h1 className="headerPanelGlobalTitle">{uppercase(name)}</h1>
     </header>
   );
 }
+
 export default HeaderPanelGlobal;
