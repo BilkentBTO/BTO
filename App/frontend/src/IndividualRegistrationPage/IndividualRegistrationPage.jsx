@@ -39,6 +39,11 @@ function IndividualRegistrationPage() {
     }));
   };
 
+  const isWeekend = (date) => {
+    const dayOfWeek = new Date(date).getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6; // Sunday (0) and Saturday (6)
+  };
+
   // Handle form submission
   const handleSubmit = () => {
     // Validate required fields
@@ -67,7 +72,7 @@ function IndividualRegistrationPage() {
     const today = Date.now();
 
     // Block selection of weekends
-    if (requestedDate.getDay() === 0 || requestedDate.getDay() === 6) {
+    if (isWeekend(requestedDate)) {
       alert("Weekends are not allowed.");
       return;
     }

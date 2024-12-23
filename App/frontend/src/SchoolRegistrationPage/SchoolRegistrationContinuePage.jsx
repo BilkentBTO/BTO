@@ -46,6 +46,13 @@ function SchoolRegistrationContinuePage() {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.supervisorEmail)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     // Debugging log
     console.log("Final Form Data:", formData);
 

@@ -105,9 +105,6 @@ function SchoolRegistrationPage() {
 
   // Generic handler for form state updates
   const handleChange = (key, value) => {
-    if (key === "visitDate" && isWeekend(value)) {
-      return; // Stop updating the state for invalid date
-    }
     setFormData((prev) => ({
       ...prev,
       [key]: value,
@@ -123,10 +120,12 @@ function SchoolRegistrationPage() {
       handleChange("schoolID", selectedSchool.id); // Save school ID
     }
   };
+
   const isWeekend = (date) => {
     const dayOfWeek = new Date(date).getDay();
     return dayOfWeek === 0 || dayOfWeek === 6; // Sunday (0) and Saturday (6)
   };
+
   const handleSubmit = () => {
     if (
       !formData.city ||
@@ -138,6 +137,22 @@ function SchoolRegistrationPage() {
       alert("Please fill in all the required fields.");
       return;
     }
+
+    const requestedDate = new Date(formData.visitDate);
+    const today = Date.now();
+
+    // Block selection of weekends
+    if (isWeekend(requestedDate)) {
+      alert("Weekends are not allowed.");
+      return;
+    }
+
+    // Block past dates
+    if (requestedDate < today) {
+      alert("Please enter a valid date.");
+      return;
+    }
+
     navigate("/continueSchoolReg", { state: { formData } });
   };
   return (
@@ -186,6 +201,7 @@ function SchoolRegistrationPage() {
             type="number"
             value={formData.visitorCount}
             onChange={(value) => handleChange("visitorCount", value)}
+            properities={{isPos:true}}
           />
         </div>
       </div>

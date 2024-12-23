@@ -6,8 +6,9 @@ function FormInputGlobal({
   onChange,
   value = "",
   dateFilter = {},
+  properities = {},
 }) {
-  const minDate = dateFilter.min || ""; // Default to empty if no min date is provided
+  const minValue = type === "number" && properities.isPos ? 0 : dateFilter.min || ""; // Default to empty if no min date is provided
   const maxDate = dateFilter.max || ""; // Default to empty if no max date is provided
 
   const handleDateChange = (e) => {
@@ -67,7 +68,7 @@ function FormInputGlobal({
           type === "date" ? handleDateChange(e) : handleInputChange(e)
         }
         onKeyDown={handleKeyDown}
-        min={type === "date" ? minDate : undefined} // Apply minDate for date type
+        min={type === "date" || type === "number" ? minValue : undefined} // Apply minDate for date type
         max={type === "date" ? maxDate : undefined} // Apply maxDate for date type
       />
     </div>
