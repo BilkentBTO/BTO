@@ -1,7 +1,14 @@
+/// <summary>
+/// This file contains the ErrorTypes enumeration and the ErrorHandler static class, 
+/// which provide error management functionality for the backend application.
+/// </summary>
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Models
 {
+    /// <summary>
+    /// Enumeration of error types used throughout the backend application.
+    /// </summary>
     public enum ErrorTypes
     {
         Success = 0,
@@ -33,8 +40,16 @@ namespace backend.Models
         InvalidWorkHours = 26,
     }
 
+    /// <summary>
+    /// Provides error handling functionality by mapping ErrorTypes to HTTP responses.
+    /// </summary>
     public static class ErrorHandler
     {
+        /// <summary>
+        /// Handles an error based on the provided ErrorTypes value and returns an appropriate ActionResult.
+        /// </summary>
+        /// <param name="errorType">The type of error to handle.</param>
+        /// <returns>An ActionResult containing the HTTP response and error message.</returns>
         public static ActionResult HandleError(ErrorTypes errorType)
         {
             return errorType switch
