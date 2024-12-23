@@ -34,6 +34,10 @@ function CoordinatorPanel() {
     navigate("/coordinatorPanel/viewWorkHours");
   };
 
+  const handleAccessDataPanelClick = () => {
+    navigate("/coordinatorPanel/dataPanel");
+  };
+
   return (
     <div className="coordinatorPanel">
       <div className="innerCoordinator">
@@ -52,6 +56,10 @@ function CoordinatorPanel() {
           <button onClick={handleAddUserClick}>Add User</button>
 
           <button onClick={handleWorkHoursClick}>View Work Hours</button>
+
+          <button onClick={handleAccessDataPanelClick}>
+            Access to Data Panel
+          </button>
         </div>
       </div>
       <Outlet />
