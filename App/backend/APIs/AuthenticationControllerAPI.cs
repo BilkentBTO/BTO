@@ -1,3 +1,8 @@
+/// <summary>
+/// This file contains the `CredentialController` class, which handles the API requests related to user credentials.
+/// It provides actions for login, changing passwords, and retrieving all credentials.
+/// The controller interacts with the `CredentialDatabaseController` to manage credential data and uses JWT for authentication.
+/// </summary>
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -9,6 +14,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Server.Controllers
 {
+    /// <summary>
+    /// This controller handles the API requests for managing user credentials, including login and password change functionalities.
+    /// It interacts with the `CredentialDatabaseController` to retrieve, verify, and update credentials.
+    /// Constraints:
+    /// - The `CredentialDatabaseController` context must be provided during the controller's initialization.
+    /// - The `IConfiguration` context is required to access the configuration settings, such as JWT token generation parameters.
+    /// - The controller supports routes for credential operations like login, changing passwords, and fetching all credentials.
+    /// </summary>
     [ApiController]
     [Route("/api/credential")]
     public class CredentialController : ControllerBase
@@ -25,6 +38,10 @@ namespace backend.Server.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Handles the HTTP GET request to retrieve all credentials from the database.
+        /// Validates the model state before fetching the credentials. Returns a `404 Not Found` if no credentials are found.
+        /// </summary>
         [HttpGet]
         //[Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(typeof(List<Credential>), 200)]
@@ -39,6 +56,11 @@ namespace backend.Server.Controllers
             return Ok(creds);
         }
 
+        /// <summary>
+        /// Handles the HTTP POST request for logging in a user with the provided username and password.
+        /// If the login credentials are valid, a JWT token is generated and returned to the user.
+        /// If the login fails, an `Unauthorized` status is returned with an error message.
+        /// </summary>
         [HttpPost("login")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -60,6 +82,11 @@ namespace backend.Server.Controllers
             return Ok(token);
         }
 
+        /// <summary>
+        /// Handles the HTTP PUT request to change a user's password.
+        /// Validates the model state and checks whether the old password is correct.
+        /// If the password change is successful, an `OK` status is returned; otherwise, a `BadRequest` error is returned.
+        /// </summary>
         [HttpPut("changepassword")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 400)]
@@ -83,6 +110,10 @@ namespace backend.Server.Controllers
             return Ok(true);
         }
 
+        /// <summary>
+        /// Generates a JWT token for the given username, encoding user claims such as username, UID, and user type.
+        /// The token is signed using the secret key from the configuration settings and is valid for the duration specified in the configuration.
+        /// </summary>
         private async Task<string> GenerateJwtToken(string username)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -118,12 +149,25 @@ namespace backend.Server.Controllers
         }
     }
 
+    /// <summary>
+    /// Represents the request payload for logging in a user, including username and password.
+    /// Constraints:
+    /// - The `Username` property cannot be empty.
+    /// - The `Password` property must be a valid password for authentication.
+    /// </summary>
     public class LoginRequest
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Represents the request payload for changing a user's password, including the username, old password, and new password.
+    /// Constraints:
+    /// - The `Username` property cannot be empty.
+    /// - The `OldPassword` property must be the current password for the user.
+    /// - The `NewPassword` property must meet the password policy requirements for the system.
+    /// </summary>
     public class ChangePasswordRequest
     {
         public string Username { get; set; } = string.Empty;
