@@ -153,6 +153,12 @@ function SchoolRegistrationPage() {
       return;
     }
 
+    // Check for int limit :)
+    if (formData.visitorCount > 2147483647) {
+      alert("You've exceeded the visitor capacity.");
+      return;
+    }
+
     navigate("/continueSchoolReg", { state: { formData } });
   };
   return (
