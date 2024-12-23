@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Server.Controllers
-{    
+{
     /// <summary>
     /// This controller handles the API requests for managing guide tour applications.
     /// It provides endpoints for applying, accepting, rejecting, and retrieving applications.
@@ -44,7 +44,7 @@ namespace backend.Server.Controllers
 
             return ErrorHandler.HandleError(result);
         }
-        
+
         /// <summary>
         /// Handles the HTTP GET request for retrieving all guide tour applications.
         /// Validates the model state before fetching the applications from the database.

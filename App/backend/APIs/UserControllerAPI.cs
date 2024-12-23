@@ -1,20 +1,20 @@
 /// <summary>
-/// This file contains the <see cref="UserController"/> class, which handles HTTP requests 
-/// related to user management operations in the system. The controller exposes various endpoints 
+/// This file contains the <see cref="UserController"/> class, which handles HTTP requests
+/// related to user management operations in the system. The controller exposes various endpoints
 /// for performing actions such as:
-/// 
+///
 /// - User registration: Creating a new user and managing user registration requests.
-/// - User retrieval: Fetching all users, filtered users by type, specific user details by ID, 
+/// - User retrieval: Fetching all users, filtered users by type, specific user details by ID,
 ///   and users associated with tours or fairs.
 /// - User update: Modifying user details and updating user information.
 /// - User deletion: Removing user registration requests or deleting user records.
-/// - Guide availability management: Assigning available hours, responsible days, and handling 
+/// - Guide availability management: Assigning available hours, responsible days, and handling
 ///   work hours for guides.
 /// - Responsible advisors management: Retrieving a list of responsible advisors.
-/// 
-/// The controller communicates with a system database controller to perform these operations, 
-/// ensuring that the user data is managed properly. It also validates input and handles errors, 
-/// returning appropriate responses based on the outcome of each operation. HTTP response types, 
+///
+/// The controller communicates with a system database controller to perform these operations,
+/// ensuring that the user data is managed properly. It also validates input and handles errors,
+/// returning appropriate responses based on the outcome of each operation. HTTP response types,
 /// including 200 (OK), 400 (Bad Request), and 404 (Not Found), are used to indicate success or failure.
 /// </summary>
 using backend.Database;
@@ -25,7 +25,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Server.Controllers
 {
     /// <summary>
-    /// Controller that handles user-related operations such as registration, retrieving user lists, 
+    /// Controller that handles user-related operations such as registration, retrieving user lists,
     /// and managing user registration requests. It interacts with the SystemDatabaseController to fetch user data.
     /// Constraints:
     /// - This controller works with the SystemDatabaseController for database interactions.
@@ -111,7 +111,7 @@ namespace backend.Server.Controllers
         {
             return Ok(_controller.GetAllMajors());
         }
-        
+
         /// <summary>
         /// Retrieves a list of all users in the system.
         /// </summary>
