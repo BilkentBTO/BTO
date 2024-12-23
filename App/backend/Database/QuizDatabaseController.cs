@@ -3,15 +3,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
+    /// <summary>
+    /// Controller for handling quiz-related database operations.
+    /// Includes methods for validating quiz codes and filling survey data for quizzes.
+    /// </summary>
     public class QuizDatabaseController
     {
         private readonly SystemDbContext _SystemContext;
 
+        /// <summary>
+        /// Initializes a new instance of the QuizDatabaseController class.
+        /// </summary>
+        /// <param name="context">The database context for accessing the quiz and survey data.</param>
         public QuizDatabaseController(SystemDbContext context)
         {
             _SystemContext = context;
         }
 
+        /// <summary>
+        /// Validates whether the given quiz code exists in the database.
+        /// </summary>
+        /// <param name="quizCode">The code of the quiz to validate.</param>
+        /// <returns>Returns an error type indicating whether the quiz code is valid or not.</returns>
         public async Task<ErrorTypes> ValidateQuizCode(string quizCode)
         {
             if (string.IsNullOrEmpty(quizCode))
@@ -29,6 +42,13 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Fills a survey for a specific quiz.
+        /// Adds the survey data to the database and updates related data for the guide and school.
+        /// </summary>
+        /// <param name="quizCode">The code of the quiz for which the survey is filled.</param>
+        /// <param name="form">The survey form containing the responses.</param>
+        /// <returns>Returns an error type indicating the success or failure of the survey submission.</returns>
         public async Task<ErrorTypes> FillSurveyForQuiz(string quizCode, SurveyForm form)
         {
             if (form == null)
