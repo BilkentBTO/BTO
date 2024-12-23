@@ -143,11 +143,19 @@ function InviteBilkentPage() {
       alert("Please enter a valid email address.");
       return;
     }
-
+    const phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(formData.superVisorPhoneNumber)) {
+      alert("Phone number must be exactly 11 digits and contain no letters.");
+      return;
+    }
     const requestedDate = new Date(formData.dateOfVisit);
     const today = Date.now();
     // Block past and too distant dates
-    if (requestedDate < today || !requestedDate.valueOf() || requestedDate > dateLimit) {
+    if (
+      requestedDate < today ||
+      !requestedDate.valueOf() ||
+      requestedDate > dateLimit
+    ) {
       alert("Please enter a valid date.");
       return;
     }

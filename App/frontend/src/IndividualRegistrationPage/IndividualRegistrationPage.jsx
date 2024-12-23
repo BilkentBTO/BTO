@@ -72,6 +72,11 @@ function IndividualRegistrationPage() {
       alert("Please enter a valid email address.");
       return;
     }
+    const phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(formData.individualPhoneNumber)) {
+      alert("Phone number must be exactly 11 digits and contain no letters.");
+      return;
+    }
 
     const requestedDate = new Date(formData.visitDate);
     const today = Date.now();

@@ -52,6 +52,11 @@ function SchoolRegistrationContinuePage() {
       alert("Please enter a valid email address.");
       return;
     }
+    const phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(formData.supervisorPhone)) {
+      alert("Please enter a valid 11-digit phone number without letters.");
+      return;
+    }
 
     // Debugging log
     console.log("Final Form Data:", formData);
