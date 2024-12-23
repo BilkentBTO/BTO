@@ -6,49 +6,102 @@ import "./GlobalSidebar.css";
 
 function GlobalSidebar() {
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(""); // State to hold the user's role
+  const [userRole, setUserRole] = useState("");
   const [username, setUserName] = useState("");
-
   const [email, setEmail] = useState("");
   const [surname, setSurname] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [incrementValue, setIncrementValue] = useState(1); // Input value
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
 
-  // Simulate fetching the user's role from an API or global state
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    console.log(token);
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // Decode the token
-        console.log(decodedToken);
-        const roleClaim = decodedToken["UserType"] || decodedToken.role; // Use "role" if no namespace is used
+        const decodedToken = jwtDecode(token);
+        const roleClaim = decodedToken["UserType"] || decodedToken.role;
         const nameClaim = decodedToken["Username"];
-        const emailClaim = decodedToken.email || "example@mail.com";
-        const surnameClaim = decodedToken.surname || "Unknown Surname";
+        const UID = decodedToken["UID"];
 
         setUserRole(roleClaim || "User");
         setUserName(nameClaim || "Unknown User");
-        setEmail(emailClaim);
-        setSurname(surnameClaim);
+
+        fetchUserData(UID);
       } catch (error) {
         console.error("Error decoding token:", error);
-        navigate("/login"); // Redirect to login if token is invalid
+        navigate("/login");
       }
     } else {
-      navigate("/login"); // Redirect to login if no token is found
+      navigate("/login");
     }
   }, [navigate]);
 
-  const toggleProfile = () => {
-    setIsExpanded((prev) => !prev); // Toggle the expanded state
+  const fetchUserData = async (UID) => {
+    try {
+      const response = await fetch(`/api/user/${UID}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user data: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("User Data:", data);
+
+      setUserData(data);
+      setSurname(data.surname || "Unknown Surname");
+      setEmail(data.mail || "example@mail.com");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   };
+
+  const toggleProfile = () => {
+    setIsExpanded((prev) => !prev);
+  };
+
   const handleLogout = () => {
     console.log("Logout");
     localStorage.removeItem("jwt");
     navigate("/");
   };
 
-  // Sidebar navigation based on role
+  const incrementWorkHours = async () => {
+    if (!userData?.id || incrementValue <= 0) {
+      setPopupMessage("Invalid input. Please enter a valid number.");
+      setIsPopupVisible(true);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/user/${userData.id}/workhours/${incrementValue}`,
+        { method: "PUT" }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to update work hours: ${response.status}`);
+      }
+
+      // Update the work hours locally
+      setUserData((prevData) => ({
+        ...prevData,
+        workHours: prevData.workHours + incrementValue,
+      }));
+      setPopupMessage(
+        `Successfully incremented work hours by ${incrementValue}.`
+      );
+      setIsPopupVisible(true);
+    } catch (error) {
+      console.error("Error updating work hours:", error);
+      setPopupMessage("Failed to increment work hours.");
+      setIsPopupVisible(true);
+    }
+  };
+
+  const closePopup = () => {
+    setIsPopupVisible(false);
+    setPopupMessage("");
+  };
+
   const sidebarOptions = {
     Admin: [
       { label: "Admin Panel", path: "/adminPanel" },
@@ -71,6 +124,7 @@ function GlobalSidebar() {
   const navigateToSection = (path) => {
     navigate(path);
   };
+
   return (
     <div className="leftSideCoorFunction">
       <div className="sidebar">
@@ -102,14 +156,58 @@ function GlobalSidebar() {
       <div className="bottomSidebarSection">
         <div className={`profileDetails ${isExpanded ? "show" : ""}`}>
           <p>
-            <strong>Surname:</strong> {surname}
+            <strong>Full Name:</strong>{" "}
+            {userData ? `${userData.name} ${userData.surname}` : "Loading..."}
           </p>
           <p>
             <strong>Email:</strong> {email}
           </p>
           <p>
-            <strong>Username:</strong> {username}
+            <strong>Role:</strong> {userRole}
           </p>
+          <p>
+            <strong>Work Hour:</strong>{" "}
+            {userData ? `${userData.workHours}` : "Loading..."}
+          </p>
+          <input
+            type="number"
+            value={incrementValue}
+            onChange={(e) => setIncrementValue(parseInt(e.target.value, 10))}
+            placeholder="Enter hours to increment"
+            style={{
+              padding: "12px 15px",
+              width: "80%",
+
+              borderRadius: "8px",
+              border: "1px solid #ddd",
+              outline: "none",
+              fontSize: "16px",
+              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+              transition: "all 0.3s ease",
+            }}
+            onFocus={(e) => (e.target.style.border = "1px solid #007bff")}
+            onBlur={(e) => (e.target.style.border = "1px solid #ddd")}
+          />
+          <button
+            onClick={incrementWorkHours}
+            style={{
+              padding: "12px 30px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              height: "80%",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = "#007bff")}
+          >
+            Increment Work Hour
+          </button>
         </div>
         <div
           className={`profileSidebarSection ${isExpanded ? "expanded" : ""}`}
@@ -123,7 +221,29 @@ function GlobalSidebar() {
           <button onClick={handleLogout}>LOGOUT</button>
         </div>
       </div>
+
+      {isPopupVisible && (
+        <div className="popupOverlay">
+          <div className="popupContent">
+            <p>{popupMessage}</p>
+            <button
+              onClick={closePopup}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "gray",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 export default GlobalSidebar;
