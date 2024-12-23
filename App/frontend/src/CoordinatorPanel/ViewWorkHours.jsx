@@ -60,7 +60,7 @@ function ViewWorkHours() {
               item.surname || "N/A",
               item.mail || "N/A",
               getUserTypeString(item.userType),
-              item.workHours || "N/A",
+              item.workHours || "0",
             ])}
           />
         </div>
