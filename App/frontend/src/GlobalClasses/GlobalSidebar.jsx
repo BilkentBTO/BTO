@@ -120,7 +120,7 @@ function GlobalSidebar() {
     ],
     Guide: [{ label: "Guide Dashboard", path: "/guidePanel" }],
     CandidateGuide: [
-      { label: "Candidate Guide Dashboard", path: "/guidePanel" },
+      { label: "Candidate Guide Dashboard", path: "/candidateGuidePanel" },
     ],
   };
 

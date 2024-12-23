@@ -46,10 +46,11 @@ function LoginPage() {
       if (role === "Coordinator") {
         navigate("/coordinatorPanel");
       } else if (role === "Admin") {
-        console.log("I WORK HERE");
         navigate("/adminPanel");
-      } else if (role === "Guide" || role === "CandidateGuide") {
+      } else if (role === "Guide") {
         navigate("/guidePanel");
+      } else if (role === "CandidateGuide") {
+        navigate("/candidateGuidePanel");
       } else if (role === "Advisor") {
         navigate("/advisorPanel");
       } else {

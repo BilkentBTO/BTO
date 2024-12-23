@@ -47,6 +47,8 @@ import ViewSurvey from "./ViewSurvey/ViewSurvey";
 import SuccessViewSurvey from "./ViewSurvey/SuccessViewSurvey";
 import ViewWorkHours from "./CoordinatorPanel/ViewWorkHours";
 import ViewAdvisorInfo from "./GuidePanel/ViewAdvisorInfo";
+import CandidateGuidePanel from "./CandidateGuidePanel/CandidateGuidePanel";
+import AvailableToursCandidate from "./CandidateGuidePanel/AvailableToursCandidate";
 
 function App() {
   return (
@@ -92,6 +94,14 @@ function App() {
         path="/viewRegistrationDetails"
         element={<ViewRegistrationPage />}
       />
+      <Route
+        path="/candidateGuidePanel"
+        element={
+          <RoleProtectedRoute allowedRoles={["CandidateGuide"]}>
+            <CandidateGuidePanel />
+          </RoleProtectedRoute>
+        }
+      />
 
       <Route
         path="/adminPanel"
@@ -106,13 +116,7 @@ function App() {
         path="/guidePanel"
         element={
           <RoleProtectedRoute
-            allowedRoles={[
-              "Admin",
-              "Coordinator",
-              "Guide",
-              "Advisor",
-              "CandidateGuide",
-            ]}
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <GuidePanel />
           </RoleProtectedRoute>
@@ -140,13 +144,7 @@ function App() {
         path="/guidePanel/assignedFairs"
         element={
           <RoleProtectedRoute
-            allowedRoles={[
-              "Admin",
-              "Coordinator",
-              "Guide",
-              "Advisor",
-              "CandidateGuide",
-            ]}
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <AssignedFairsPage />
           </RoleProtectedRoute>
@@ -156,13 +154,7 @@ function App() {
         path="/guidePanel/assignedTours"
         element={
           <RoleProtectedRoute
-            allowedRoles={[
-              "Admin",
-              "Coordinator",
-              "Guide",
-              "Advisor",
-              "CandidateGuide",
-            ]}
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <AssignedToursPage />
           </RoleProtectedRoute>
@@ -172,15 +164,17 @@ function App() {
         path="/guidePanel/availableTours"
         element={
           <RoleProtectedRoute
-            allowedRoles={[
-              "Admin",
-              "Coordinator",
-              "Guide",
-              "Advisor",
-              "CandidateGuide",
-            ]}
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <AvailableToursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/candidateGuidePanel/availableToursCandidate"
+        element={
+          <RoleProtectedRoute allowedRoles={["CandidateGuide"]}>
+            <AvailableToursCandidate />
           </RoleProtectedRoute>
         }
       />
@@ -188,13 +182,7 @@ function App() {
         path="/guidePanel/editAvailableHours"
         element={
           <RoleProtectedRoute
-            allowedRoles={[
-              "Admin",
-              "Coordinator",
-              "Guide",
-              "Advisor",
-              "CandidateGuide",
-            ]}
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <EditAvailableHoursPage />
           </RoleProtectedRoute>
