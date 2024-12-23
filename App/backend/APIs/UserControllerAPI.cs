@@ -245,5 +245,18 @@ namespace backend.Server.Controllers
 
             return ErrorHandler.HandleError(result);
         }
+
+        [HttpGet("responsibleadvisors")]
+        public async Task<ActionResult> GetResponsibleAdvisors()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.GetResponsibleAdvisors();
+
+            return Ok(result);
+        }
     }
 }

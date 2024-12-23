@@ -1,3 +1,4 @@
+using System.Drawing;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -1022,7 +1023,7 @@ namespace backend.Database
             }
 
             user.ResponsibleDay = day;
-
+            await _SystemContext.SaveChangesAsync();
             return ErrorTypes.Success;
         }
 
@@ -1061,6 +1062,22 @@ namespace backend.Database
                 responsibleTours.Add(tour);
             }
             return responsibleTours;
+        }
+
+        public async Task<List<List<User>>> GetResponsibleAdvisors()
+        {
+            List<List<User>> responsibles = new List<List<User>>();
+
+            foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                var usersForDay = await _SystemContext
+                    .Users.Where(u => u.ResponsibleDay == day && u.UserType == UserType.Advisor)
+                    .ToListAsync();
+
+                responsibles.Add(usersForDay);
+            }
+
+            return responsibles;
         }
 
         public async Task<ErrorTypes> AddWorkHoursToUser(int UID, int hours)
