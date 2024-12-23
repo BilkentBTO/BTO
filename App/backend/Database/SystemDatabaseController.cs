@@ -1298,6 +1298,38 @@ namespace backend.Database
             return Tour;
         }
 
+        public async Task<IndividualTour?> GetIndividualTourOfUser(int id)
+        {
+            var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
+
+            if (User == null || User.AssignedTourCode == null)
+            {
+                return null;
+            }
+
+            var Tour = await _SystemContext.IndividualTours.SingleOrDefaultAsync(t =>
+                t.IndividualTourRegistrationCode == User.AssignedTourCode
+            );
+
+            if (Tour == null)
+            {
+                return null;
+            }
+
+            IndividualRegistration? TourRegistration = await _SystemContext
+                .IndividualRegistrations.Include(r => r.TimeBlock)
+                .FirstOrDefaultAsync(t => t.Code == Tour.IndividualTourRegistrationCode);
+
+            if (TourRegistration == null)
+            {
+                return null;
+            }
+
+            Tour.FillTourRegistrationInfo(TourRegistration);
+
+            return Tour;
+        }
+
         /// <summary>
         /// Retrieves the fair associated with a specific user by their ID.
         /// </summary>
@@ -1432,6 +1464,7 @@ namespace backend.Database
             }
 
             await _SystemContext.Users.AddAsync(newUser);
+            await _SystemContext.SaveChangesAsync();
 
             string randomPassword = GenerateRandomPassword();
 
