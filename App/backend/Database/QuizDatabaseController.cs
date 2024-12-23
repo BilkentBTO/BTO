@@ -1,3 +1,9 @@
+/// <summary>
+/// This file contains the QuizDatabaseController class, which handles operations related to quizzes in the database. 
+/// It provides methods for validating quiz codes and for filling out surveys associated with quizzes. 
+/// The class interacts with the SystemDbContext to retrieve and update quiz, survey, and related data, 
+/// ensuring that the guide and school statistics are properly maintained with each survey submission.
+/// </summary>
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
