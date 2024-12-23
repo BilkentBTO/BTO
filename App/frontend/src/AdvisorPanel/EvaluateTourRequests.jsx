@@ -75,9 +75,6 @@ function SchoolPopup({ selectedRow, onClose, onAccept, onReject, onDelete }) {
               </button>
             </>
           )}
-          <button onClick={onDelete} className="popupButton grey">
-            Delete
-          </button>
           <button onClick={onClose} className="popupButton blue">
             Close
           </button>
