@@ -317,6 +317,47 @@ namespace backend.Database
             }
         }
 
+        public async Task<List<IndividualTour>> GetAllAvailableIndividualTours()
+        {
+            try
+            {
+                var allTours = await _SystemContext.IndividualTours.ToListAsync();
+                for (int i = allTours.Count - 1; i >= 0; i--)
+                {
+                    var tour = allTours[i];
+                    var tourRegistration = await _SystemContext
+                        .IndividualRegistrations.Include(r => r.TimeBlock)
+                        .FirstOrDefaultAsync(r => r.Code == tour.IndividualTourRegistrationCode);
+
+                    if (tourRegistration == null)
+                    {
+                        allTours.RemoveAt(i);
+                        continue;
+                    }
+                    else
+                    {
+                        tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+
+                    if (
+                        tour.HasGuide()
+                        || tour.TourRegistirationInfo == null
+                        || tour.TourRegistirationInfo.State != RegistrationState.Accepted
+                    )
+                    {
+                        allTours.RemoveAt(i);
+                        continue;
+                    }
+                }
+                return allTours;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+
         /// <summary>
         /// Removes a fair from the database based on the provided fair code.
         /// Logs an error if the fair does not exist or if an exception occurs during removal.

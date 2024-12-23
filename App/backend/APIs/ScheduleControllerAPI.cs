@@ -389,5 +389,18 @@ namespace backend.Server.Controllers
             return Ok(guides);
         }
         #endregion
+
+        #region INDIVIDUAL
+        [HttpGet("availableindividualtours")]
+        public async Task<ActionResult> GetAllAvailableIndividualTours()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<IndividualTour> tours = await _controller.GetAllAvailableIndividualTours();
+
+            return Ok(tours);
+        }
+        #endregion
     }
 }
