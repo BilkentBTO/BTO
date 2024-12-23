@@ -1,32 +1,32 @@
 /// <summary>
 /// This file contains the API controller responsible for handling various types of registrations related to school tours, fairs, and individual visits.
 /// The controller provides several endpoints for managing registrations, including the ability to:
-/// 
+///
 /// - Add, accept, and reject registrations for tours, fairs, and individual visits
 /// - Retrieve registration details by code
 /// - Retrieve all registrations, with support for filtering by registration state
-/// 
+///
 /// Each registration type (tour, fair, individual) has its own set of actions, ensuring clear separation of concerns and better organization of the API routes.
 /// The API is designed to handle requests related to:
-/// 
+///
 /// - **Tour Registrations**: Manage the registrations of individuals for tours, including accepting, rejecting, and viewing registration details.
 /// - **Fair Registrations**: Handle the registration of individuals for fairs, including accepting, rejecting, and viewing registration details.
 /// - **Individual Registrations**: Similar to the other two, but focused on individual registrations for school visits or similar activities.
-/// 
+///
 /// This controller serves as an intermediary between the client-side and the backend system, processing requests, interacting with the database layer,
 /// and returning appropriate HTTP responses based on the operations performed.
-/// 
+///
 /// Key features:
 /// - Each registration type supports actions for both adding and managing the status of the registration (accept, reject).
 /// - Retrieval endpoints support filtering by state (Pending, Accepted, Rejected), allowing for more granular control over the displayed results.
-/// 
+///
 /// Constraints:
 /// - The `Code` parameter in all methods must represent a valid registration code.
 ///
 /// Dependency:
 /// - The controller relies on the `_controller` field, which handles the business logic of the operations, such as adding, updating, and fetching registrations.
 /// - Error handling is centralized via the `ErrorHandler` utility to handle any issues with the results returned by the business logic layer.
-/// 
+///
 /// HTTP Methods:
 /// - **POST**: Used for actions like adding a new registration, accepting, or rejecting a registration.
 /// - **GET**: Used for retrieving information on specific or all registrations.
@@ -162,7 +162,7 @@ namespace backend.Server.Controllers
             return ErrorHandler.HandleError(result);
         }
 
-         /// <summary>
+        /// <summary>
         /// Marks a tour conflict as resolved based on the provided registration code.
         /// </summary>
         /// <param name="Code">The registration code for the tour conflict to be marked as solved.</param>
@@ -194,11 +194,8 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.RejectTourRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+
+            return ErrorHandler.HandleError(result);
         }
 
         /// <summary>
@@ -346,7 +343,7 @@ namespace backend.Server.Controllers
             }
             var result = await _controller.GetAllFairRegistrations();
             return Ok(result);
-        }   
+        }
 
         /// <summary>
         /// Retrieves all fair registrations filtered by the provided registration state.
@@ -406,11 +403,7 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.AcceptIndividualRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            return ErrorHandler.HandleError(result);
         }
 
         /// <summary>
@@ -427,11 +420,8 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.RejectIndividualRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+
+            return ErrorHandler.HandleError(result);
         }
 
         /// <summary>

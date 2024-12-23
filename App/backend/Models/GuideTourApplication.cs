@@ -24,4 +24,18 @@ namespace backend.Models
         public string? TourCode { get; set; }
         public int GuideUID { get; set; }
     }
+
+    public class GuideIndividualTourApplication()
+    {
+        public string? IndividualTourCode { get; set; }
+        public IndividualTour? IndividualTour { get; set; }
+        public int GuideUID { get; set; }
+        public User? Guide { get; set; }
+    }
+
+    public class GuideIndividualTourApplicationRequest()
+    {
+        public string? IndividualTourCode { get; set; }
+        public int GuideUID { get; set; }
+    }
 }

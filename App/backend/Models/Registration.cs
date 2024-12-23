@@ -187,7 +187,7 @@ namespace backend.Models
         public IndividualRegistration() => this.Type = "Individual";
 
         // Preferred visit time for the individual
-        public TimeBlock? PreferredVisitTime { get; set; }
+        public TimeBlock? TimeBlock { get; set; }
 
         // Name of the individual
         public string? IndividualName { get; set; }

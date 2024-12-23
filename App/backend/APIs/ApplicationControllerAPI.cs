@@ -60,6 +60,32 @@ namespace backend.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPost("individualtour")]
+        public async Task<ActionResult> GuideIndividualTourApplication(
+            GuideIndividualTourApplicationRequest request
+        )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.AddGuideIndividualTourApplication(request);
+
+            return ErrorHandler.HandleError(result);
+        }
+
+        [HttpGet("individualtour")]
+        public async Task<ActionResult> GetGuideIndividualTourApplications()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _controller.GetAllGuideIndividualTourApplications();
+            return Ok(result);
+        }
+
         /// <summary>
         /// Handles the HTTP POST request for accepting a guide tour application.
         /// Validates the model state before accepting the application and updating the database.

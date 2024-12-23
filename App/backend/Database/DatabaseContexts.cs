@@ -44,13 +44,15 @@ namespace backend.Database
 
         //Guide Applications
         public DbSet<GuideTourApplication> GuideTourApplication { get; set; }
+        public DbSet<GuideIndividualTourApplication> GuideIndividualTourApplication { get; set; }
 
         //Scheduling
         public DbSet<TimeBlock> TimeBlocks { get; set; }
         public DbSet<Tour> Tours { get; set; }
+        public DbSet<IndividualTour> IndividualTours { get; set; }
         public DbSet<Fair> Fairs { get; set; }
         public DbSet<Tour> PastTours { get; set; }
-        public DbSet<Tour> PastFairs { get; set; }
+        public DbSet<Fair> PastFairs { get; set; }
 
         //Credentials
         public DbSet<Credential> Credentials { get; set; }
@@ -101,9 +103,18 @@ namespace backend.Database
 
             modelBuilder.Entity<GuideTourApplication>().HasIndex(r => r.GuideUID).IsUnique();
 
+            modelBuilder.Entity<GuideIndividualTourApplication>().HasKey(r => r.GuideUID);
+
+            modelBuilder
+                .Entity<GuideIndividualTourApplication>()
+                .HasIndex(r => r.GuideUID)
+                .IsUnique();
+
             modelBuilder.Entity<TimeBlock>().HasKey(t => t.Time);
 
             modelBuilder.Entity<Tour>().HasKey(t => t.TourRegistrationCode);
+
+            modelBuilder.Entity<IndividualTour>().HasKey(t => t.IndividualTourRegistrationCode);
 
             modelBuilder.Entity<Fair>().HasKey(f => f.FairRegistrationCode);
 

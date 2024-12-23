@@ -14,13 +14,28 @@ function AvailableToursPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false); // Popup visibility state
   const [selectedTour, setSelectedTour] = useState(null); // Selected tour data
+  const [tourType, setTourType] = useState("school"); // Toggle state for tour type
 
-  const headers = ["Tour ID", "Date", "School", "Number of Visitors"];
+  const schoolHeaders = ["Tour ID", "Date", "School", "Number of Visitors"];
+  const individualHeaders = [
+    "Tour ID",
+    "Date",
+    "Name",
+    "Preferred Major",
+    "Phone Number",
+  ];
+
+  const headers = tourType === "school" ? schoolHeaders : individualHeaders;
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+      const apiEndpoint =
+        tourType === "school"
+          ? "/api/schedule/availabletours" // API for school tours
+          : "/api/schedule/availableindividualtours"; // API for individual tours
       try {
-        const response = await fetch("/api/schedule/availableTours");
+        const response = await fetch(apiEndpoint);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -35,29 +50,34 @@ function AvailableToursPage() {
     };
 
     fetchData();
-  }, []);
+  }, [tourType]);
 
   const handleRowClick = (rowData) => {
-    const selectedTourData = data.find(
-      (item) => item.tourRegistrationCode === rowData[0]
-    );
-    setSelectedTour(selectedTourData); // Track the clicked tour
-    setShowPopup(true); // Show popup
+    console.log("DATA: ", data);
+
+    // Different logic for school and individual tours
+    const selectedTourData =
+      tourType === "school"
+        ? data.find((item) => item.tourRegistrationCode === rowData[0]) // For school tours
+        : data.find(
+            (item) => item.individualTourRegistrationCode === rowData[0]
+          ); // For individual tours
+
+    if (selectedTourData) {
+      setSelectedTour(selectedTourData); // Track the clicked tour
+      setShowPopup(true); // Show popup
+    } else {
+      console.error("No matching tour found for the selected row.");
+    }
   };
+
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    console.log(token);
     if (token) {
       try {
         const decodedToken = jwtDecode(token); // Decode the token
-
-        // Extract the name claim
         const UID = decodedToken["UID"];
         setGuideUID(UID || "Unknown");
-
-        // Extract the role claim (adjust based on your JWT structure)
-
-        console.log("Decoded Token:", decodedToken);
       } catch (error) {
         console.error("Error decoding token:", error);
         navigate("/login"); // Redirect to login if token is invalid
@@ -67,22 +87,35 @@ function AvailableToursPage() {
       navigate("/login"); // Redirect to login if no token is found
     }
   }, [navigate]);
-
   const handleApply = async () => {
     if (!selectedTour) {
       alert("No tour selected to apply for.");
       return;
     }
 
-    console.log("TOUR: ", selectedTour.code);
+    console.log("Selected Tour: ", selectedTour);
 
-    const payload = {
-      tourCode: selectedTour.tourRegistrationCode, // Pass the tour code from the selected tour
-      guideUID: guideUID, // Replace with the actual guide UID from your app's state or context
-    };
+    // Define the endpoint and payload based on the tour type
+    const endpoint =
+      tourType === "school"
+        ? "/api/apply/tour" // Endpoint for school tours
+        : "/api/apply/individualtour"; // Endpoint for individual tours
+
+    const payload =
+      tourType === "school"
+        ? {
+            tourCode: selectedTour.tourRegistrationCode, // For school tours
+            guideUID: guideUID, // Replace with the actual guide UID
+          }
+        : {
+            individualTourCode: selectedTour.individualTourRegistrationCode, // For individual tours
+            guideUID: guideUID, // Replace with the actual guide UID
+          };
+
+    console.log("Payload: ", payload);
 
     try {
-      const response = await fetch("/api/apply/tour", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +136,6 @@ function AvailableToursPage() {
       alert("An error occurred while applying for the tour.");
     }
   };
-
   const closePopup = () => {
     setShowPopup(false);
     setSelectedTour(null); // Clear selection
@@ -130,19 +162,51 @@ function AvailableToursPage() {
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
         <HeaderPanelGlobal name={"Available Tours"} />
+        <div className="toggleButtons">
+          <button
+            className={`toggleButton ${tourType === "school" ? "active" : ""}`}
+            onClick={() => setTourType("school")}
+          >
+            School Tours
+          </button>
+          <button
+            className={`toggleButton ${
+              tourType === "individual" ? "active" : ""
+            }`}
+            onClick={() => setTourType("individual")}
+          >
+            Individual Tours
+          </button>
+        </div>
         <div>
-          <h1 className="availableToursHeading">Apply to Tours</h1>
+          <h1 className="availableToursHeading">
+            Apply to {tourType === "school" ? "School" : "Individual"} Tours
+          </h1>
           {isLoading ? (
             <p>Loading available tours...</p>
           ) : data.length > 0 ? (
             <TableWithButtons
               headers={headers}
-              data={data.map((item) => [
-                item.tourRegistrationCode || "N/A", // Tour ID
-                new Date(item.time).toLocaleDateString() || "N/A", // Date
-                item.tourRegistirationInfo?.school?.schoolName || "N/A", // School
-                item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
-              ])}
+              data={data.map((item) => {
+                if (tourType === "school") {
+                  return [
+                    item.tourRegistrationCode || "N/A", // Tour ID
+                    new Date(item.time).toLocaleDateString() || "N/A", // Date
+                    item.tourRegistirationInfo?.school?.schoolName || "N/A", // School
+                    item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
+                  ];
+                } else {
+                  return [
+                    item.individualTourRegistrationCode || "N/A", // Tour ID for Individual
+                    new Date(
+                      item.tourRegistirationInfo?.time
+                    ).toLocaleDateString() || "N/A", // Date
+                    item.tourRegistirationInfo?.individualName || "N/A", // Name
+                    item.tourRegistirationInfo?.individualMajor?.name || "N/A", // Preferred Major
+                    item.tourRegistirationInfo?.individualPhoneNumber || "N/A", // Phone Number
+                  ];
+                }
+              })}
               onButtonClick={handleRowClick}
               buttonStyle={buttonStyle}
               buttonName={buttonName}
@@ -151,7 +215,6 @@ function AvailableToursPage() {
             <p>No available tours found.</p>
           )}
         </div>
-
         {/* Custom Popup */}
         {showPopup && (
           <div className="popupOverlay">
@@ -166,52 +229,70 @@ function AvailableToursPage() {
                   }}
                 >
                   <tbody>
-                    {Object.entries({
-                      "Tour ID": selectedTour?.tourRegistrationCode || "N/A",
-                      "School Name":
-                        selectedTour?.tourRegistirationInfo?.school
-                          ?.schoolName || "N/A",
-                      City:
-                        selectedTour?.tourRegistirationInfo?.school?.city
-                          ?.name || "N/A",
-                      Date: selectedTour?.tourRegistirationInfo?.time
-                        ? new Date(
-                            selectedTour.tourRegistirationInfo.time
-                          ).toLocaleDateString()
-                        : "N/A",
-                      Time: selectedTour?.tourRegistirationInfo?.time
-                        ? new Date(
-                            selectedTour.tourRegistirationInfo.time
-                          ).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
-                        : "N/A",
-                      "Number of Visitors":
-                        selectedTour?.tourRegistirationInfo?.numberOfVisitors ||
-                        "N/A",
-                      "Supervisor Name":
-                        selectedTour?.tourRegistirationInfo?.superVisorName ||
-                        "N/A",
-                      "Supervisor Duty":
-                        selectedTour?.tourRegistirationInfo?.superVisorDuty ||
-                        "N/A",
-                      "Supervisor Phone Number":
-                        selectedTour?.tourRegistirationInfo
-                          ?.superVisorPhoneNumber || "N/A",
-                      "Supervisor Email":
-                        selectedTour?.tourRegistirationInfo
-                          ?.superVisorMailAddress || "N/A",
-                      Notes:
-                        selectedTour?.tourRegistirationInfo?.notes || "N/A",
-                      "Priority Score":
-                        selectedTour?.tourRegistirationInfo?.school?.priority ||
-                        "N/A",
-                      "Distance to City (km)":
-                        selectedTour?.tourRegistirationInfo?.school?.city
-                          ?.distance || "N/A",
-                      Type: selectedTour?.tourRegistirationInfo?.type || "N/A",
-                    }).map(([key, value]) => (
+                    {Object.entries(
+                      tourType === "school"
+                        ? {
+                            "Tour ID":
+                              selectedTour?.tourRegistrationCode || "N/A",
+                            "School Name":
+                              selectedTour?.tourRegistirationInfo?.school
+                                ?.schoolName || "N/A",
+                            Date: selectedTour?.time
+                              ? new Date(selectedTour.time).toLocaleDateString()
+                              : "N/A",
+                            Time: selectedTour?.time
+                              ? new Date(selectedTour.time).toLocaleTimeString(
+                                  [],
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )
+                              : "N/A",
+                            "Number of Visitors":
+                              selectedTour?.tourRegistirationInfo
+                                ?.numberOfVisitors || "N/A",
+                            Notes:
+                              selectedTour?.tourRegistirationInfo?.notes ||
+                              "N/A",
+                          }
+                        : {
+                            "Tour ID":
+                              selectedTour?.individualTourRegistrationCode ||
+                              "N/A",
+                            Name:
+                              selectedTour?.tourRegistirationInfo
+                                ?.individualName || "N/A",
+                            Surname:
+                              selectedTour?.tourRegistirationInfo
+                                ?.individualSurname || "N/A",
+                            "Preferred Major":
+                              selectedTour?.tourRegistirationInfo
+                                ?.individualMajor?.name || "N/A",
+                            "Phone Number":
+                              selectedTour?.tourRegistirationInfo
+                                ?.individualPhoneNumber || "N/A",
+                            Email:
+                              selectedTour?.tourRegistirationInfo
+                                ?.individualMailAddress || "N/A",
+                            Date: selectedTour?.tourRegistirationInfo?.time
+                              ? new Date(
+                                  selectedTour.tourRegistirationInfo.time
+                                ).toLocaleDateString()
+                              : "N/A",
+                            Time: selectedTour?.tourRegistirationInfo?.time
+                              ? new Date(
+                                  selectedTour.tourRegistirationInfo.time
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "N/A",
+                            Notes:
+                              selectedTour?.tourRegistirationInfo?.notes ||
+                              "N/A",
+                          }
+                    ).map(([key, value]) => (
                       <tr key={key}>
                         <td
                           style={{

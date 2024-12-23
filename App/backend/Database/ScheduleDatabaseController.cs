@@ -1,12 +1,12 @@
 /// <summary>
-/// This file contains the implementation of the ScheduleDatabaseController class, which manages the operations 
+/// This file contains the implementation of the ScheduleDatabaseController class, which manages the operations
 /// related to tours, fairs, and guide assignments in the system. It provides methods to:
-/// 
+///
 /// - Manage and manipulate tours, including adding, removing, and updating tour information, as well as assigning and changing guides for tours.
 /// - Handle fairs, including adding and removing guides for fairs, updating fair information, and retrieving available fairs.
 /// - Retrieve and manage guide assignments for both tours and fairs, ensuring that guides are available based on event schedules.
 /// - End a tour, which involves removing all associated records, including tours, registrations, and guide applications, from the database.
-/// 
+///
 /// The controller interacts with the system's database through Entity Framework, utilizing asynchronous methods for retrieving and manipulating data.
 /// It ensures proper logging of operations and handles exceptions effectively, providing error codes for various scenarios.
 /// </summary>
@@ -17,8 +17,8 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Database
 {
     /// <summary>
-    /// Class responsible for managing the scheduling operations related to tours, including adding, removing, updating, 
-    /// and assigning guides to tours. It interacts with the SystemDbContext to perform CRUD operations on tours and 
+    /// Class responsible for managing the scheduling operations related to tours, including adding, removing, updating,
+    /// and assigning guides to tours. It interacts with the SystemDbContext to perform CRUD operations on tours and
     /// their related data. The class also handles error logging and validation during these operations.
     /// </summary>
     public class ScheduleDatabaseController
@@ -26,7 +26,6 @@ namespace backend.Database
         private readonly SystemDbContext _SystemContext;
         private readonly ILogger _logger;
 
-        
         /// <summary>
         /// Constructor to initialize the controller with the database context and logger.
         /// </summary>
@@ -234,7 +233,7 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
-         /// <summary>
+        /// <summary>
         /// Retrieves a list of all tours from the database, including their associated registration information.
         /// If a tour is missing its registration details, it is excluded from the list.
         /// </summary>
@@ -288,6 +287,78 @@ namespace backend.Database
                         .TourRegistrations.Include(r => r.School)
                         .Include(r => r.TimeBlock)
                         .FirstOrDefaultAsync(r => r.Code == tour.TourRegistrationCode);
+
+                    if (tourRegistration == null)
+                    {
+                        allTours.RemoveAt(i);
+                        continue;
+                    }
+                    else
+                    {
+                        tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+
+                    if (
+                        tour.HasGuide()
+                        || tour.TourRegistirationInfo == null
+                        || tour.TourRegistirationInfo.State != RegistrationState.Accepted
+                    )
+                    {
+                        allTours.RemoveAt(i);
+                        continue;
+                    }
+                }
+                return allTours;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+
+        public async Task<List<IndividualTour>> GetAllIndividualTours()
+        {
+            try
+            {
+                var allTours = await _SystemContext.IndividualTours.ToListAsync();
+                for (int i = allTours.Count - 1; i >= 0; i--)
+                {
+                    var tour = allTours[i];
+
+                    var tourRegistration = await _SystemContext
+                        .IndividualRegistrations.Include(r => r.TimeBlock)
+                        .FirstOrDefaultAsync(r => r.Code == tour.IndividualTourRegistrationCode);
+
+                    if (tourRegistration == null)
+                    {
+                        allTours.RemoveAt(i);
+                    }
+                    else
+                    {
+                        tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+                }
+                return allTours;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+
+        public async Task<List<IndividualTour>> GetAllAvailableIndividualTours()
+        {
+            try
+            {
+                var allTours = await _SystemContext.IndividualTours.ToListAsync();
+                for (int i = allTours.Count - 1; i >= 0; i--)
+                {
+                    var tour = allTours[i];
+                    var tourRegistration = await _SystemContext
+                        .IndividualRegistrations.Include(r => r.TimeBlock)
+                        .FirstOrDefaultAsync(r => r.Code == tour.IndividualTourRegistrationCode);
 
                     if (tourRegistration == null)
                     {
@@ -645,7 +716,7 @@ namespace backend.Database
                         break;
                     case 'I':
                         registration = await _SystemContext
-                            .IndividualRegistrations.Include(r => r.PreferredVisitTime)
+                            .IndividualRegistrations.Include(r => r.TimeBlock)
                             .SingleOrDefaultAsync(r => r.Code == eventCode);
                         break;
                     default:
