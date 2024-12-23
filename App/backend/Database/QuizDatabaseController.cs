@@ -80,6 +80,39 @@ namespace backend.Database
                 guideData.CompletedTours += 1;
             }
 
+            var schoolData = await _SystemContext.SchoolData.FirstOrDefaultAsync(s =>
+                s.SchoolCode == quiz.SchoolCode
+            );
+
+            if (schoolData == null)
+            {
+                schoolData = new SchoolData
+                {
+                    SchoolCode = quiz.SchoolCode,
+                    TotalTours = 1,
+                    RateTour = survey.RateTour,
+                    RateBilkent = survey.RateBilkent,
+                    ApplyToBilkent = survey.ApplyToBilkent,
+                };
+
+                _SystemContext.SchoolData.Add(schoolData);
+            }
+            else
+            {
+                schoolData.TotalTours += 1;
+                schoolData.RateTour =
+                    ((schoolData.RateTour * (schoolData.TotalTours - 1)) + survey.RateTour)
+                    / schoolData.TotalTours;
+                schoolData.RateBilkent =
+                    ((schoolData.RateBilkent * (schoolData.TotalTours - 1)) + survey.RateBilkent)
+                    / schoolData.TotalTours;
+                schoolData.ApplyToBilkent =
+                    (
+                        (schoolData.ApplyToBilkent * (schoolData.TotalTours - 1))
+                        + survey.ApplyToBilkent
+                    ) / schoolData.TotalTours;
+            }
+
             await _SystemContext.Surveys.AddAsync(survey);
             await _SystemContext.SaveChangesAsync();
 

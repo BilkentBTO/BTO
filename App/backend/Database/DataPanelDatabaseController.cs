@@ -31,11 +31,6 @@ namespace backend.Database
 
         public async Task<GuideData?> GetGuideData(int UID)
         {
-            if (UID < 0)
-            {
-                return null;
-            }
-
             var guideData = await _SystemContext.GuideData.FirstOrDefaultAsync(g => g.UID == UID);
 
             if (guideData == null)
@@ -43,7 +38,31 @@ namespace backend.Database
                 return null;
             }
 
+            var guide = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == UID);
+
+            guideData.Guide = guide;
+
             return guideData;
+        }
+
+        public async Task<List<SchoolData>> GetSchoolData()
+        {
+            var schoolDataList = await _SystemContext.SchoolData.ToListAsync();
+
+            if (schoolDataList == null || !schoolDataList.Any())
+            {
+                return new List<SchoolData>();
+            }
+
+            foreach (var schoolData in schoolDataList)
+            {
+                var school = await _SystemContext.Schools.FirstOrDefaultAsync(s =>
+                    s.SchoolCode == schoolData.SchoolCode
+                );
+                schoolData.School = school;
+            }
+
+            return schoolDataList;
         }
     }
 }
