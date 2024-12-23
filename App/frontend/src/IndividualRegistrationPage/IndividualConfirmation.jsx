@@ -15,7 +15,7 @@ function IndividualConfirmation() {
   const formData = location.state?.formData || {};
 
   const handleEdit = () => {
-    // Navigate back to the registration page with the current formData
+    //  Navigate back to the registration page with the current formData
     navigate("/individualRegistration", { state: { formData } });
   };
 
