@@ -96,7 +96,13 @@ namespace backend.Database
 
             Tour.AssignGuide(foundGuide);
             foundGuide.AssignedTourCode = Tour.TourRegistrationCode;
-
+            Quiz? quiz = await _SystemContext.Quizzes.FirstOrDefaultAsync(q =>
+                q.Code == Tour.QuizCode
+            );
+            if (quiz != null)
+            {
+                quiz.UID = foundGuide.ID;
+            }
             await _SystemContext.SaveChangesAsync();
 
             return ErrorTypes.Success;

@@ -40,7 +40,7 @@ import AssignGuideToFairs from "./CoordinatorPanel/AssignGuideToFairs";
 import ManageFairRequests from "./CoordinatorPanel/ManageFairRequests";
 import AddCoordinator from "./AdminPanel/AddCoordinatorPage";
 import SuccessAddCoordinator from "./AdminPanel/SuccessAddCoordinator";
-import DataPanel from "./AdminPanel/DataPanel";
+import DataPanel from "./CoordinatorPanel/DataPanel";
 import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
 import SurveyCodePage from "./SurveyCodePage/SurveyCodePage";
 import ViewSurvey from "./ViewSurvey/ViewSurvey";
@@ -293,9 +293,9 @@ function App() {
         }
       />
       <Route
-        path="/adminPanel/dataPanel"
+        path="/coordinatorPanel/dataPanel"
         element={
-          <RoleProtectedRoute allowedRoles={["Admin"]}>
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
             <DataPanel />
           </RoleProtectedRoute>
         }

@@ -19,10 +19,6 @@ function AdminPanel() {
     navigate("/adminPanel/addCoordinator");
   };
 
-  const handleAccessDataPanelClick = () => {
-    navigate("/adminPanel/dataPanel");
-  };
-
   const handleAccessCoordinatorPanelClick = () => {
     console.log("Access Coordinator Panel button clicked");
     navigate("/coordinatorPanel");
@@ -35,10 +31,6 @@ function AdminPanel() {
         <div className="buttonAdminPanelSection">
           <button onClick={handleListCoordinatorsClick}>
             List Coordinators
-          </button>
-
-          <button onClick={handleAccessDataPanelClick}>
-            Access to Data Panel
           </button>
 
           <button onClick={handleAddCoordinatorClick}>Add Coordinator</button>

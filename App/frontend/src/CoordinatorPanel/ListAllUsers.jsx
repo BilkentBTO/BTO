@@ -209,9 +209,9 @@ function ListAllUsers() {
     <div className="listAllUsersPage">
       <GlobalSidebar />
       <div className="rightSideCoorFunction">
-        <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
+        <HeaderPanelGlobal name={"List All Users"} />
         <div>
-          <h1 className="listAllUsersHeading">List All Users</h1>
+          <h1 className="listAllUsersHeading">Users</h1>
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}

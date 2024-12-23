@@ -287,10 +287,10 @@ function ToursResponsibleByGuides() {
     <div className="toursResponsibleByGuidesPage">
       <GlobalSidebar />
       <div className="rightSideAdvisorFunction">
-        <HeaderPanelGlobal name={"ADVISOR PANEL"} />
+        <HeaderPanelGlobal name={"Tours Responsible By Guides"} />
         <div>
           <h1 className="assignedToursHeading">
-            Guides and Corresponding Tours
+            Tours and Corresponding Tours Guides
           </h1>
           {tableData.length > 0 ? (
             <TableWithButtons

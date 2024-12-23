@@ -9,6 +9,14 @@ namespace backend.Models
     {
         public string? Code { get; set; }
         public int? SchoolCode { get; set; }
+        public int UID { get; set; }
         public List<Survey> Surveys { get; set; } = new List<Survey>();
+    }
+
+    public class GuideData
+    {
+        public int UID { get; set; }
+        public int AveragePoints { get; set; }
+        public int CompletedTours { get; set; }
     }
 }

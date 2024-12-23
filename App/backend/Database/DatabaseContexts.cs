@@ -39,6 +39,7 @@ namespace backend.Database
         // Surveys and related entities
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Survey> Surveys { get; set; }
+        public DbSet<GuideData> GuideData { get; set; }
 
         public SystemDbContext(DbContextOptions<SystemDbContext> options)
             : base(options) { }
@@ -78,6 +79,8 @@ namespace backend.Database
             modelBuilder.Entity<Survey>().HasKey(s => s.ID);
 
             modelBuilder.Entity<Quiz>().HasKey(s => s.Code);
+
+            modelBuilder.Entity<GuideData>().HasKey(g => g.UID);
 
             modelBuilder
                 .Entity<Quiz>()

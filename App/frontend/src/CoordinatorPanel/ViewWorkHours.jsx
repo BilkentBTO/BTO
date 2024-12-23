@@ -49,9 +49,9 @@ function ViewWorkHours() {
     <div className="assignedFairsPage">
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
-        <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
+        <HeaderPanelGlobal name={"View Working Hours"} />
         <div>
-          <h1 className="assignedFairsHeading">Working Hours</h1>
+          <h1 className="assignedFairsHeading">Users - Working Hours</h1>
           <Table
             headers={headers}
             data={data.map((item) => [

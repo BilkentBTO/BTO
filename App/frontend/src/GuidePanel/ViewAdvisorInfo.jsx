@@ -78,9 +78,9 @@ function ViewAdvisorInfo() {
     <div className="assignedFairsPage">
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
-        <HeaderPanelGlobal name={"GUIDE PANEL"} />
+        <HeaderPanelGlobal name={"View Advisor Info"} />
         <div>
-          <h1 className="assignedFairsHeading">Advisor Info</h1>
+          <h1 className="assignedFairsHeading">Contact Information</h1>
           {console.log("Monday", dataMonday)}
           {!isLoading ? (
             <Table headers={headers} data={tableData} />
