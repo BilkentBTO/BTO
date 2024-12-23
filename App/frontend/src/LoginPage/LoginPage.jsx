@@ -48,7 +48,7 @@ function LoginPage() {
       } else if (role === "Admin") {
         console.log("I WORK HERE");
         navigate("/adminPanel");
-      } else if (role === "Guide") {
+      } else if (role === "Guide" || role === "CandidateGuide") {
         navigate("/guidePanel");
       } else if (role === "Advisor") {
         navigate("/advisorPanel");

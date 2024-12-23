@@ -119,6 +119,9 @@ function GlobalSidebar() {
       { label: "Guide Dashboard", path: "/guidePanel" },
     ],
     Guide: [{ label: "Guide Dashboard", path: "/guidePanel" }],
+    CandidateGuide: [
+      { label: "Candidate Guide Dashboard", path: "/guidePanel" },
+    ],
   };
 
   const navigateToSection = (path) => {
