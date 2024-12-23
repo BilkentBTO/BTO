@@ -46,6 +46,7 @@ import SurveyCodePage from "./SurveyCodePage/SurveyCodePage";
 import ViewSurvey from "./ViewSurvey/ViewSurvey";
 import SuccessViewSurvey from "./ViewSurvey/SuccessViewSurvey";
 import ViewWorkHours from "./CoordinatorPanel/ViewWorkHours";
+import ViewAdvisorInfo from "./GuidePanel/ViewAdvisorInfo";
 
 function App() {
   return (
@@ -166,6 +167,16 @@ function App() {
             allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
           >
             <EditAvailableHoursPage />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/guidePanel/viewAdvisorInfo"
+        element={
+          <RoleProtectedRoute
+            allowedRoles={["Admin", "Coordinator", "Guide", "Advisor"]}
+          >
+            <ViewAdvisorInfo />
           </RoleProtectedRoute>
         }
       />

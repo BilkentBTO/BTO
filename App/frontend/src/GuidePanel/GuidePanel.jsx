@@ -46,6 +46,10 @@ function GuidePanel() {
     navigate("/guidePanel/editAvailableHours");
   };
 
+  const handleViewAdvisorInfoClick = () => {
+    navigate("/guidePanel/viewAdvisorInfo");
+  };
+
   return (
     <div className="guidePanel">
       <div className="innerGuide">
@@ -59,6 +63,9 @@ function GuidePanel() {
           <button onClick={handleAssignedToursClick}>Assigned Tours</button>
           <button onClick={handleEditAvailableHoursClick}>
             Edit Available Hours
+          </button>
+          <button onClick={handleViewAdvisorInfoClick}>
+            View Advisor Info
           </button>
         </div>
       </div>
