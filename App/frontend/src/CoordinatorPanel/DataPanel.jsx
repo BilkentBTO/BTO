@@ -4,6 +4,7 @@ import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 import PieChartGlobal from "../GlobalClasses/PieChartGlobal";
+import ColumnGraphGlobal from "../GlobalClasses/ColumnGraphGlobal";
 
 function DataPanel() {
   const headers = [
@@ -23,7 +24,7 @@ function DataPanel() {
   const [showPopup, setShowPopup] = useState(false); // State to toggle popup
   const [popupContent, setPopupContent] = useState({}); // State to store popup data
 
-  const handleRowClick = (rowData) => {
+  const handleSchoolRowClick = (rowData) => {
     // Open the popup and set its content
     setPopupContent({
       school: rowData[0],
@@ -34,6 +35,10 @@ function DataPanel() {
       relationStatus: rowData[5],
     });
     setShowPopup(true);
+  };
+
+  const handleGuideRowClick = (rowData) => {
+    // IMPLEMENT LATER
   };
 
   const closePopup = () => {
@@ -60,61 +65,30 @@ function DataPanel() {
       <div className="rightSideAdminFunction">
         <HeaderPanelGlobal name={"Data Panel"} />
         <div>
-          <h1 className="dataPanelHeading">Data</h1>
+          <h1 className="dataPanelHeading">School Data</h1>
           <TableWithButtons
             headers={headers}
             data={data}
-            onButtonClick={(row) => handleRowClick(row)} // Pass the correct row data
+            onButtonClick={(row) => handleSchoolRowClick(row)} // Pass the correct row data
             buttonStyle={buttonStyle}
-            buttonName="Details"
+            buttonName="Graphs"
+          />
+          <h1 className="dataPanelHeading">Guide Data</h1>
+          <TableWithButtons
+            headers={headers}
+            data={data}
+            onButtonClick={(row) => handleGuideRowClick(row)} // Pass the correct row data
+            buttonStyle={buttonStyle}
+            buttonName="Graphs"
           />
         </div>
         {/* Popup Component */}
         {showPopup && (
           <div className="popupOverlay">
             <div className="popupContent">
-              <h2>Details for {popupContent.school}</h2>
-              <table className="popupTable">
-                <tbody>
-                  <tr>
-                    <td>
-                      <strong>School</strong>
-                    </td>
-                    <td>{popupContent.school}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Location</strong>
-                    </td>
-                    <td>{popupContent.location}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Student Number</strong>
-                    </td>
-                    <td>{popupContent.studentNumber}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Students Sent to Bilkent</strong>
-                    </td>
-                    <td>{popupContent.sentToBilkent}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>YKS Rating</strong>
-                    </td>
-                    <td>{popupContent.yksRating}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Relation Status</strong>
-                    </td>
-                    <td>{popupContent.relationStatus}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <h2>Graph for {popupContent.school}</h2>
               <PieChartGlobal></PieChartGlobal>
+              <ColumnGraphGlobal></ColumnGraphGlobal>
               <button
                 onClick={closePopup}
                 style={{
