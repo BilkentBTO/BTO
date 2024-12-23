@@ -104,21 +104,21 @@ function GlobalSidebar() {
 
   const sidebarOptions = {
     Admin: [
-      { label: "Admin Panel", path: "/adminPanel" },
-      { label: "Coordinator Panel", path: "/coordinatorPanel" },
-      { label: "Advisor Panel", path: "/advisorPanel" },
-      { label: "Guide Panel", path: "/guidePanel" },
+      { label: "Admin Dashboard", path: "/adminPanel" },
+      { label: "Coordinator Dashboard", path: "/coordinatorPanel" },
+      { label: "Advisor Dashboard", path: "/advisorPanel" },
+      { label: "Guide Dashboard", path: "/guidePanel" },
     ],
     Coordinator: [
-      { label: "Coordinator Panel", path: "/coordinatorPanel" },
-      { label: "Advisor Panel", path: "/advisorPanel" },
-      { label: "Guide Panel", path: "/guidePanel" },
+      { label: "Coordinator Dashboard", path: "/coordinatorPanel" },
+      { label: "Advisor Dashboard", path: "/advisorPanel" },
+      { label: "Guide Dashboard", path: "/guidePanel" },
     ],
     Advisor: [
-      { label: "Advisor Panel", path: "/advisorPanel" },
-      { label: "Guide Panel", path: "/guidePanel" },
+      { label: "Advisor Dashboard", path: "/advisorPanel" },
+      { label: "Guide Dashboard", path: "/guidePanel" },
     ],
-    Guide: [{ label: "Guide Panel", path: "/guidePanel" }],
+    Guide: [{ label: "Guide Dashboard", path: "/guidePanel" }],
   };
 
   const navigateToSection = (path) => {
