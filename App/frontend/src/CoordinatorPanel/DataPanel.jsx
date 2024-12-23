@@ -12,8 +12,7 @@ function DataPanel() {
     "Total Tour Count",
     "Tour Feedback",
     "Bilkent Feedback",
-    "Potential Apply Feedback",
-    "Relation Status",
+    "Application Possibility Feedback",
   ];
 
   const headersGuide = [
@@ -27,8 +26,8 @@ function DataPanel() {
   const [popupContent, setPopupContent] = useState({});
   const [dataSchool, setDataSchool] = useState([]);
   const [dataGuide, setDataGuide] = useState([]);
-  const [selectedSchoolRow, setSelectedSchoolRow] = useState(null);
-  const [selectedGuideRow, setSelectedGuideRow] = useState(null);
+  const [selectedSchoolRow, setSelectedSchoolRow] = useState([]);
+  const [selectedGuideRow, setSelectedGuideRow] = useState([]);
 
   useEffect(() => {
     const fetchSchoolData = async () => {
@@ -60,7 +59,6 @@ function DataPanel() {
         setIsLoading(false);
       }
     };
-
     fetchGuideData();
 
     fetchSchoolData();
@@ -68,12 +66,12 @@ function DataPanel() {
 
   const handleSchoolRowClick = (rowData) => {
     setSelectedSchoolRow(rowData);
-    //
     setShowPopup(true);
   };
 
   const handleGuideRowClick = (rowData) => {
-    // IMPLEMENT LATER
+    setSelectedGuideRow(rowData);
+    setShowPopup(true);
   };
 
   const closePopup = () => {
@@ -94,6 +92,16 @@ function DataPanel() {
     transition: "background-color 0.3s ease, transform 0.2s ease",
   };
 
+  const infoSchool = [
+    { name: "Tour Feedback", value: selectedSchoolRow[2], fill: "green" },
+    { name: "Bilkent Feedback", value: selectedSchoolRow[3], fill: "red" },
+    {
+      name: "Application Possibility Feedback",
+      value: selectedSchoolRow[4],
+      fill: "blue",
+    },
+  ];
+
   return (
     <div className="dataPanel">
       <GlobalSidebar />
@@ -101,29 +109,54 @@ function DataPanel() {
         <HeaderPanelGlobal name={"Data Panel"} />
         <div className="scrollContainer">
           <h1 className="dataPanelHeading">School Data</h1>
-          <TableWithButtons
-            headers={headersSchool}
-            data={dataSchool}
-            onButtonClick={(row) => handleSchoolRowClick(row)} // Pass the correct row data
-            buttonStyle={buttonStyle}
-            buttonName="Graphs"
-          />
+          {console.log("dataSchool", dataSchool)}
+          {console.log("dataGuide", dataGuide)}
+          {dataSchool.length > 0 ? (
+            <TableWithButtons
+              headers={headersSchool}
+              data={dataSchool.map((item) => [
+                item.school.schoolName || "N/A",
+                item.totalTours || "N/A",
+                item.rateTour || "N/A",
+                item.rateBilkent || "N/A",
+                item.applyToBilkent || "N/A",
+              ])}
+              onButtonClick={(row) => handleSchoolRowClick(row)} // Pass the correct row data
+              buttonStyle={buttonStyle}
+              buttonName="Graphs"
+            />
+          ) : (
+            <p className="noDataText">No Users</p>
+          )}
           <h1 className="dataPanelHeading">Guide Data</h1>
-          <TableWithButtons
-            headers={headersGuide}
-            data={dataGuide}
-            onButtonClick={(row) => handleGuideRowClick(row)} // Pass the correct row data
-            buttonStyle={buttonStyle}
-            buttonName="Graphs"
-          />
+          {dataGuide.length > 0 ? (
+            <TableWithButtons
+              headers={headersGuide}
+              data={dataGuide.map((item) => [
+                item.guideName || "N/A",
+                item.guideSurname || "N/A",
+                item.averagePoints || "N/A",
+                item.completedTours || "N/A",
+              ])}
+              onButtonClick={(row) => handleGuideRowClick(row)} // Pass the correct row data
+              buttonStyle={buttonStyle}
+              buttonName="Graphs"
+            />
+          ) : (
+            <p className="noDataText">No Users</p>
+          )}
         </div>
         {/* Popup Component */}
         {showPopup && (
           <div className="popupOverlay">
             <div className="popupContent">
-              <h2>Graph for {popupContent.school}</h2>
-              <PieChartGlobal></PieChartGlobal>
-              <ColumnGraphGlobal></ColumnGraphGlobal>
+              <h2>Graph for Row</h2>
+              <PieChartGlobal data={infoSchool} outerRadius="80" />
+              <ColumnGraphGlobal
+                data={infoGuide}
+                width="250"
+                height="250"
+              ></ColumnGraphGlobal>
               <button
                 onClick={closePopup}
                 style={{

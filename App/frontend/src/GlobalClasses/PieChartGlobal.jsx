@@ -1,16 +1,7 @@
 import React from "react";
 import { PieChart, Pie, Sector, Cell, Tooltip } from "recharts";
 
-function PieChartGlobal(
-  {
-    /* data, outerRadius */
-  }
-) {
-  const data = [
-    { name: "Facebook", value: 2000, fill: "#8884d8" },
-    { name: "Meta", value: 1500, fill: "1e1e64" },
-  ];
-
+function PieChartGlobal({ data, outerRadius }) {
   return (
     <div>
       <PieChart width={250} height={250}>
@@ -20,10 +11,14 @@ function PieChartGlobal(
           data={data}
           cx={120}
           cy={120}
-          outerRadius={80}
+          outerRadius={outerRadius}
           label
-        ></Pie>
-        <Tooltip></Tooltip>
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.fill || "#8884d8"} />
+          ))}
+        </Pie>
+        <Tooltip />
       </PieChart>
     </div>
   );

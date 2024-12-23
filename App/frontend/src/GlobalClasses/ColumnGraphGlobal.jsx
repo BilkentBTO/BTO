@@ -10,12 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-function ColumnGraphGlobal() {
-  const data = [
-    { name: "Facebook", value: 2000 },
-    { name: "Meta", value: 1500 },
-  ];
-
+function ColumnGraphGlobal(data, width, height) {
   const CustomToolTip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -31,10 +26,7 @@ function ColumnGraphGlobal() {
   };
 
   return (
-    <div
-      className="chart-container"
-      style={{ width: "250px", height: "250px" }}
-    >
+    <div className="chart-container" style={{ width: width, height: height }}>
       <ResponsiveContainer>
         <BarChart data={data} margin={{ right: 30 }}>
           <CartesianGrid strokeDasharray="3 3" />
