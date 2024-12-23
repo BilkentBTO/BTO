@@ -191,7 +191,9 @@ function AvailableToursPage() {
                 if (tourType === "school") {
                   return [
                     item.tourRegistrationCode || "N/A", // Tour ID
-                    new Date(item.time).toLocaleDateString() || "N/A", // Date
+                    new Date(
+                      item.tourRegistirationInfo?.time
+                    ).toLocaleDateString() || "N/A", // Date
                     item.tourRegistirationInfo?.school?.schoolName || "N/A", // School
                     item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
                   ];
@@ -237,17 +239,28 @@ function AvailableToursPage() {
                             "School Name":
                               selectedTour?.tourRegistirationInfo?.school
                                 ?.schoolName || "N/A",
-                            Date: selectedTour?.time
-                              ? new Date(selectedTour.time).toLocaleDateString()
+                            Date: selectedTour?.tourRegistirationInfo?.time
+                              ? new Date(
+                                  selectedTour.tourRegistirationInfo?.time
+                                ).toLocaleDateString()
                               : "N/A",
-                            Time: selectedTour?.time
-                              ? new Date(selectedTour.time).toLocaleTimeString(
-                                  [],
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )
+                            Time: selectedTour?.tourRegistirationInfo?.timeBlock
+                              ?.time
+                              ? new Date(
+                                  selectedTour.tourRegistirationInfo.timeBlock.time
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  timeZone: "UTC",
+                                })
+                              : selectedTour?.tourRegistirationInfo?.time
+                              ? new Date(
+                                  selectedTour.tourRegistirationInfo.time
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  timeZone: "UTC",
+                                })
                               : "N/A",
                             "Number of Visitors":
                               selectedTour?.tourRegistirationInfo

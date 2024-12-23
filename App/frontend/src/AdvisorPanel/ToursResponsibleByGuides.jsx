@@ -59,6 +59,7 @@ function ToursResponsibleByGuides() {
     "Name",
     "Preferred Major",
     "Phone Number",
+    "Guide Full Name",
   ];
 
   const headers = tourType === "school" ? schoolHeaders : individualHeaders;
@@ -164,6 +165,56 @@ function ToursResponsibleByGuides() {
       alert("An error occurred while assigning the guide.");
     }
   };
+
+  const fetchAndCombineData = async () => {
+    try {
+      // Step 1: Fetch individual tours
+      const response = await fetch("/api/schedule/individualtours");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const apiData = await response.json();
+      console.log("API DATA:", apiData);
+
+      // Step 2: Fetch user data for each assignedGuideID
+      const enrichedData = await Promise.all(
+        apiData.map(async (tour) => {
+          if (tour.assignedGuideID) {
+            try {
+              const userResponse = await fetch(
+                `/api/user/${tour.assignedGuideID}`
+              );
+              if (!userResponse.ok) {
+                throw new Error(
+                  `Failed to fetch user with ID ${tour.assignedGuideID}: ${userResponse.status}`
+                );
+              }
+              const userData = await userResponse.json();
+              // Step 3: Combine tour data with user data
+              return { ...tour, guideDetails: userData };
+            } catch (error) {
+              console.error(
+                `Error fetching user for assignedGuideID ${tour.assignedGuideID}:`,
+                error
+              );
+              return { ...tour, guideDetails: null }; // Include null if user fetch fails
+            }
+          } else {
+            // If no guide is assigned, just return the tour data
+            return { ...tour, guideDetails: null };
+          }
+        })
+      );
+
+      console.log("ENRICHED DATA:", enrichedData);
+
+      // Step 4: Set the combined data to state
+      setTableIndvData(enrichedData);
+    } catch (error) {
+      console.error("Error fetching and combining data:", error);
+    }
+  };
+
   useEffect(() => {
     // Fetch tours and guides data from the API
     const fetchToursAndUsers = async () => {
@@ -227,19 +278,13 @@ function ToursResponsibleByGuides() {
           // Set the table data
           setTableData(enrichedData);
         } else {
-          const response = await fetch("/api/schedule/individualtours");
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const apiData = await response.json();
-          console.log("APİ DATA: ", apiData);
-
-          setTableIndvData(apiData);
+          fetchAndCombineData();
         }
       } catch (error) {
         console.error("Error fetching tours and user details:", error);
       }
     };
+
     const fetchAllUsers = async () => {
       try {
         const usersResponse = await fetch("/api/user");
@@ -307,10 +352,7 @@ function ToursResponsibleByGuides() {
     console.log("FORM DATA: ", formData);
   };
   const buttonName = "Edit";
-  useEffect(() => {
-    console.log("useEffect called due to tourType change:", tourType);
-    // Your fetch logic here
-  }, [tourType]);
+
   return (
     <div className="toursResponsibleByGuidesPage">
       <GlobalSidebar />
@@ -364,9 +406,16 @@ function ToursResponsibleByGuides() {
                 new Date(
                   item.tourRegistirationInfo?.time
                 ).toLocaleDateString() || "N/A",
-                item.tourRegistirationInfo?.individualName || "N/A",
-                item.tourRegistirationInfo?.individualSurname || "N/A",
+                `${
+                  item.tourRegistirationInfo?.individualName || "UNASSIGNED"
+                } ${
+                  item.tourRegistirationInfo?.individualSurname || ""
+                }`.trim() || "UNASSIGNED",
                 item.tourRegistirationInfo?.individualMajor?.name || "N/A",
+                item.tourRegistirationInfo?.individualPhoneNumber || "N/A",
+                `${item.guideDetails?.name || "UNASSIGNED"} ${
+                  item.guideDetails?.surname || ""
+                }`.trim() || "UNASSIGNED",
               ])}
             />
           )}{" "}
