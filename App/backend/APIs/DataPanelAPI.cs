@@ -47,6 +47,13 @@ namespace backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet("guide")]
+        public async Task<IActionResult> GetAllGuideData()
+        {
+            var result = await _controller.GetAllGuideData();
+            return Ok(result);
+        }
+
         [HttpGet("school")]
         public async Task<IActionResult> GetSchoolData()
         {
