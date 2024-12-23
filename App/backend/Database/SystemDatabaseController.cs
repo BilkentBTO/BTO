@@ -1039,26 +1039,29 @@ namespace backend.Database
                 return new List<Tour>();
             }
 
-            List<Tour> allTours = await _SystemContext
-                .Tours.Where(t => t.TourRegistirationInfo != null)
-                .ToListAsync();
+            List<Tour> allTours = await _SystemContext.Tours.ToListAsync();
 
             List<Tour> responsibleTours = new List<Tour>();
 
             foreach (var tour in allTours)
             {
-                if (tour.TourRegistirationInfo == null)
+                TourRegistration? TourRegistration = await _SystemContext
+                    .TourRegistrations.Include(r => r.School)
+                    .Include(r => r.TimeBlock)
+                    .FirstOrDefaultAsync(t => t.Code == tour.TourRegistrationCode);
+                if (TourRegistration == null)
                 {
                     continue;
                 }
-                if (tour.TourRegistirationInfo.TimeBlock == null)
+                if (TourRegistration.TimeBlock == null)
                 {
                     continue;
                 }
-                if (tour.TourRegistirationInfo.TimeBlock.Time.DayOfWeek != user.ResponsibleDay)
+                if (TourRegistration.TimeBlock.Time.DayOfWeek != user.ResponsibleDay)
                 {
                     continue;
                 }
+                tour.FillTourRegistrationInfo(TourRegistration);
                 responsibleTours.Add(tour);
             }
             return responsibleTours;
