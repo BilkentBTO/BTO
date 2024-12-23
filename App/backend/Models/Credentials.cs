@@ -57,7 +57,7 @@ namespace backend.Models
         /// Empty constructor for initializing the `Credential` object
         /// </summary>
         public Credential() { }
-        
+
         /// <summary>
         /// Verifies whether the provided password matches the stored hashed password.
         /// </summary>

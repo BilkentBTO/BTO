@@ -7,6 +7,8 @@ import { jwtDecode } from "jwt-decode";
 import "./EditAvailableHoursPage.css";
 import { useNavigate } from "react-router-dom";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+import TableWithButtons from "../GlobalClasses/TableWithButtons.jsx";
+import log from "eslint-plugin-react/lib/util/log.js";
 
 function EditAvailableHoursPage() {
   const navigate = useNavigate();
@@ -23,6 +25,16 @@ function EditAvailableHoursPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [guideUID, setGuideUID] = useState(null);
+  const today = new Date().toISOString().split("T")[0];
+  const dateFilter = {
+    min: today, // Disable past dates
+  };
+  const dateLimit = new Date("9999-12-31T22:59:59.000Z");
+
+  const isWeekend = (date) => {
+    const dayOfWeek = new Date(date).getDay();
+    return dayOfWeek === 0 || dayOfWeek === 6; // Sunday (0) and Saturday (6)
+  };
 
   // Fetch data and pre-fill table
   useEffect(() => {
@@ -61,23 +73,39 @@ function EditAvailableHoursPage() {
 
   // Handle adding a new row
   // Handle adding a new row
-  const handleAddRow = (state) => {
-    if (!date || !time) {
-      alert("Please select both date and time.");
-      return;
-    }
-
+  const handleAddRow = (state, row) => {
     if (state === "Busy") {
       const updatedData = data.filter(
-        (row) => !(row[0] === date && row[1] === time)
+        (rowa) => !(rowa[0] === row[0] && rowa[1] === row[1])
       );
       setData(updatedData);
+
       setBusyHours((prev) => [
         ...prev,
-        `${date}T${time}:00Z`, // Remove milliseconds
+        `${row[0]}T${row[1]}:00Z`, // Remove milliseconds
       ]);
       console.log("BUSY HOURS: ", busyHours);
+      return;
     } else if (state === "Available") {
+      if (!date || !time) {
+        alert("Please select both date and time.");
+        return;
+      }
+      const requestedDate = new Date(date);
+      const today = Date.now();
+
+      // Block selection of weekends
+      if (isWeekend(requestedDate)) {
+        alert("Weekends are not allowed.");
+        return;
+      }
+
+      // Block past dates
+      if (requestedDate < today || requestedDate > dateLimit) {
+        alert("Please enter a valid date.");
+        return;
+      }
+
       const newRow = [date, time, state];
       const existingRow = data.find(
         (row) => row[0] === date && row[1] === time
@@ -91,6 +119,10 @@ function EditAvailableHoursPage() {
       setData((prevData) => [...prevData, newRow]);
     }
   };
+
+  useEffect(() => {
+    handleUpdateHours();
+  }, [data]);
 
   // Handle updating the available hours
   const handleUpdateHours = async () => {
@@ -121,7 +153,7 @@ function EditAvailableHoursPage() {
 
         setBusyHours([]); // Clear busyHours after successful deletion
       }
-      alert("Table Changed");
+      // alert("Table Changed");
     } catch (error) {
       console.error("Error updating hours:", error);
       alert("Error updating hours.");
@@ -176,6 +208,7 @@ function EditAvailableHoursPage() {
                 type="date"
                 value={date}
                 onChange={setDate}
+                dateFilter={dateFilter}
               />
               <FormDropDownGlobal
                 question="Select Time:"
@@ -184,16 +217,6 @@ function EditAvailableHoursPage() {
                 onChange={setTime}
               />
               <div className="buttonEditSection">
-                <button
-                  onClick={() => handleAddRow("Busy")}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "red",
-                    color: "white",
-                  }}
-                >
-                  Set Busy
-                </button>
                 <button
                   onClick={() => handleAddRow("Available")}
                   style={{
@@ -204,21 +227,19 @@ function EditAvailableHoursPage() {
                 >
                   Set Available
                 </button>
-                <button
-                  onClick={showConfirmationPopup}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#1e1e64",
-                    color: "white",
-                  }}
-                >
-                  Update Table
-                </button>
               </div>
             </div>
           </div>
           <div className="rightInner">
-            <Table data={data} headers={headers} />
+            <TableWithButtons
+              headers={headers}
+              data={data}
+              onButtonClick={(row) => handleAddRow("Busy", row)}
+              buttonStyle={{
+                color: "red",
+              }}
+              buttonName="Busy"
+            />
           </div>
         </div>
         {showPopup && (

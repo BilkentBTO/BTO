@@ -1,12 +1,12 @@
 /// <summary>
 /// The <see cref="CredentialDatabaseController"/> class is responsible for managing user credential-related
 /// operations within the system's database. It provides methods to:
-/// 
+///
 /// - Retrieve all user credentials, ordered by username.
 /// - Get a user's credential role by their username.
 /// - Handle user login, verifying username and password correctness.
 /// - Change a user's password, ensuring that the old password is correct before updating.
-/// 
+///
 /// The class interacts with the <see cref="SystemDbContext"/> for database access and the <see cref="ILogger"/>
 /// for logging purposes. It ensures that user credentials are securely managed, logging errors when necessary.
 /// </summary>

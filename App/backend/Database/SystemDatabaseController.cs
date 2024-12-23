@@ -1348,26 +1348,34 @@ namespace backend.Database
         /// </summary>
         /// <param name="userCreate">The details for the new user to be created.</param>
         /// <returns>Returns an ErrorTypes value indicating the success or failure of the user creation operation.</returns>
-        public async Task<ErrorTypes> AddUserAsync(UserCreate userCreate)
+        public async Task<string> AddUserAsync(UserCreate userCreate)
         {
+            //ALL RETURN TYPES ARE ADJUSTED FOR DEMO PURPOSES
+            //THIS IS NOT THE MAIN FUNCTIONALITY OF THE METHOD
+            //IT SHOULD SEND THE MAIL ACCORDINGLY WHICH IS AGAIN
+            //REMOVED SINCE FREE PLAN IS OVER FOR OUR MAIL API
             if (string.IsNullOrEmpty(userCreate.Name) || string.IsNullOrEmpty(userCreate.Username))
             {
-                return ErrorTypes.InvalidUserName;
+                return "";
+                //return ErrorTypes.InvalidUserName;
             }
             if (string.IsNullOrEmpty(userCreate.Mail))
             {
-                return ErrorTypes.InvalidMail;
+                return "";
+                //return ErrorTypes.InvalidMail;
             }
             if (string.IsNullOrEmpty(userCreate.Surname))
             {
-                return ErrorTypes.InvalidSurname;
+                return "";
+                //return ErrorTypes.InvalidSurname;
             }
 
             string username = userCreate.Username;
 
             if (_SystemContext.Credentials.Any(c => c.Username == username))
             {
-                return ErrorTypes.UserAlreadyExists;
+                return "";
+                //return ErrorTypes.UserAlreadyExists;
             }
 
             User newUser;
@@ -1439,7 +1447,8 @@ namespace backend.Database
             await _SystemContext.SaveChangesAsync();
 
             //TODO ADD MAIL TO USER
-            return ErrorTypes.Success;
+            return randomPassword;
+            //return ErrorTypes.Success;
         }
 
         /// <summary>

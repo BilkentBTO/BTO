@@ -10,19 +10,20 @@ function DataPanel() {
   const headersSchool = [
     "School",
     "Total Tour Count",
-    "Tour Feedback",
-    "Bilkent Feedback",
-    "Application Possibility Feedback",
+    "Tour Feedback (Out of 10)",
+    "Bilkent Feedback (Out of 10)",
+    "Application Possibility (Out of 10)",
   ];
 
   const headersGuide = [
     "Guide Name",
     "Guide Surname",
-    "Average Feedback",
+    "Feedback (Out of 10)",
     "Completed Tour Count",
   ];
 
-  const [showPopup, setShowPopup] = useState(false); // State to toggle popup
+  const [showSchoolPopup, setShowSchoolPopup] = useState(false);
+  const [showGuidePopup, setShowGuidePopup] = useState(false);
   const [popupContent, setPopupContent] = useState({});
   const [dataSchool, setDataSchool] = useState([]);
   const [dataGuide, setDataGuide] = useState([]);
@@ -66,16 +67,20 @@ function DataPanel() {
 
   const handleSchoolRowClick = (rowData) => {
     setSelectedSchoolRow(rowData);
-    setShowPopup(true);
+    setShowSchoolPopup(true);
   };
 
   const handleGuideRowClick = (rowData) => {
     setSelectedGuideRow(rowData);
-    setShowPopup(true);
+    setShowGuidePopup(true);
   };
 
-  const closePopup = () => {
-    setShowPopup(false);
+  const closeSchoolPopup = () => {
+    setShowSchoolPopup(false);
+  };
+
+  const closeGuidePopup = () => {
+    setShowGuidePopup(false);
   };
 
   const buttonStyle = {
@@ -93,14 +98,15 @@ function DataPanel() {
   };
 
   const infoSchool = [
-    { name: "Tour Feedback", value: selectedSchoolRow[2], fill: "green" },
-    { name: "Bilkent Feedback", value: selectedSchoolRow[3], fill: "red" },
+    { name: "Tour Feedback", value: selectedSchoolRow[2] },
+    { name: "Bilkent Feedback", value: selectedSchoolRow[3] },
     {
       name: "Application Possibility Feedback",
       value: selectedSchoolRow[4],
-      fill: "blue",
     },
   ];
+
+  const infoGuide = [{ name: "Feedback Average", value: selectedGuideRow[2] }];
 
   return (
     <div className="dataPanel">
@@ -133,8 +139,8 @@ function DataPanel() {
             <TableWithButtons
               headers={headersGuide}
               data={dataGuide.map((item) => [
-                item.guideName || "N/A",
-                item.guideSurname || "N/A",
+                item.guide.name || "N/A",
+                item.guide.surname || "N/A",
                 item.averagePoints || "N/A",
                 item.completedTours || "N/A",
               ])}
@@ -147,18 +153,50 @@ function DataPanel() {
           )}
         </div>
         {/* Popup Component */}
-        {showPopup && (
+        {showSchoolPopup && (
           <div className="popupOverlay">
             <div className="popupContent">
               <h2>Graph for Row</h2>
-              <PieChartGlobal data={infoSchool} outerRadius="80" />
+              {/*<PieChartGlobal data={infoSchool} outerRadius="80" />*/}
+              <ColumnGraphGlobal
+                data={infoSchool}
+                width="250px"
+                height="250px"
+              />
+              <button
+                onClick={closeSchoolPopup}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "red",
+                  marginTop: "20px",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  width: "100%",
+                  maxWidth: "120px",
+                  textAlign: "center",
+                  transition: "background-color 0.3s ease, transform 0.2s ease",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+        {/* Popup Component */}
+        {showGuidePopup && (
+          <div className="popupOverlay">
+            <div className="popupContent">
+              <h2>Graph for Row</h2>
               <ColumnGraphGlobal
                 data={infoGuide}
-                width="250"
-                height="250"
-              ></ColumnGraphGlobal>
+                width="250px"
+                height="250px"
+              />
               <button
-                onClick={closePopup}
+                onClick={closeGuidePopup}
                 style={{
                   padding: "8px 16px",
                   backgroundColor: "red",

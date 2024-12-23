@@ -220,7 +220,12 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.AddUserAsync(UserCreate);
-            return ErrorHandler.HandleError(result);
+
+            if (string.IsNullOrEmpty(result))
+            {
+                return BadRequest("User already exists");
+            }
+            return Ok(result);
         }
 
         /// <summary>
