@@ -30,6 +30,7 @@ namespace backend.Models
         GuideAlreadyAddedToFair = 23,
         QuizNotFound = 24,
         InvalidSurveyForm = 25,
+        InvalidWorkHours = 26,
     }
 
     public static class ErrorHandler

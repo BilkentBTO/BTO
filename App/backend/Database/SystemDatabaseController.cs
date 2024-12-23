@@ -862,7 +862,7 @@ namespace backend.Database
             }
 
             var Fair = await _SystemContext.Fairs.SingleOrDefaultAsync(t =>
-                t.FairRegistrationCode == User.AssignedTourCode
+                t.FairRegistrationCode == User.AssignedFairCode
             );
 
             if (Fair == null)
@@ -1061,6 +1061,28 @@ namespace backend.Database
                 responsibleTours.Add(tour);
             }
             return responsibleTours;
+        }
+
+        public async Task<ErrorTypes> AddWorkHoursToUser(int UID, int hours)
+        {
+            if (UID < 0)
+            {
+                return ErrorTypes.InvalidUserName;
+            }
+            if (hours < 0)
+            {
+                return ErrorTypes.InvalidWorkHours;
+            }
+            var user = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == UID);
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            user.WorkHours += hours;
+
+            await _SystemContext.SaveChangesAsync();
+            return ErrorTypes.Success;
         }
 
         public async Task<bool> DeleteUserAsync(int id)
