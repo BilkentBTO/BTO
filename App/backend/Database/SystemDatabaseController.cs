@@ -1432,6 +1432,7 @@ namespace backend.Database
             }
 
             await _SystemContext.Users.AddAsync(newUser);
+            await _SystemContext.SaveChangesAsync();
 
             string randomPassword = GenerateRandomPassword();
 
