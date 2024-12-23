@@ -129,7 +129,7 @@ function ViewRegistrationPage() {
             </p>
             <p className="viewVisitDate">
               <span className="viewLabel">Date of Visit:</span>{" "}
-              {new Date(registrationData.dateOfVisit).toLocaleDateString() ||
+              {new Date(registrationData.time).toLocaleDateString() ||
                 "N/A"}
             </p>
             <p className="viewSupervisor">
@@ -166,7 +166,7 @@ function ViewRegistrationPage() {
             </p>
             <p className="viewVisitDate">
               <span className="viewLabel">Date of Visit:</span>{" "}
-              {new Date(registrationData.dateOfVisit).toLocaleDateString() ||
+              {new Date(registrationData.time).toLocaleDateString() ||
                 "N/A"}
             </p>
             <p className="viewVisitorNum">
