@@ -13,6 +13,10 @@ function IndividualRegistrationPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [majors, setMajors] = useState([]);
+  const today = new Date().toISOString().split("T")[0];
+  const dateFilter = {
+    min: today, // Disable past dates
+  };
 
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
@@ -133,6 +137,7 @@ function IndividualRegistrationPage() {
             type="date"
             value={formData.visitDate}
             onChange={(value) => handleChange("visitDate", value)}
+            dateFilter={dateFilter}
           />
 
           <FormDropDownGlobal
