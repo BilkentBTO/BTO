@@ -57,6 +57,28 @@ namespace backend.Database
             };
 
             quiz.Surveys.Add(survey);
+            var guideData = await _SystemContext.GuideData.FirstOrDefaultAsync(g =>
+                g.UID == quiz.UID
+            );
+
+            if (guideData == null)
+            {
+                guideData = new GuideData
+                {
+                    UID = quiz.UID,
+                    AveragePoints = survey.RateGuide,
+                    CompletedTours = 1,
+                };
+
+                _SystemContext.GuideData.Add(guideData);
+            }
+            else
+            {
+                guideData.AveragePoints =
+                    ((guideData.AveragePoints * guideData.CompletedTours) + survey.RateGuide)
+                    / (guideData.CompletedTours + 1);
+                guideData.CompletedTours += 1;
+            }
 
             await _SystemContext.Surveys.AddAsync(survey);
             await _SystemContext.SaveChangesAsync();
