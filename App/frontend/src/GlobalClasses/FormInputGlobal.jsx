@@ -12,17 +12,6 @@ function FormInputGlobal({
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
-    const dayOfWeek = new Date(selectedDate).getDay();
-
-    // Block selection of weekends
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      onChange(""); // Reset the input value
-      e.target.value = ""; // Reset the displayed value in the input field
-      alert("Weekends are not allowed.");
-      return;
-    }
-
-    // If valid, pass the selected date to the onChange handler
     onChange(selectedDate);
   };
 
@@ -39,18 +28,6 @@ function FormInputGlobal({
 
     // Allow input for all types but validate on blur for email
     onChange(value);
-  };
-
-  const handleBlur = (e) => {
-    const { value } = e.target;
-
-    // Validate email only on blur
-    if (type === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        onChange(""); // Clear the invalid email value
-      }
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -76,13 +53,6 @@ function FormInputGlobal({
         alert("Numbers are not allowed in this field.");
       }
     }
-    if (type === "date") {
-      // Block weekend date selection
-      const dayOfWeek = new Date(e.target.value).getDay();
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        e.preventDefault();
-      }
-    }
   };
 
   return (
@@ -96,7 +66,6 @@ function FormInputGlobal({
         onChange={(e) =>
           type === "date" ? handleDateChange(e) : handleInputChange(e)
         }
-        onBlur={handleBlur} // Validate email only on blur
         onKeyDown={handleKeyDown}
         min={type === "date" ? minDate : undefined} // Apply minDate for date type
         max={type === "date" ? maxDate : undefined} // Apply maxDate for date type

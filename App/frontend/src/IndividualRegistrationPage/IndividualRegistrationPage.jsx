@@ -56,6 +56,28 @@ function IndividualRegistrationPage() {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.individualMailAddress)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    const requestedDate = new Date(formData.visitDate);
+    const today = Date.now();
+
+    // Block selection of weekends
+    if (requestedDate.getDay() === 0 || requestedDate.getDay() === 6) {
+      alert("Weekends are not allowed.");
+      return;
+    }
+
+    // Block past dates
+    if (requestedDate < today) {
+      alert("Please enter a valid date.");
+      return;
+    }
+
     // Log and navigate with form data
     console.log("Form Data:", formData);
     navigate("/individualConfirmation", { state: { formData } });
@@ -130,14 +152,14 @@ function IndividualRegistrationPage() {
 
           <FormInputGlobal
             question="Phone Number*"
-            type="text"
+            type="tel"
             value={formData.individualPhoneNumber}
             onChange={(value) => handleChange("individualPhoneNumber", value)}
           />
 
           <FormInputGlobal
             question="Mail Address*"
-            type="text"
+            type="email"
             value={formData.individualMailAddress}
             onChange={(value) => handleChange("individualMailAddress", value)}
           />
