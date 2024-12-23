@@ -9,6 +9,11 @@ import { useEffect, useState } from "react";
 function InviteBilkentPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const today = new Date().toISOString().split("T")[0];
+  const dateFilter = {
+    min: today, // Disable past dates
+  };
+  const dateLimit = new Date("9999-12-31T22:59:59.000Z");
 
   // Dynamic dropdown states
   const [cities, setCities] = useState([]);
@@ -132,6 +137,21 @@ function InviteBilkentPage() {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.superVisorMailAddress)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    const requestedDate = new Date(formData.dateOfVisit);
+    const today = Date.now();
+    // Block past and too distant dates
+    if (requestedDate < today || !requestedDate.valueOf() || requestedDate > dateLimit) {
+      alert("Please enter a valid date.");
+      return;
+    }
+
     navigate("/fairConfirmation", { state: { formData } });
   };
 
@@ -163,6 +183,7 @@ function InviteBilkentPage() {
             type="date"
             value={formData.dateOfVisit}
             onChange={(value) => handleChange("dateOfVisit", value)}
+            dateFilter={dateFilter}
           />
 
           {/* Supervisor Information */}

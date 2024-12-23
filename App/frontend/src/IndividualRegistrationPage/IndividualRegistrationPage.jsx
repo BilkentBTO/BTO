@@ -17,6 +17,7 @@ function IndividualRegistrationPage() {
   const dateFilter = {
     min: today, // Disable past dates
   };
+  const dateLimit = new Date("9999-12-31T22:59:59.000Z");
 
   // Initialize formData with location state or default values
   const [formData, setFormData] = useState(() => {
@@ -82,7 +83,7 @@ function IndividualRegistrationPage() {
     }
 
     // Block past dates
-    if (requestedDate < today) {
+    if (requestedDate < today || requestedDate > dateLimit) {
       alert("Please enter a valid date.");
       return;
     }

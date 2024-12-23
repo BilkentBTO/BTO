@@ -37,6 +37,7 @@ function SchoolRegistrationPage() {
   const dateFilter = {
     min: today, // Disable past dates
   };
+  const dateLimit = new Date("9999-12-31T22:59:59.000Z");
 
   // Fetch Cities on Component Mount
   useEffect(() => {
@@ -155,7 +156,7 @@ function SchoolRegistrationPage() {
     }
 
     // Block past dates
-    if (requestedDate < today) {
+    if (requestedDate < today || requestedDate > dateLimit) {
       alert("Please enter a valid date.");
       return;
     }
