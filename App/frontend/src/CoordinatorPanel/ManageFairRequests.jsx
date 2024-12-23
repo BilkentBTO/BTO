@@ -154,7 +154,7 @@ function ManageFairRequests() {
                 item.code || "N/A",
                 item.school?.schoolName || "N/A",
                 item.cityName || "N/A",
-                new Date(item.dateOfVisit).toLocaleDateString() || "N/A",
+                new Date(item.time).toLocaleDateString() || "N/A",
                 item.superVisorName || "N/A",
               ])}
               onButtonClick={handleRowClick}
@@ -187,7 +187,7 @@ function ManageFairRequests() {
                 item.code || "N/A",
                 item.school?.schoolName || "N/A",
                 item.cityName || "N/A",
-                new Date(item.dateOfVisit).toLocaleDateString() || "N/A",
+                new Date(item.time).toLocaleDateString() || "N/A",
                 item.superVisorName || "N/A",
               ])}
               onButtonClick={handleAcceptedRowClick}
@@ -220,7 +220,7 @@ function ManageFairRequests() {
                 item.code || "N/A",
                 item.school?.schoolName || "N/A",
                 item.cityName || "N/A",
-                new Date(item.dateOfVisit).toLocaleDateString() || "N/A",
+                new Date(item.time).toLocaleDateString() || "N/A",
                 item.superVisorName || "N/A",
               ])}
               onButtonClick={(row) => handleDelete(row[0])}
@@ -275,8 +275,8 @@ function ManageFairRequests() {
                       <strong>Date of Visit:</strong>
                     </td>
                     <td>
-                      {selectedFair.dateOfVisit
-                        ? new Date(selectedFair.dateOfVisit).toLocaleString()
+                      {selectedFair.time
+                        ? new Date(selectedFair.time).toLocaleString()
                         : "N/A"}
                     </td>
                   </tr>
