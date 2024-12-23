@@ -1,3 +1,8 @@
+/// <summary>
+/// This file contains the Seeder class, which is responsible for seeding the database with initial data.
+/// It includes methods to populate the database with predefined data for various models, such as schools, guides, and other essential entities.
+/// The seeder ensures that the application has the necessary data for initial operation and testing purposes.
+/// </summary>
 using System.Net.Mail;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
