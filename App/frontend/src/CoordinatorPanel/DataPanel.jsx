@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DataPanel.css"; // Reuse the existing styles
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
@@ -7,33 +7,68 @@ import PieChartGlobal from "../GlobalClasses/PieChartGlobal";
 import ColumnGraphGlobal from "../GlobalClasses/ColumnGraphGlobal";
 
 function DataPanel() {
-  const headers = [
-    "Schools",
-    "Location",
-    "Student Number",
-    "Students Sent to Bilkent",
-    "YKS Rating",
+  const headersSchool = [
+    "School",
+    "Total Tour Count",
+    "Tour Feedback",
+    "Bilkent Feedback",
+    "Potential Apply Feedback",
     "Relation Status",
   ];
-  const data = [
-    ["Ted Ankara Koleji", "Ankara", "600", "130", "Low", "Good"],
-    ["Atatürk Anadolu", "Ankara", "100", "23", "High", "Mid"],
-    ["Nesibe Aydin", "Ankara", "200", "68", "High", "Mid"],
+
+  const headersGuide = [
+    "Guide Name",
+    "Guide Surname",
+    "Average Feedback",
+    "Completed Tour Count",
   ];
 
   const [showPopup, setShowPopup] = useState(false); // State to toggle popup
-  const [popupContent, setPopupContent] = useState({}); // State to store popup data
+  const [popupContent, setPopupContent] = useState({});
+  const [dataSchool, setDataSchool] = useState([]);
+  const [dataGuide, setDataGuide] = useState([]);
+  const [selectedSchoolRow, setSelectedSchoolRow] = useState(null);
+  const [selectedGuideRow, setSelectedGuideRow] = useState(null);
+
+  useEffect(() => {
+    const fetchSchoolData = async () => {
+      try {
+        const response = await fetch("/api/data/school");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setDataSchool(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const fetchGuideData = async () => {
+      try {
+        const response = await fetch("/api/data/guide");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const apiData = await response.json();
+        setDataGuide(apiData);
+      } catch (error) {
+        console.error("Error fetching tours data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchGuideData();
+
+    fetchSchoolData();
+  }, []);
 
   const handleSchoolRowClick = (rowData) => {
-    // Open the popup and set its content
-    setPopupContent({
-      school: rowData[0],
-      location: rowData[1],
-      studentNumber: rowData[2],
-      sentToBilkent: rowData[3],
-      yksRating: rowData[4],
-      relationStatus: rowData[5],
-    });
+    setSelectedSchoolRow(rowData);
+    //
     setShowPopup(true);
   };
 
@@ -67,16 +102,16 @@ function DataPanel() {
         <div>
           <h1 className="dataPanelHeading">School Data</h1>
           <TableWithButtons
-            headers={headers}
-            data={data}
+            headers={headersSchool}
+            data={dataSchool}
             onButtonClick={(row) => handleSchoolRowClick(row)} // Pass the correct row data
             buttonStyle={buttonStyle}
             buttonName="Graphs"
           />
           <h1 className="dataPanelHeading">Guide Data</h1>
           <TableWithButtons
-            headers={headers}
-            data={data}
+            headers={headersGuide}
+            data={dataGuide}
             onButtonClick={(row) => handleGuideRowClick(row)} // Pass the correct row data
             buttonStyle={buttonStyle}
             buttonName="Graphs"
