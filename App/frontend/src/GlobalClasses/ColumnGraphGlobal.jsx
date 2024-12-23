@@ -20,7 +20,7 @@ function ColumnGraphGlobal({ data, width, height }) {
             {payload[0].payload.name}
           </p>
           <p className="text-sm" style={{ color: "black" }}>
-            Value: <span className="ml-2">${payload[0].value}</span>
+            Value: <span className="ml-2">{payload[0].value}</span>
           </p>
         </div>
       );
