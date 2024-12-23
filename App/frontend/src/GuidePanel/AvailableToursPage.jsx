@@ -131,7 +131,7 @@ function AvailableToursPage() {
       <div className="rightSideGuideFunction">
         <HeaderPanelGlobal name={"Available Tours"} />
         <div>
-          <h1 className="availableToursHeading">Tours</h1>
+          <h1 className="availableToursHeading">Apply to Tours</h1>
           {isLoading ? (
             <p>Loading available tours...</p>
           ) : data.length > 0 ? (

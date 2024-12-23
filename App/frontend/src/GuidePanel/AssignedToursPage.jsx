@@ -23,6 +23,7 @@ function AssignedToursPage() {
     "Supervisor Duty",
     "Supervisor Phone Number",
     "Supervisor Mail",
+    "Quiz Code",
     "Notes",
   ];
 
@@ -69,6 +70,7 @@ function AssignedToursPage() {
         item.tourRegistirationInfo?.superVisorDuty || "N/A", // Supervisor Duty
         item.tourRegistirationInfo?.superVisorPhoneNumber || "N/A", // Supervisor Phone
         item.tourRegistirationInfo?.superVisorMailAddress || "N/A", // Supervisor Email
+        item.quizCode || "N/A", // Quiz Code
         item.tourRegistirationInfo?.notes || "N/A", // Notes
       ]);
 
