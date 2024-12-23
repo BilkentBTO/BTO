@@ -67,6 +67,13 @@ function JoinBTOPage() {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.mail)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     console.log("Form Data to Confirm:", formData); // Log to check formData before navigating
 
     // Navigate to the confirmation page with formData
@@ -95,6 +102,7 @@ function JoinBTOPage() {
             type="number"
             value={formData.bilkentID}
             onChange={(value) => handleChange("bilkentID", value)}
+            properities={{isPos:true}}
           />
           <FormDropDownGlobal
             arr={majors.map((major) => major.name)}
