@@ -249,10 +249,10 @@ function ListAllUsers() {
                 <strong>Surname:</strong> {selectedUser.surname || "N/A"}
               </p>
               <p>
-                <strong>Email:</strong> {selectedUser.email || "N/A"}
+                <strong>Email:</strong> {selectedUser.mail || "N/A"}
               </p>
               <p>
-                <strong>Work Hours:</strong> {selectedUser.workHours || "N/A"}
+                <strong>Work Hours:</strong> {selectedUser.workHours || "0"}
               </p>
               {["Admin", "Coordinator", "Advisor"].includes(
                 selectedUser[4]
