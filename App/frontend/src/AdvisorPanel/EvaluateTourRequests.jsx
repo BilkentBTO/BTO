@@ -8,6 +8,85 @@ import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 import TableWithButtonConflict from "../GlobalClasses/TableWithButtonConflict";
 
+function SchoolPopup({ selectedRow, onClose, onAccept, onReject, onDelete }) {
+  const schoolHeaders = [
+    "Tour ID",
+    "School Name",
+    "Priority",
+    "City",
+    "Date of Visit",
+    "Number of Visitors",
+    "Supervisor Name",
+    "Supervisor Duty",
+    "Supervisor Phone Number",
+    "Supervisor Email",
+    "Notes",
+  ];
+
+  const schoolKeyMap = {
+    "Tour ID": "code",
+    "School Name": "school.schoolName",
+    Priority: "school.priority",
+    City: "cityName",
+    "Date of Visit": "timeBlock.time",
+    "Number of Visitors": "numberOfVisitors",
+    "Supervisor Name": "superVisorName",
+    "Supervisor Duty": "superVisorDuty",
+    "Supervisor Phone Number": "superVisorPhoneNumber",
+    "Supervisor Email": "superVisorMailAddress",
+    Notes: "notes",
+  };
+
+  return (
+    <div className="popupOverlay">
+      <div className="popupContent">
+        <h2>School Tour Details</h2>
+        <table className="popupTable">
+          <tbody>
+            {schoolHeaders.map((header, index) => {
+              const keyPath = schoolKeyMap[header];
+              const value = keyPath
+                .split(".")
+                .reduce(
+                  (acc, key) =>
+                    acc && acc[key] !== undefined ? acc[key] : "N/A",
+                  selectedRow
+                );
+
+              return (
+                <tr key={index}>
+                  <td>
+                    <strong>{header}:</strong>
+                  </td>
+                  <td>{value}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div className="popupActions">
+          {selectedRow.state === 0 && (
+            <>
+              <button onClick={onAccept} className="popupButton green">
+                Approve
+              </button>
+              <button onClick={onReject} className="popupButton red">
+                Reject
+              </button>
+            </>
+          )}
+          <button onClick={onDelete} className="popupButton grey">
+            Delete
+          </button>
+          <button onClick={onClose} className="popupButton blue">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function IndividualPopup({
   selectedRow,
   onClose,
@@ -177,6 +256,7 @@ function EvaluateTourRequests() {
   const [acceptedIndvData, setAcceptedIndvData] = useState([]);
   const [rejectedIndvData, setRejectedIndvData] = useState([]);
 
+  const [popupIndvVisible, setPopupIndvVisible] = useState(false);
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -343,14 +423,57 @@ function EvaluateTourRequests() {
       console.error("No matching row found for tour ID:", tourId);
     }
   };
+  const acceptIndvPopup = async () => {
+    const tourId = selectedRow.code;
+    try {
+      await fetch(`/api/register/individual/accept?Code=${tourId}`, {
+        method: "POST",
+      });
 
+      setPendingIndvData((prev) => prev.filter((item) => item.code !== tourId));
+      setAcceptedIndvData((prev) => [...prev, { ...selectedRow, state: 1 }]);
+      closePopup();
+    } catch (error) {
+      console.error("Error accepting individual registration:", error);
+    }
+  };
+
+  const rejectIndvPopup = async () => {
+    const tourId = selectedRow.code;
+    try {
+      await fetch(`/api/register/individual/reject?Code=${tourId}`, {
+        method: "POST",
+      });
+
+      setPendingIndvData((prev) => prev.filter((item) => item.code !== tourId));
+      setRejectedIndvData((prev) => [...prev, { ...selectedRow, state: 2 }]);
+      closePopup();
+    } catch (error) {
+      console.error("Error rejecting individual registration:", error);
+    }
+  };
+
+  const handleIndvDelete = async () => {
+    const tourId = selectedRow.code;
+    try {
+      await fetch(`/api/register/individual/delete?Code=${tourId}`, {
+        method: "DELETE",
+      });
+
+      setRejectedIndvData((prev) =>
+        prev.filter((item) => item.code !== tourId)
+      );
+      closePopup();
+    } catch (error) {
+      console.error("Error deleting individual registration:", error);
+    }
+  };
   const refresh = () => {
     window.location.reload();
   };
   const closePopup = () => {
     setPopupVisible(false);
     setSelectedRow(null);
-    fetchTourRequests(); // Refresh data
   };
   const processCombinedTourData = (pendingData, acceptedData) => {
     const conflictMap = new Map(); // Map to store conflict data for each timeBlock
@@ -543,11 +666,11 @@ function EvaluateTourRequests() {
   };
   const handleDelete = async (code) => {
     try {
-      await fetch(`/api/Registration/DeleteRegistration?Code=${code}`, {
-        method: "DELETE",
+      await fetch(`/api/register/general/cancel?Code=${code}`, {
+        method: "POST",
       });
       alert("Registration deleted!");
-      fetchTourRequests();
+      refresh();
     } catch (error) {
       console.error("Error deleting registration:", error);
     }
@@ -727,7 +850,7 @@ function EvaluateTourRequests() {
                     ])}
                     onButtonClick={(row) => handleDelete(row[0])}
                     buttonStyle={{ ...buttonStyle, backgroundColor: "red" }}
-                    defaultButtonName="Delete"
+                    buttonName="Delete"
                   />
                 ) : (
                   <p className="noDataText">No Rejected School Tour Requests</p>
@@ -930,18 +1053,9 @@ function EvaluateTourRequests() {
         <IndividualPopup
           selectedRow={selectedRow}
           onClose={closePopup}
-          onAccept={() => {
-            // Handle accept action
-            closePopup();
-          }}
-          onReject={() => {
-            // Handle reject action
-            closePopup();
-          }}
-          onDelete={() => {
-            // Handle delete action
-            closePopup();
-          }}
+          onAccept={acceptIndvPopup}
+          onReject={rejectIndvPopup}
+          onDelete={handleIndvDelete}
         />
       )}
     </div>
