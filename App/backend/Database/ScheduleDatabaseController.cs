@@ -1,14 +1,37 @@
+/// <summary>
+/// This file contains the implementation of the ScheduleDatabaseController class, which manages the operations 
+/// related to tours, fairs, and guide assignments in the system. It provides methods to:
+/// 
+/// - Manage and manipulate tours, including adding, removing, and updating tour information, as well as assigning and changing guides for tours.
+/// - Handle fairs, including adding and removing guides for fairs, updating fair information, and retrieving available fairs.
+/// - Retrieve and manage guide assignments for both tours and fairs, ensuring that guides are available based on event schedules.
+/// - End a tour, which involves removing all associated records, including tours, registrations, and guide applications, from the database.
+/// 
+/// The controller interacts with the system's database through Entity Framework, utilizing asynchronous methods for retrieving and manipulating data.
+/// It ensures proper logging of operations and handles exceptions effectively, providing error codes for various scenarios.
+/// </summary>
 using System.Reflection.Metadata.Ecma335;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
+    /// <summary>
+    /// Class responsible for managing the scheduling operations related to tours, including adding, removing, updating, 
+    /// and assigning guides to tours. It interacts with the SystemDbContext to perform CRUD operations on tours and 
+    /// their related data. The class also handles error logging and validation during these operations.
+    /// </summary>
     public class ScheduleDatabaseController
     {
         private readonly SystemDbContext _SystemContext;
         private readonly ILogger _logger;
 
+        
+        /// <summary>
+        /// Constructor to initialize the controller with the database context and logger.
+        /// </summary>
+        /// <param name="systemDbContext">The database context for interacting with the database.</param>
+        /// <param name="loggerFactory">The logger factory used to create a logger for error logging.</param>
         public ScheduleDatabaseController(
             SystemDbContext systemDbContext,
             ILoggerFactory loggerFactory
@@ -18,6 +41,12 @@ namespace backend.Database
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
+        /// <summary>
+        /// Removes a tour from the database based on the provided tour code.
+        /// Logs an error if the tour does not exist or if an exception occurs during removal.
+        /// </summary>
+        /// <param name="tourCode">The registration code of the tour to be removed.</param>
+        /// <returns>True if the tour is successfully removed, otherwise false.</returns>
         public async Task<bool> RemoveTour(string tourCode)
         {
             try
@@ -43,6 +72,12 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves a tour from the database using the provided tour code.
+        /// If the tour is found, it fills in related registration information.
+        /// </summary>
+        /// <param name="tourCode">The registration code of the tour to be retrieved.</param>
+        /// <returns>The found tour or null if no tour is found with the given code.</returns>
         public async Task<Tour?> GetTour(string tourCode)
         {
             if (string.IsNullOrEmpty(tourCode))
@@ -70,6 +105,12 @@ namespace backend.Database
         }
 
         //TODO Rework
+
+        /// <summary>
+        /// Updates the information of an existing tour in the database.
+        /// </summary>
+        /// <param name="tour">The tour object containing updated information.</param>
+        /// <returns>True if the update is successful, otherwise false.</returns>
         public async Task<bool> UpdateTourInfo(Tour tour)
         {
             if (
@@ -95,6 +136,11 @@ namespace backend.Database
             return false;
         }
 
+        /// <summary>
+        /// Removes a guide from the tour by setting the assigned guide ID to null.
+        /// </summary>
+        /// <param name="TourCode">The code of the tour from which the guide should be removed.</param>
+        /// <returns>Success or failure based on the removal process.</returns>
         public async Task<ErrorTypes> RemoveGuideFromTour(string TourCode)
         {
             if (string.IsNullOrEmpty(TourCode))
@@ -132,6 +178,12 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Changes the guide of an existing tour to a new guide by updating the assigned guide ID.
+        /// </summary>
+        /// <param name="TourCode">The code of the tour to which a new guide should be assigned.</param>
+        /// <param name="newGuideUID">The unique ID of the new guide to be assigned to the tour.</param>
+        /// <returns>Success or failure based on the guide assignment process.</returns>
         public async Task<ErrorTypes> ChangeGuideOfTour(string TourCode, int newGuideUID)
         {
             if (string.IsNullOrEmpty(TourCode))
@@ -182,6 +234,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+         /// <summary>
+        /// Retrieves a list of all tours from the database, including their associated registration information.
+        /// If a tour is missing its registration details, it is excluded from the list.
+        /// </summary>
+        /// <returns>A list of all tours with registration information filled in.</returns>
         public async Task<List<Tour>> GetAllTours()
         {
             try
@@ -214,6 +271,11 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of all available tours from the database, ensuring they are unassigned and accepted.
+        /// Tours that are already assigned a guide or are not accepted are excluded.
+        /// </summary>
+        /// <returns>A list of available tours.</returns>
         public async Task<List<Tour>> GetAllAvailableTours()
         {
             try
@@ -256,6 +318,12 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Removes a fair from the database based on the provided fair code.
+        /// Logs an error if the fair does not exist or if an exception occurs during removal.
+        /// </summary>
+        /// <param name="fairCode">The registration code of the fair to be removed.</param>
+        /// <returns>True if the fair is successfully removed, otherwise false.</returns>
         public async Task<bool> RemoveFair(string fairCode)
         {
             try
@@ -281,6 +349,11 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves a fair from the database based on the provided fair code and populates its related registration information.
+        /// </summary>
+        /// <param name="fairCode">The registration code of the fair to be retrieved.</param>
+        /// <returns>The found fair with its registration information or null if the fair is not found.</returns>
         public async Task<Fair?> GetFair(string fairCode)
         {
             Fair? foundFair = await _SystemContext.Fairs.FirstOrDefaultAsync(f =>
@@ -303,6 +376,12 @@ namespace backend.Database
         }
 
         //TODO Rework
+
+        /// <summary>
+        /// Updates the information of an existing fair in the database.
+        /// </summary>
+        /// <param name="fair">The fair object containing updated information.</param>
+        /// <returns>True if the fair information was successfully updated, otherwise false.</returns>
         public async Task<bool> UpdateFairInfo(Fair fair)
         {
             if (
@@ -328,6 +407,13 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Adds a guide to a fair, ensuring that the fair exists, the guide is valid, and no other guide is already assigned.
+        /// If the guide is already assigned to another tour, that assignment is cleared before adding the guide to the fair.
+        /// </summary>
+        /// <param name="FairCode">The registration code of the fair to which the guide will be added.</param>
+        /// <param name="newGuideUID">The user ID of the guide to be added.</param>
+        /// <returns>An error type indicating success or the reason for failure.</returns>
         public async Task<ErrorTypes> AddGuideToFair(string FairCode, int newGuideUID)
         {
             if (string.IsNullOrEmpty(FairCode))
@@ -378,6 +464,13 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Removes a guide from a fair, ensuring that the fair and the guide exist.
+        /// If the guide is not assigned to the fair, the operation fails.
+        /// </summary>
+        /// <param name="FairCode">The registration code of the fair from which the guide will be removed.</param>
+        /// <param name="newGuideUID">The user ID of the guide to be removed.</param>
+        /// <returns>An error type indicating success or the reason for failure.</returns>
         public async Task<ErrorTypes> RemoveGuideFromFair(string FairCode, int newGuideUID)
         {
             if (string.IsNullOrEmpty(FairCode))
@@ -404,6 +497,12 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Retrieves all guides assigned to a specific fair based on the fair's registration code.
+        /// Returns an empty list if the fair has no guides or does not exist.
+        /// </summary>
+        /// <param name="FairCode">The registration code of the fair whose guides are being retrieved.</param>
+        /// <returns>A list of users (guides) assigned to the fair.</returns>
         public async Task<List<User>> GetAllGuidesOfFair(string FairCode)
         {
             if (string.IsNullOrEmpty(FairCode))
@@ -434,6 +533,11 @@ namespace backend.Database
             return result;
         }
 
+        /// <summary>
+        /// Retrieves all fairs from the database, including their associated registration details.
+        /// Excludes any fairs missing registration information.
+        /// </summary>
+        /// <returns>A list of all fairs with their registration information filled in.</returns>
         public async Task<List<Fair>> GetAllFairs()
         {
             try
@@ -465,6 +569,10 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves all fairs that are available, ensuring the fair has a valid registration and its state is accepted.
+        /// </summary>
+        /// <returns>A list of available fairs, excluding those with invalid or unaccepted registration states.</returns>
         public async Task<List<Fair>> GetAllAvailableFairs()
         {
             try
@@ -506,6 +614,12 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves all available guides for a specific event based on the event code, which could refer to a tour, fair, or individual registration.
+        /// The function filters guides based on the event time and their available hours.
+        /// </summary>
+        /// <param name="eventCode">The registration code of the event (Tour, Fair, or Individual) for which guides are being retrieved.</param>
+        /// <returns>A list of guides who are available at the specific time of the event.</returns>
         public async Task<List<User>> GetAllAvailableGuides(string eventCode)
         {
             try
@@ -566,6 +680,12 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Ends a tour by removing the associated tour registrations, tours, and guide applications from the database.
+        /// Logs the tour data before removal.
+        /// </summary>
+        /// <param name="tourCode">The registration code of the tour to be ended.</param>
+        /// <returns>An error type indicating success or failure.</returns>
         public async Task<ErrorTypes> EndTour(string tourCode)
         {
             var tourRegistrations = await _SystemContext
