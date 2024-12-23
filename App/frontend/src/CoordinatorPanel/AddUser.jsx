@@ -62,6 +62,14 @@ function AddUser() {
       alert("Please fill in all the required fields.");
       return;
     }
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     console.log("FORM DATA: ", formData);
 
     // Show the confirmation popup

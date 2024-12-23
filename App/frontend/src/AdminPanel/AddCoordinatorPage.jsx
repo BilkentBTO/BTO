@@ -75,6 +75,13 @@ function AddCoordinator() {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     setShowPopup(true); // Show the confirmation popup
   };
 
@@ -151,6 +158,7 @@ function AddCoordinator() {
                 type="text"
                 value={formData.username}
                 onChange={(value) => handleChange("username", value)}
+                properities={{isNum:true}}
               />
               <FormInputGlobal
                 question="Email*"
@@ -163,6 +171,7 @@ function AddCoordinator() {
                 type="number"
                 value={formData.bilkentID}
                 onChange={(value) => handleChange("bilkentID", value)}
+                properities={{isPos:true}}
               />
               <FormDropDownGlobal
                 arr={majors.map((major) => major.name)}
