@@ -189,7 +189,7 @@ function AssignGuideToFairs() {
                 item.fairRegistrationCode || "N/A",
                 item.fairRegistirationInfo.school.schoolName || "N/A",
                 item.fairRegistirationInfo.cityName || "N/A",
-                item.fairRegistirationInfo.dateOfVisit || "N/A",
+                new Date(item.fairRegistirationInfo.time).toLocaleDateString() || "N/A",
                 item.fairRegistirationInfo.superVisorName || "N/A",
                 item.fairRegistirationInfo.superVisorDuty || "N/A",
                 item.fairRegistirationInfo.superVisorPhoneNumber || "N/A",
@@ -276,7 +276,7 @@ function AssignGuideToFairs() {
                     {selectedFair?.fairRegistirationInfo?.notes || "N/A"}
                   </p>
                   <p>
-                    <strong>Fair Type:</strong>{" "}
+                    <strong>Type:</strong>{" "}
                     {selectedFair?.fairRegistirationInfo?.type || "N/A"}
                   </p>
                   <div className="popupActions">
@@ -349,13 +349,13 @@ function AssignGuideToFairs() {
                   <h2>Assign Guide</h2>
                   <FormDropDownGlobal
                     arr={availableGuides.map(
-                      (guide) => `${guide.name} ${guide.surname}`
+                      (guide) => `${guide.id} ${guide.name} ${guide.surname}`
                     )}
                     question="Select a guide to dismiss"
                     onChange={(selectedValue) => {
                       const selectedGuide = availableGuides.find(
                         (guide) =>
-                          `${guide.name} ${guide.surname}` === selectedValue
+                          `${guide.id} ${guide.name} ${guide.surname}` === selectedValue
                       ); // Find the guide by name + surname
                       if (selectedGuide) {
                         setDropdownValue(selectedGuide.id); // Set dropdownValue to the ID
@@ -411,13 +411,13 @@ function AssignGuideToFairs() {
                   <h2>Dismiss Guide</h2>
                   <FormDropDownGlobal
                     arr={assignedGuides.map(
-                      (guide) => `${guide.name} ${guide.surname}`
+                      (guide) => `${guide.id} ${guide.name} ${guide.surname}`
                     )}
                     question="Select a guide to dismiss"
                     onChange={(selectedValue) => {
                       const selectedGuide = assignedGuides.find(
                         (guide) =>
-                          `${guide.name} ${guide.surname}` === selectedValue
+                          `${guide.id} ${guide.name} ${guide.surname}` === selectedValue
                       ); // Find the guide by name + surname
                       if (selectedGuide) {
                         setDropdownValue(selectedGuide.id); // Set dropdownValue to the ID
