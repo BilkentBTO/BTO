@@ -1106,19 +1106,36 @@ namespace backend.Database
         /// </summary>
         /// <param name="Code">The unique code representing the individual registration to accept.</param>
         /// <returns>Returns a boolean indicating the success or failure of the acceptance operation.</returns>
-        public async Task<bool> AcceptIndividualRegistration(string Code)
+        public async Task<ErrorTypes> AcceptIndividualRegistration(string Code)
         {
-            var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
-                r => r.Code == Code
-            );
+            if (
+                await _SystemContext.IndividualTours.AnyAsync(t =>
+                    t.IndividualTourRegistrationCode == Code
+                )
+            )
+            {
+                return ErrorTypes.TourAlreadyAccepted;
+            }
+            IndividualRegistration? registration = await _SystemContext
+                .IndividualRegistrations.Include(t => t.TimeBlock)
+                .FirstOrDefaultAsync(r => r.Code == Code);
 
             if (registration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
             registration.State = RegistrationState.Accepted;
+
+            IndividualTour newIndividualTour = new IndividualTour
+            {
+                IndividualTourRegistrationCode = Code,
+                TourRegistirationInfo = registration,
+            };
+
+            await _SystemContext.IndividualTours.AddAsync(newIndividualTour);
+
             await _SystemContext.SaveChangesAsync();
-            return true;
+            return ErrorTypes.Success;
         }
 
         /// <summary>

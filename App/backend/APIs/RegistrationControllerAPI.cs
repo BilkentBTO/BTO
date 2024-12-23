@@ -406,11 +406,7 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.AcceptIndividualRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            return ErrorHandler.HandleError(result);
         }
 
         /// <summary>
