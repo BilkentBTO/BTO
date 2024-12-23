@@ -176,8 +176,7 @@ function GlobalSidebar() {
             placeholder="Enter hours to increment"
             style={{
               padding: "12px 15px",
-              width: "80%",
-
+              width: "76%",
               borderRadius: "8px",
               border: "1px solid #ddd",
               outline: "none",
@@ -191,6 +190,7 @@ function GlobalSidebar() {
           <button
             onClick={incrementWorkHours}
             style={{
+              marginTop: "10px",
               padding: "12px 30px",
               backgroundColor: "#007bff",
               color: "white",
