@@ -8,11 +8,12 @@ import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AssignedToursPage() {
   const [data, setData] = useState([]);
+  const [tourType, setTourType] = useState("school"); // Toggle state for tour type
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
   const [selectedTour, setSelectedTour] = useState(null); // State to track the selected tour
 
-  const headers = [
+  const schoolHeaders = [
     "Tour ID",
     "School",
     "City",
@@ -26,6 +27,19 @@ function AssignedToursPage() {
     "Quiz Code",
     "Notes",
   ];
+
+  const individualHeaders = [
+    "Tour ID",
+    "Name",
+    "Preferred Major",
+    "Phone Number",
+    "Email",
+    "Date",
+    "Time",
+    "Notes",
+  ];
+
+  const headers = tourType === "school" ? schoolHeaders : individualHeaders;
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
@@ -44,11 +58,16 @@ function AssignedToursPage() {
       console.log("No token found");
       navigate("/login"); // Redirect to login if no token is found
     }
-  }, [navigate]);
+  }, [navigate, tourType]);
 
   const fetchData = async (UID) => {
     try {
-      const response = await fetch(`/api/user/${UID}/tour`);
+      const apiEndpoint =
+        tourType === "school"
+          ? `/api/user/${UID}/tour` // API for school tours
+          : `/api/user/${UID}/individualTours`; // API for individual tours
+
+      const response = await fetch(apiEndpoint);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -57,22 +76,37 @@ function AssignedToursPage() {
 
       const toursArray = Array.isArray(apiData) ? apiData : [apiData];
 
-      const transformedData = toursArray.map((item) => [
-        item.tourRegistrationCode || "N/A", // Tour ID
-        item.tourRegistirationInfo?.school?.schoolName || "N/A", // School Name
-        item.tourRegistirationInfo?.cityName || "N/A", // City
-        new Date(item.tourRegistirationInfo?.time).toLocaleDateString() ||
-          "N/A", // Date
-        new Date(item.tourRegistirationInfo?.time).toLocaleTimeString() ||
-          "N/A", // Time
-        item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
-        item.tourRegistirationInfo?.superVisorName || "N/A", // Supervisor Name
-        item.tourRegistirationInfo?.superVisorDuty || "N/A", // Supervisor Duty
-        item.tourRegistirationInfo?.superVisorPhoneNumber || "N/A", // Supervisor Phone
-        item.tourRegistirationInfo?.superVisorMailAddress || "N/A", // Supervisor Email
-        item.quizCode || "N/A", // Quiz Code
-        item.tourRegistirationInfo?.notes || "N/A", // Notes
-      ]);
+      const transformedData = toursArray.map((item) => {
+        if (tourType === "school") {
+          return [
+            item.tourRegistrationCode || "N/A", // Tour ID
+            item.tourRegistirationInfo?.school?.schoolName || "N/A", // School Name
+            item.tourRegistirationInfo?.cityName || "N/A", // City
+            new Date(item.tourRegistirationInfo?.time).toLocaleDateString() ||
+              "N/A", // Date
+            new Date(item.tourRegistirationInfo?.time).toLocaleTimeString() ||
+              "N/A", // Time
+            item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
+            item.tourRegistirationInfo?.superVisorName || "N/A", // Supervisor Name
+            item.tourRegistirationInfo?.superVisorDuty || "N/A", // Supervisor Duty
+            item.tourRegistirationInfo?.superVisorPhoneNumber || "N/A", // Supervisor Phone
+            item.tourRegistirationInfo?.superVisorMailAddress || "N/A", // Supervisor Email
+            item.quizCode || "N/A", // Quiz Code
+            item.tourRegistirationInfo?.notes || "N/A", // Notes
+          ];
+        } else {
+          return [
+            item.tourRegistrationCode || "N/A", // Tour ID
+            item.individualName || "N/A", // Name
+            item.individualMajor?.name || "N/A", // Preferred Major
+            item.individualPhoneNumber || "N/A", // Phone Number
+            item.individualMailAddress || "N/A", // Email
+            new Date(item.time).toLocaleDateString() || "N/A", // Date
+            new Date(item.time).toLocaleTimeString() || "N/A", // Time
+            item.notes || "N/A", // Notes
+          ];
+        }
+      });
 
       setData(transformedData);
     } catch (error) {
@@ -122,8 +156,26 @@ function AssignedToursPage() {
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
         <HeaderPanelGlobal name={"Assigned Tours"} />
+        <div className="toggleButtons">
+          <button
+            className={`toggleButton ${tourType === "school" ? "active" : ""}`}
+            onClick={() => setTourType("school")}
+          >
+            School Tours
+          </button>
+          <button
+            className={`toggleButton ${
+              tourType === "individual" ? "active" : ""
+            }`}
+            onClick={() => setTourType("individual")}
+          >
+            Individual Tours
+          </button>
+        </div>
         <div>
-          <h1 className="assignedToursHeading">Your Tours</h1>
+          <h1 className="assignedToursHeading">
+            Assigned {tourType === "school" ? "School" : "Individual"} Tours
+          </h1>
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}
@@ -145,7 +197,10 @@ function AssignedToursPage() {
               buttonName="Decide"
             />
           ) : (
-            <p className="noDataText">No Tours Assigned</p>
+            <p className="noDataText">
+              No {tourType === "school" ? "School" : "Individual"} Tours
+              Assigned
+            </p>
           )}
         </div>
         {/* Confirmation Popup */}
