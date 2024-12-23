@@ -1,27 +1,66 @@
 import React, { useState } from "react";
 import bilkentLogo from "../assets/bilkent_logo.png";
-import { useEffect } from "react";
+import returnButton from "../assets/return.png";
 import LoginTextEdit from "./LoginTextEdit";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import returnButton from "../assets/return.png";
 import "./LoginPage.css";
 
 function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [confirmEmail, setConfirmEmail] = useState("");
   const [popupMessage, setPopupMessage] = useState("");
 
-  const handleForgot = () => {
-    //Do the required
-    if (email === confirmEmail) {
-      console.log(email);
-      console.log(confirmEmail);
-      navigate("/");
-    } else {
-      setPopupMessage(`Emails do not match`);
+  const navigate = useNavigate();
+
+  const handleForgotPassword = async () => {
+    console.log("NEW:", newPassword);
+    console.log("NEW CON", confirmPassword);
+    if (newPassword !== confirmPassword) {
+      setPopupMessage("New passwords do not match");
+      setIsPopupVisible(true);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/credential/changepassword", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          oldPassword,
+          newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        // Check for invalid credentials
+        if (response.status === 401) {
+          setPopupMessage("Invalid credentials. Please check your input.");
+        } else {
+          setPopupMessage(
+            `Failed to reset password: ${errorData.message || "Unknown error"}`
+          );
+        }
+        setIsPopupVisible(true);
+        return;
+      }
+
+      setPopupMessage("Password changed successfully!");
+      setIsPopupVisible(true);
+
+      // Redirect to login page after success
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setPopupMessage("An error occurred. Please try again.");
       setIsPopupVisible(true);
     }
   };
@@ -33,6 +72,7 @@ function ForgotPasswordPage() {
   const goBack = () => {
     navigate("/login");
   };
+
   return (
     <div className="loginPage">
       <div className="loginSection">
@@ -46,20 +86,33 @@ function ForgotPasswordPage() {
         <h2 className="loginHeader">Forgot Password</h2>
         <LoginTextEdit
           type="text"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <LoginTextEdit
-          type="text"
-          placeholder="Confirm your email"
-          value={confirmEmail}
-          onChange={(e) => setConfirmEmail(e.target.value)}
+          type="password"
+          placeholder="Enter your old password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
         />
-        <button className="loginButton" onClick={handleForgot}>
-          Reset Password
+        <LoginTextEdit
+          type="password"
+          placeholder="Enter your new password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <LoginTextEdit
+          type="password"
+          placeholder="Confirm your new password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button className="loginButton" onClick={handleForgotPassword}>
+          Change Password
         </button>
       </div>
+      {/* Popup for error or success messages */}
       <div id="popup" className={`popup ${isPopupVisible ? "" : "hidden"}`}>
         <div className="popup-content">
           <p id="popup-message">{popupMessage}</p>
@@ -75,4 +128,5 @@ function ForgotPasswordPage() {
     </div>
   );
 }
+
 export default ForgotPasswordPage;

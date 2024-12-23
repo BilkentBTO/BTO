@@ -10,6 +10,7 @@ function AssignedToursPage() {
   const [data, setData] = useState([]);
   const [tourType, setTourType] = useState("school"); // Toggle state for tour type
   const navigate = useNavigate();
+  const [type, setType] = useState("");
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
   const [selectedTour, setSelectedTour] = useState(null); // State to track the selected tour
 
@@ -58,34 +59,55 @@ function AssignedToursPage() {
       console.log("No token found");
       navigate("/login"); // Redirect to login if no token is found
     }
-  }, [navigate, tourType]);
+  }, [tourType]);
 
   const fetchData = async (UID) => {
     try {
-      const apiEndpoint =
-        tourType === "school"
-          ? `/api/user/${UID}/tour` // API for school tours
-          : `/api/user/${UID}/individualTours`; // API for individual tours
+      const apiEndpoint = `/api/user/${UID}/tour`;
 
+      // Fetch data
       const response = await fetch(apiEndpoint);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const apiData = await response.json();
+
       console.log("API DATA: ", apiData);
 
+      // Ensure apiData is an array
       const toursArray = Array.isArray(apiData) ? apiData : [apiData];
 
+      // Determine the tour type dynamically
+      if (toursArray.length > 0) {
+        const firstItem = toursArray[0]; // Check the first item to determine the type
+        if (firstItem?.tourRegistirationInfo?.school) {
+          console.log("School Tours Detected");
+          setTourType("school");
+        } else if (firstItem?.tourRegistirationInfo?.individualName) {
+          console.log("Individual Tours Detected");
+          setTourType("individual");
+        } else {
+          console.log("Unknown Tour Type");
+          setTourType("unknown");
+        }
+      } else {
+        setTourType("none"); // No data found
+      }
+
+      // Transform the data
       const transformedData = toursArray.map((item) => {
         if (tourType === "school") {
+          // School tour data
           return [
             item.tourRegistrationCode || "N/A", // Tour ID
             item.tourRegistirationInfo?.school?.schoolName || "N/A", // School Name
             item.tourRegistirationInfo?.cityName || "N/A", // City
             new Date(item.tourRegistirationInfo?.time).toLocaleDateString() ||
               "N/A", // Date
-            new Date(item.tourRegistirationInfo?.time).toLocaleTimeString() ||
-              "N/A", // Time
+            new Date(item.tourRegistirationInfo?.time).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }) || "N/A", // Time
             item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
             item.tourRegistirationInfo?.superVisorName || "N/A", // Supervisor Name
             item.tourRegistirationInfo?.superVisorDuty || "N/A", // Supervisor Duty
@@ -95,15 +117,20 @@ function AssignedToursPage() {
             item.tourRegistirationInfo?.notes || "N/A", // Notes
           ];
         } else {
+          // Individual tour data
           return [
-            item.tourRegistrationCode || "N/A", // Tour ID
-            item.individualName || "N/A", // Name
-            item.individualMajor?.name || "N/A", // Preferred Major
-            item.individualPhoneNumber || "N/A", // Phone Number
-            item.individualMailAddress || "N/A", // Email
-            new Date(item.time).toLocaleDateString() || "N/A", // Date
-            new Date(item.time).toLocaleTimeString() || "N/A", // Time
-            item.notes || "N/A", // Notes
+            item.individualTourRegistrationCode || "N/A", // Tour ID
+            item.tourRegistirationInfo?.individualName || "N/A", // Name
+            item.tourRegistirationInfo?.individualMajor?.name || "N/A", // Preferred Major
+            item.tourRegistirationInfo?.individualPhoneNumber || "N/A", // Phone Number
+            item.tourRegistirationInfo?.individualMailAddress || "N/A", // Email
+            new Date(item.tourRegistirationInfo?.time).toLocaleDateString() ||
+              "N/A", // Date
+            new Date(item.tourRegistirationInfo?.time).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }) || "N/A", // Time
+            item.tourRegistirationInfo?.notes || "N/A", // Notes
           ];
         }
       });
@@ -111,6 +138,7 @@ function AssignedToursPage() {
       setData(transformedData);
     } catch (error) {
       console.error("Error fetching tours data:", error.message);
+      setData([]);
     }
   };
 
@@ -156,51 +184,66 @@ function AssignedToursPage() {
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
         <HeaderPanelGlobal name={"Assigned Tours"} />
-        <div className="toggleButtons">
-          <button
-            className={`toggleButton ${tourType === "school" ? "active" : ""}`}
-            onClick={() => setTourType("school")}
-          >
-            School Tours
-          </button>
-          <button
-            className={`toggleButton ${
-              tourType === "individual" ? "active" : ""
-            }`}
-            onClick={() => setTourType("individual")}
-          >
-            Individual Tours
-          </button>
-        </div>
         <div>
           <h1 className="assignedToursHeading">
             Assigned {tourType === "school" ? "School" : "Individual"} Tours
           </h1>
-          {data.length > 0 ? (
-            <TableWithButtons
-              headers={headers}
-              data={data}
-              onButtonClick={handleRowClick}
-              buttonStyle={{
-                padding: "8px 16px",
-                backgroundColor: "gray",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "14px",
-                width: "100%",
-                maxWidth: "120px",
-                textAlign: "center",
-                transition: "background-color 0.3s ease, transform 0.2s ease",
-              }}
-              buttonName="Decide"
-            />
+          {tourType === "school" ? (
+            <>
+              {data.length > 0 ? (
+                <TableWithButtons
+                  headers={schoolHeaders}
+                  data={data}
+                  onButtonClick={handleRowClick}
+                  buttonStyle={{
+                    padding: "8px 16px",
+                    backgroundColor: "gray",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  buttonName="Decide"
+                />
+              ) : (
+                <p className="noDataText">No School Tours Assigned</p>
+              )}
+            </>
+          ) : tourType === "individual" ? (
+            <>
+              {data.length > 0 ? (
+                <TableWithButtons
+                  headers={individualHeaders}
+                  data={data}
+                  onButtonClick={handleRowClick}
+                  buttonStyle={{
+                    padding: "8px 16px",
+                    backgroundColor: "gray",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                  buttonName="Decide"
+                />
+              ) : (
+                <p className="noDataText">No Individual Tours Assigned</p>
+              )}
+            </>
           ) : (
-            <p className="noDataText">
-              No {tourType === "school" ? "School" : "Individual"} Tours
-              Assigned
-            </p>
+            <p className="noDataText">No Tours Assigned</p>
           )}
         </div>
         {/* Confirmation Popup */}
