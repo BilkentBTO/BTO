@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import profileImage from "../assets/profile_image.png";
 import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+import Table from "../GlobalClasses/Table";
 
 function ToursResponsibleByGuides() {
   // State to manage popup visibility and data
@@ -14,6 +15,7 @@ function ToursResponsibleByGuides() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [guides, setGuides] = useState([]);
   const [availableGuides, setAvailableGuides] = useState([]);
+  const [tourType, setTourType] = useState("school"); // Toggle state for tour type
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState(() => {
     return (
@@ -49,9 +51,20 @@ function ToursResponsibleByGuides() {
       }
     );
   });
-  // TEMPORARY DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  const headers = ["Tour", "Guide Name", "Guide Surname", "Guide Username"];
+
+  const schoolHeaders = ["Tour ID", "Date", "School", "Number of Visitors"];
+  const individualHeaders = [
+    "Tour ID",
+    "Date",
+    "Name",
+    "Preferred Major",
+    "Phone Number",
+  ];
+
+  const headers = tourType === "school" ? schoolHeaders : individualHeaders;
+
   const [tableData, setTableData] = useState([]);
+  const [tableIndvData, setTableIndvData] = useState([]);
 
   const handleRowClick = (rowData, guideFullName) => {
     // Set the selected row and show popup
@@ -155,62 +168,74 @@ function ToursResponsibleByGuides() {
     // Fetch tours and guides data from the API
     const fetchToursAndUsers = async () => {
       try {
-        // Fetch tours data
-        const toursResponse = await fetch("/api/schedule/tours");
-        if (!toursResponse.ok) {
-          throw new Error(`Failed to fetch tours: ${toursResponse.status}`);
-        }
-        const toursData = await toursResponse.json();
+        console.log("CALLED AND TYPE: ", tourType);
+        if (tourType === "school") {
+          // Fetch tours data
+          const toursResponse = await fetch("/api/schedule/tours");
+          if (!toursResponse.ok) {
+            throw new Error(`Failed to fetch tours: ${toursResponse.status}`);
+          }
+          const toursData = await toursResponse.json();
 
-        // For each tour, fetch the guide's user details
-        const enrichedData = await Promise.all(
-          toursData.map(async (tour) => {
-            if (tour.assignedGuideID) {
-              try {
-                // Fetch user details for the assigned guide
-                const userResponse = await fetch(
-                  `/api/user/${tour.assignedGuideID}`
-                );
-                if (!userResponse.ok) {
-                  throw new Error(
-                    `Failed to fetch user ${tour.assignedGuideID}: ${userResponse.status}`
+          // For each tour, fetch the guide's user details
+          const enrichedData = await Promise.all(
+            toursData.map(async (tour) => {
+              if (tour.assignedGuideID) {
+                try {
+                  // Fetch user details for the assigned guide
+                  const userResponse = await fetch(
+                    `/api/user/${tour.assignedGuideID}`
                   );
-                }
-                const userData = await userResponse.json();
+                  if (!userResponse.ok) {
+                    throw new Error(
+                      `Failed to fetch user ${tour.assignedGuideID}: ${userResponse.status}`
+                    );
+                  }
+                  const userData = await userResponse.json();
 
-                // Return enriched tour data
-                return [
-                  tour.tourRegistrationCode, // Tour Code
-                  userData.name || "N/A", // Guide Name
-                  userData.surname || "N/A", // Guide Surname
-                  userData.mail || "N/A", // Guide Email/Username
-                ];
-              } catch (userError) {
-                console.error(
-                  `Error fetching user ${tour.assignedGuideID}:`,
-                  userError
-                );
+                  // Return enriched tour data
+                  return [
+                    tour.tourRegistrationCode, // Tour Code
+                    userData.name || "N/A", // Guide Name
+                    userData.surname || "N/A", // Guide Surname
+                    userData.mail || "N/A", // Guide Email/Username
+                  ];
+                } catch (userError) {
+                  console.error(
+                    `Error fetching user ${tour.assignedGuideID}:`,
+                    userError
+                  );
+                  return [
+                    tour.tourRegistrationCode,
+                    "Unknown",
+                    "Unknown",
+                    "Unknown",
+                  ];
+                }
+              } else {
+                // If no guide is assigned, return placeholders
                 return [
                   tour.tourRegistrationCode,
-                  "Unknown",
-                  "Unknown",
-                  "Unknown",
+                  "Unassigned",
+                  "Unassigned",
+                  "Unassigned",
                 ];
               }
-            } else {
-              // If no guide is assigned, return placeholders
-              return [
-                tour.tourRegistrationCode,
-                "Unassigned",
-                "Unassigned",
-                "Unassigned",
-              ];
-            }
-          })
-        );
+            })
+          );
 
-        // Set the table data
-        setTableData(enrichedData);
+          // Set the table data
+          setTableData(enrichedData);
+        } else {
+          const response = await fetch("/api/schedule/individualtours");
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const apiData = await response.json();
+          console.log("APİ DATA: ", apiData);
+
+          setTableIndvData(apiData);
+        }
       } catch (error) {
         console.error("Error fetching tours and user details:", error);
       }
@@ -244,7 +269,7 @@ function ToursResponsibleByGuides() {
     fetchAllUsers();
     fetchGuides();
     fetchToursAndUsers();
-  }, []);
+  }, [tourType]);
   const buttonStyle = {
     padding: "8px 16px",
     backgroundColor: "#1e1e64",
@@ -282,29 +307,70 @@ function ToursResponsibleByGuides() {
     console.log("FORM DATA: ", formData);
   };
   const buttonName = "Edit";
-
+  useEffect(() => {
+    console.log("useEffect called due to tourType change:", tourType);
+    // Your fetch logic here
+  }, [tourType]);
   return (
     <div className="toursResponsibleByGuidesPage">
       <GlobalSidebar />
       <div className="rightSideAdvisorFunction">
         <HeaderPanelGlobal name={"Tours Responsible By Guides"} />
+        <div className="toggleButtons">
+          <button
+            className={`toggleButton ${tourType === "school" ? "active" : ""}`}
+            onClick={() => setTourType("school")}
+          >
+            School Tours
+          </button>
+          <button
+            className={`toggleButton ${
+              tourType === "individual" ? "active" : ""
+            }`}
+            onClick={() => setTourType("individual")}
+          >
+            Individual Tours
+          </button>
+        </div>
         <div>
           <h1 className="assignedToursHeading">
             Tours and Corresponding Tours Guides
           </h1>
-          {tableData.length > 0 ? (
-            <TableWithButtons
-              headers={headers}
-              data={tableData}
-              onButtonClick={(rowData) =>
-                handleRowClick(rowData, `${rowData[1]} ${rowData[2]}`)
-              }
-              buttonStyle={buttonStyle} // Pass custom button style
-              buttonName={buttonName}
-            />
+          {tourType === "school" ? (
+            tableData.length > 0 ? (
+              <>
+                {console.log(
+                  "Rendering TableWithButtons with data:",
+                  tableData
+                )}
+                <TableWithButtons
+                  headers={headers}
+                  data={tableData}
+                  onButtonClick={(rowData) =>
+                    handleRowClick(rowData, `${rowData[1]} ${rowData[2]}`)
+                  }
+                  buttonStyle={buttonStyle} // Pass custom button style
+                  buttonName={buttonName}
+                />
+              </>
+            ) : (
+              <p>No tours assigned to guides yet.</p>
+            )
           ) : (
-            <p>No tours assigned to guides yet.</p>
-          )}
+            <Table
+              headers={headers}
+              data={tableIndvData.map((item) => [
+                item.individualTourRegistrationCode || "N/A",
+                new Date(
+                  item.tourRegistirationInfo?.time
+                ).toLocaleDateString() || "N/A",
+                item.tourRegistirationInfo?.individualName || "N/A",
+                item.tourRegistirationInfo?.individualSurname || "N/A",
+                item.tourRegistirationInfo?.individualMajor?.name || "N/A",
+              ])}
+            />
+          )}{" "}
+          {/* Replace with null or some other JSX for the else case */}
         </div>
 
         {/* Popup Modal */}
