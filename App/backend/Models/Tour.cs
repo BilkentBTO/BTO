@@ -96,4 +96,53 @@ namespace backend.Models
         public bool CandidateGuideAssigned(User guide) =>
             AssignedCandidateGuideIDs.Contains(guide.ID);
     }
+
+    public class IndividualTour()
+    {
+        // The unique registration code for the tour.
+        public string? IndividualTourRegistrationCode { get; set; }
+
+        // Tour registration information (non-mapped).
+        [NotMapped]
+        public IndividualRegistration? TourRegistirationInfo { get; set; }
+
+        // The ID of the assigned guide.
+        public int? AssignedGuideID { get; private set; }
+
+        /// <summary>
+        /// Checks if the tour has an assigned guide.
+        /// </summary>
+        /// <returns>True if a guide is assigned; otherwise, false.</returns>
+        public bool HasGuide() => AssignedGuideID != null;
+
+        /// <summary>
+        /// Fills the tour registration information.
+        /// </summary>
+        /// <param name="registration">Tour registration information to fill.</param>
+        public void FillTourRegistrationInfo(IndividualRegistration registration)
+        {
+            this.TourRegistirationInfo = registration;
+        }
+
+        /// <summary>
+        /// Assigns a guide to the tour.
+        /// </summary>
+        /// <param name="guide">The guide to be assigned to the tour.</param>
+        public void AssignGuide(User guide)
+        {
+            if (HasGuide())
+                RemoveGuide();
+            AssignedGuideID = guide.ID;
+            // MAIL GUIDE ASSIGNED
+        }
+
+        /// <summary>
+        /// Removes the assigned guide from the tour.
+        /// </summary>
+        public void RemoveGuide()
+        {
+            AssignedGuideID = null;
+            // MAIL GUIDE REMOVED
+        }
+    }
 }

@@ -1,7 +1,7 @@
 /// <summary>
 /// This class provides various user management functionalities within the system.
 /// It includes operations for creating, updating, deleting, and managing users,
-/// as well as handling specific user-related tasks such as assigning responsible days, 
+/// as well as handling specific user-related tasks such as assigning responsible days,
 /// managing available hours, and updating work hours.
 /// </summary>
 ///
@@ -10,7 +10,7 @@
 /// It includes methods for user registration, user detail updates, and managing the responsibilities of users
 /// such as assigning specific days of the week for responsibility, tracking the user's work hours, and managing
 /// their available hours for tour guiding duties.
-/// 
+///
 /// Key Features:
 /// - Add, update, and delete users based on unique user IDs.
 /// - Assign and update a user's responsible day (for tour or advisory duties).
@@ -18,7 +18,7 @@
 /// - Create user registration requests and handle user removal requests.
 /// - Retrieve information about the user's concurrent tour limits, available majors, and specific tours a user is responsible for.
 /// - Manage system-wide settings such as the number of concurrent tours allowed.
-/// 
+///
 /// Methods:
 /// - `UpdateUserAsync`: Updates the details of an existing user (e.g., major, current year, user type).
 /// - `ChangeResponsibleDayOfUser`: Changes the responsible day for a user based on their ID.
@@ -43,7 +43,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Database
 {
     /// <summary>
-    /// The SystemDatabaseController class provides methods for managing tours, guides, and guide applications. 
+    /// The SystemDatabaseController class provides methods for managing tours, guides, and guide applications.
     /// It handles the operations related to adding guides to tours, processing guide tour applications, and retrieving application data.
     /// </summary>
     public class SystemDatabaseController
@@ -86,8 +86,12 @@ namespace backend.Database
             bool applicationExists = await _SystemContext.GuideTourApplication.AnyAsync(a =>
                 a.GuideUID == guideUID
             );
+            bool applicationExistsOnIndividual =
+                await _SystemContext.GuideIndividualTourApplication.AnyAsync(a =>
+                    a.GuideUID == guideUID
+                );
 
-            if (applicationExists)
+            if (applicationExists || applicationExistsOnIndividual)
             {
                 return ErrorTypes.GuideAlreadyAppliedToTour;
             }
@@ -114,6 +118,61 @@ namespace backend.Database
             };
 
             await _SystemContext.GuideTourApplication.AddAsync(application);
+            await _SystemContext.SaveChangesAsync();
+            return ErrorTypes.Success;
+        }
+
+        public async Task<ErrorTypes> AddGuideIndividualTourApplication(
+            GuideIndividualTourApplicationRequest request
+        )
+        {
+            string? tourCode = request.IndividualTourCode;
+            int guideUID = request.GuideUID;
+
+            if (string.IsNullOrEmpty(tourCode))
+            {
+                return ErrorTypes.InvalidTourCode;
+            }
+            if (guideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            bool applicationExists = await _SystemContext.GuideTourApplication.AnyAsync(a =>
+                a.GuideUID == guideUID
+            );
+            bool applicationExistsOnIndividual =
+                await _SystemContext.GuideIndividualTourApplication.AnyAsync(a =>
+                    a.GuideUID == guideUID
+                );
+
+            if (applicationExists || applicationExistsOnIndividual)
+            {
+                return ErrorTypes.GuideAlreadyAppliedToTour;
+            }
+
+            bool tourExists = await _SystemContext.IndividualTours.AnyAsync(t =>
+                t.IndividualTourRegistrationCode == tourCode
+            );
+
+            if (!tourExists)
+            {
+                return ErrorTypes.TourNotFound;
+            }
+
+            bool guideExists = await _SystemContext.Users.AnyAsync(u => u.ID == guideUID);
+
+            if (!guideExists)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+            GuideIndividualTourApplication application = new GuideIndividualTourApplication
+            {
+                IndividualTourCode = tourCode,
+                GuideUID = guideUID,
+            };
+
+            await _SystemContext.GuideIndividualTourApplication.AddAsync(application);
             await _SystemContext.SaveChangesAsync();
             return ErrorTypes.Success;
         }
@@ -169,6 +228,45 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        public async Task<ErrorTypes> AddGuideToIndividualTour(string TourCode, int GuideUID)
+        {
+            if (string.IsNullOrEmpty(TourCode))
+            {
+                return ErrorTypes.InvalidTourCode;
+            }
+
+            if (GuideUID < 0)
+            {
+                return ErrorTypes.InvalidUserID;
+            }
+
+            IndividualTour? IndividualTour =
+                await _SystemContext.IndividualTours.SingleOrDefaultAsync(t =>
+                    t.IndividualTourRegistrationCode == TourCode
+                );
+
+            if (IndividualTour == null)
+            {
+                return ErrorTypes.TourNotFound;
+            }
+
+            User? user = await _SystemContext.Users.SingleOrDefaultAsync(u => u.ID == GuideUID);
+
+            if (user == null)
+            {
+                return ErrorTypes.UserNotFound;
+            }
+
+            User foundGuide = user;
+
+            IndividualTour.AssignGuide(foundGuide);
+            foundGuide.AssignedTourCode = IndividualTour.IndividualTourRegistrationCode;
+
+            await _SystemContext.SaveChangesAsync();
+
+            return ErrorTypes.Success;
+        }
+
         /// <summary>
         /// Retrieves a list of all guide tour applications, including details about the associated tour and guide.
         /// </summary>
@@ -205,8 +303,45 @@ namespace backend.Database
             return result;
         }
 
+        public async Task<
+            List<GuideIndividualTourApplication>
+        > GetAllGuideIndividualTourApplications()
+        {
+            var applications = await _SystemContext
+                .GuideIndividualTourApplication.Include(a => a.IndividualTour)
+                .Include(g => g.Guide)
+                .ToListAsync();
+
+            List<GuideIndividualTourApplication> result =
+                new List<GuideIndividualTourApplication>();
+            foreach (var application in applications)
+            {
+                if (string.IsNullOrEmpty(application.IndividualTourCode))
+                {
+                    continue;
+                }
+                IndividualTour? linkedTour = await GetIndividualTour(
+                    application.IndividualTourCode
+                );
+                if (linkedTour == null)
+                {
+                    continue;
+                }
+                User? linkedUser = await GetUserAsync(application.GuideUID);
+                if (linkedUser == null)
+                {
+                    continue;
+                }
+                application.IndividualTour = linkedTour;
+                application.Guide = linkedUser;
+                result.Add(application);
+            }
+
+            return result;
+        }
+
         /// <summary>
-        /// Accepts a guide's tour application and assigns them to the associated tour. 
+        /// Accepts a guide's tour application and assigns them to the associated tour.
         /// The application is removed after successful assignment.
         /// </summary>
         /// <param name="guideUID">The ID of the guide whose application is to be accepted.</param>
@@ -218,32 +353,70 @@ namespace backend.Database
                 return ErrorTypes.InvalidUserID;
             }
 
-            GuideTourApplication? guideTourApplication =
+            // Retrieve both types of applications
+            var guideTourApplication =
                 await _SystemContext.GuideTourApplication.SingleOrDefaultAsync(a =>
                     a.GuideUID == guideUID
                 );
 
-            if (guideTourApplication == null)
+            var guideIndividualTourApplication =
+                await _SystemContext.GuideIndividualTourApplication.SingleOrDefaultAsync(a =>
+                    a.GuideUID == guideUID
+                );
+
+            // Handle the case where neither application exists
+            if (guideTourApplication == null && guideIndividualTourApplication == null)
             {
                 return ErrorTypes.UserNotFound;
             }
 
-            if (guideTourApplication.TourCode == null)
+            // Determine which application to process
+            if (guideTourApplication != null)
             {
-                return ErrorTypes.TourNotFound;
+                // Validate the TourCode for GuideTourApplication
+                if (guideTourApplication.TourCode == null)
+                {
+                    return ErrorTypes.TourNotFound;
+                }
+
+                // Process GuideTourApplication
+                var result = await AddGuideToTour(
+                    guideTourApplication.TourCode,
+                    guideTourApplication.GuideUID
+                );
+
+                if (result == ErrorTypes.Success)
+                {
+                    _SystemContext.Remove(guideTourApplication);
+                    await _SystemContext.SaveChangesAsync();
+                }
+
+                return result;
+            }
+            else if (guideIndividualTourApplication != null)
+            {
+                // Validate the TourCode for GuideIndividualTourApplication
+                if (guideIndividualTourApplication.IndividualTourCode == null)
+                {
+                    return ErrorTypes.TourNotFound;
+                }
+
+                // Process GuideIndividualTourApplication
+                var result = await AddGuideToIndividualTour(
+                    guideIndividualTourApplication.IndividualTourCode,
+                    guideIndividualTourApplication.GuideUID
+                );
+
+                if (result == ErrorTypes.Success)
+                {
+                    _SystemContext.Remove(guideIndividualTourApplication);
+                    await _SystemContext.SaveChangesAsync();
+                }
+
+                return result;
             }
 
-            var result = await AddGuideToTour(
-                guideTourApplication.TourCode,
-                guideTourApplication.GuideUID
-            );
-
-            if (result == ErrorTypes.Success)
-            {
-                _SystemContext.Remove(guideTourApplication);
-                await _SystemContext.SaveChangesAsync();
-            }
-            return result;
+            return ErrorTypes.TourNotFound;
         }
 
         /// <summary>
@@ -258,17 +431,36 @@ namespace backend.Database
                 return ErrorTypes.InvalidUserID;
             }
 
-            GuideTourApplication? guideTourApplication =
+            // Retrieve both types of applications
+            var guideTourApplication =
                 await _SystemContext.GuideTourApplication.SingleOrDefaultAsync(a =>
                     a.GuideUID == guideUID
                 );
 
-            if (guideTourApplication == null)
+            var guideIndividualTourApplication =
+                await _SystemContext.GuideIndividualTourApplication.SingleOrDefaultAsync(a =>
+                    a.GuideUID == guideUID
+                );
+
+            // Handle the case where neither application exists
+            if (guideTourApplication == null && guideIndividualTourApplication == null)
             {
                 return ErrorTypes.UserNotFound;
             }
 
-            _SystemContext.GuideTourApplication.Remove(guideTourApplication);
+            // Remove the application that exists
+            if (guideTourApplication != null)
+            {
+                _SystemContext.GuideTourApplication.Remove(guideTourApplication);
+            }
+            else if (guideIndividualTourApplication != null)
+            {
+                _SystemContext.GuideIndividualTourApplication.Remove(
+                    guideIndividualTourApplication
+                );
+            }
+
+            // Save changes
             await _SystemContext.SaveChangesAsync();
             return ErrorTypes.Success;
         }
@@ -299,7 +491,7 @@ namespace backend.Database
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 case 'I':
                     return await _SystemContext
-                        .IndividualRegistrations.Include(r => r.PreferredVisitTime)
+                        .IndividualRegistrations.Include(r => r.TimeBlock)
                         .SingleOrDefaultAsync(r => r.Code == Code);
                 default:
                     return null;
@@ -508,7 +700,7 @@ namespace backend.Database
                 .Include(r => r.School)
                 .Include(r => r.TimeBlock)
                 .ToListAsync();
-        }   
+        }
 
         /// <summary>
         /// Accepts a tour registration and creates a corresponding tour, marking the registration as accepted.
@@ -600,7 +792,7 @@ namespace backend.Database
         /// </summary>
         /// <param name="Code">The unique code representing the tour registration to reject.</param>
         /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
-        public async Task<bool> RejectTourRegistration(string Code)
+        public async Task<ErrorTypes> RejectTourRegistration(string Code)
         {
             var registration = await _SystemContext.TourRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
@@ -608,11 +800,11 @@ namespace backend.Database
 
             if (registration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
             registration.State = RegistrationState.Rejected;
             await _SystemContext.SaveChangesAsync();
-            return true;
+            return ErrorTypes.Success;
         }
 
         /// <summary>
@@ -908,25 +1100,42 @@ namespace backend.Database
 
             return ErrorTypes.Success;
         }
-        
+
         /// <summary>
         /// Accepts an individual registration by changing its state to 'Accepted'.
         /// </summary>
         /// <param name="Code">The unique code representing the individual registration to accept.</param>
         /// <returns>Returns a boolean indicating the success or failure of the acceptance operation.</returns>
-        public async Task<bool> AcceptIndividualRegistration(string Code)
+        public async Task<ErrorTypes> AcceptIndividualRegistration(string Code)
         {
-            var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
-                r => r.Code == Code
-            );
+            if (
+                await _SystemContext.IndividualTours.AnyAsync(t =>
+                    t.IndividualTourRegistrationCode == Code
+                )
+            )
+            {
+                return ErrorTypes.TourAlreadyAccepted;
+            }
+            IndividualRegistration? registration = await _SystemContext
+                .IndividualRegistrations.Include(t => t.TimeBlock)
+                .FirstOrDefaultAsync(r => r.Code == Code);
 
             if (registration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
             registration.State = RegistrationState.Accepted;
+
+            IndividualTour newIndividualTour = new IndividualTour
+            {
+                IndividualTourRegistrationCode = Code,
+                TourRegistirationInfo = registration,
+            };
+
+            await _SystemContext.IndividualTours.AddAsync(newIndividualTour);
+
             await _SystemContext.SaveChangesAsync();
-            return true;
+            return ErrorTypes.Success;
         }
 
         /// <summary>
@@ -934,7 +1143,7 @@ namespace backend.Database
         /// </summary>
         /// <param name="Code">The unique code representing the individual registration to reject.</param>
         /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
-        public async Task<bool> RejectIndividualRegistration(string Code)
+        public async Task<ErrorTypes> RejectIndividualRegistration(string Code)
         {
             var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
                 r => r.Code == Code
@@ -942,11 +1151,11 @@ namespace backend.Database
 
             if (registration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
             registration.State = RegistrationState.Rejected;
             await _SystemContext.SaveChangesAsync();
-            return true;
+            return ErrorTypes.Success;
         }
 
         /// <summary>
@@ -1134,7 +1343,6 @@ namespace backend.Database
             return await _SystemContext.Users.Where(u => u.UserType == id).ToListAsync();
         }
 
-
         /// <summary>
         /// Adds a new user to the system based on the provided user creation details.
         /// </summary>
@@ -1266,7 +1474,7 @@ namespace backend.Database
             await _SystemContext.SaveChangesAsync();
             return ErrorTypes.Success;
         }
-        
+
         /// <summary>
         /// Changes the responsible day for a user. This is the day the user is assigned to be responsible for.
         /// </summary>
@@ -1598,6 +1806,26 @@ namespace backend.Database
             TourRegistration? TourRegistration = await _SystemContext
                 .TourRegistrations.Include(r => r.School)
                 .Include(r => r.TimeBlock)
+                .FirstOrDefaultAsync(t => t.Code == tourCode);
+            if (TourRegistration == null)
+            {
+                return null;
+            }
+            foundTour.FillTourRegistrationInfo(TourRegistration);
+            return foundTour;
+        }
+
+        private async Task<IndividualTour?> GetIndividualTour(string tourCode)
+        {
+            IndividualTour? foundTour = await _SystemContext.IndividualTours.FirstOrDefaultAsync(
+                t => t.IndividualTourRegistrationCode == tourCode
+            );
+            if (foundTour == null)
+            {
+                return null;
+            }
+            IndividualRegistration? TourRegistration = await _SystemContext
+                .IndividualRegistrations.Include(r => r.TimeBlock)
                 .FirstOrDefaultAsync(t => t.Code == tourCode);
             if (TourRegistration == null)
             {

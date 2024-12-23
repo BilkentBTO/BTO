@@ -75,9 +75,6 @@ function SchoolPopup({ selectedRow, onClose, onAccept, onReject, onDelete }) {
               </button>
             </>
           )}
-          <button onClick={onDelete} className="popupButton grey">
-            Delete
-          </button>
           <button onClick={onClose} className="popupButton blue">
             Close
           </button>
@@ -98,32 +95,22 @@ function IndividualPopup({
     "Individual ID",
     "Name",
     "Surname",
-    "City",
     "Date of Visit",
-    "Number of Visitors",
-    "Supervisor Name",
-    "Supervisor Duty",
-    "Supervisor Phone Number",
-    "Supervisor Email",
+    "Preferred Major",
+    "Phone Number",
+    "E-Mail",
     "Notes",
-    "Preferred Visit Time",
-    "Major",
   ];
 
   const individualKeyMap = {
     "Individual ID": "code",
     Name: "individualName",
     Surname: "individualSurname",
-    City: "cityName", // Adjust if this exists
     "Date of Visit": "time",
-    "Number of Visitors": "numberOfVisitors", // Adjust if individual-specific
-    "Supervisor Name": "superVisorName", // Adjust if individual-specific
-    "Supervisor Duty": "superVisorDuty", // Adjust if individual-specific
-    "Supervisor Phone Number": "individualPhoneNumber",
-    "Supervisor Email": "individualMailAddress",
+    "Preferred Major": "individualMajor.name",
+    "Phone Number": "individualPhoneNumber",
+    "E-Mail": "individualMailAddress",
     Notes: "notes",
-    "Preferred Visit Time": "preferredVisitTime",
-    Major: "individualMajor.name",
   };
 
   return (
