@@ -48,6 +48,13 @@ function SchoolRegistrationPage() {
       .catch((error) => console.error("Error fetching cities:", error));
   }, []);
 
+  const convertTimeToUTC = (dateString, timeString) => {
+    if (!dateString || !timeString) return null;
+    const combinedDateTime = `${dateString}T${timeString}:00Z`;
+    const parsedDateTime = new Date(combinedDateTime);
+    return parsedDateTime.valueOf() ? parsedDateTime.toISOString() : null;
+  };
+
   // Fetch Schools Dynamically as User Types
   const fetchSchoolSuggestions = (query, city) => {
     if (!query || !city) {
@@ -150,6 +157,15 @@ function SchoolRegistrationPage() {
     // Block past dates
     if (requestedDate < today) {
       alert("Please enter a valid date.");
+      return;
+    }
+
+    const startTimeUTC = convertTimeToUTC(
+      formData.visitDate,
+      formData.visitTime
+    );
+    if (!startTimeUTC) {
+      alert("Invalid visit time.");
       return;
     }
 
