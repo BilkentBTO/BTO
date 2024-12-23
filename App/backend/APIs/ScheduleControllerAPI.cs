@@ -1,3 +1,31 @@
+/// <summary>
+/// This file contains the implementation of the ScheduleController class, which handles API endpoints related to tours, fairs, and guides in the system. 
+/// The controller interacts with the ScheduleDatabaseController to manage various aspects of the tour, fair, and guide data, providing functionality for 
+/// adding, removing, updating, and retrieving information about tours, fairs, and guides. 
+/// The following functionality is provided:
+/// 
+/// 1. **Tour Management:**
+///    - Remove a guide from a tour.
+///    - Change the guide assigned to a tour.
+///    - Remove a tour from the system.
+///    - Retrieve a specific tour by its code.
+///    - Update the details of an existing tour.
+///    - Retrieve all tours and all available tours.
+///    - End a tour by its code.
+/// 
+/// 2. **Fair Management:**
+///    - Retrieve all guides associated with a specific fair.
+///    - Add or remove guides from a fair.
+///    - Remove a fair from the system.
+///    - Retrieve a specific fair by its code.
+///    - Update the details of an existing fair.
+///    - Retrieve all fairs and all available fairs.
+/// 
+/// 3. **Guide Management:**
+///    - Retrieve a list of available guides for a specific event.
+///    
+/// The controller ensures proper validation of model states, handles errors, and returns appropriate HTTP status codes (e.g., BadRequest, Ok, NotFound) based on the results.
+/// </summary>
 using backend.Database;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
