@@ -145,8 +145,19 @@ namespace backend.Database
                 await _SystemContext.GuideIndividualTourApplication.AnyAsync(a =>
                     a.GuideUID == guideUID
                 );
+            bool assignedTourExists = await _SystemContext.Tours.AnyAsync(t =>
+                t.AssignedGuideID == request.GuideUID
+            );
+            bool assignedIndividualTourExists = await _SystemContext.IndividualTours.AnyAsync(t =>
+                t.AssignedGuideID == request.GuideUID
+            );
 
-            if (applicationExists || applicationExistsOnIndividual)
+            if (
+                applicationExists
+                || applicationExistsOnIndividual
+                || assignedTourExists
+                || assignedIndividualTourExists
+            )
             {
                 return ErrorTypes.GuideAlreadyAppliedToTour;
             }
