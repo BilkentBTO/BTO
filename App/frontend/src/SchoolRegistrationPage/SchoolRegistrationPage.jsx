@@ -159,6 +159,12 @@ function SchoolRegistrationPage() {
       return;
     }
 
+    console.log(formData.visitorCount)
+    if (!Number.isInteger(formData.visitorCount * 1)) {
+      alert("Please check the number of visitors.");
+      return;
+    }
+
     navigate("/continueSchoolReg", { state: { formData } });
   };
   return (

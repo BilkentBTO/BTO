@@ -8,7 +8,7 @@ function FormInputGlobal({
   dateFilter = {},
   properities = {},
 }) {
-  const minValue = type === "number" && properities.isPos ? 0 : dateFilter.min || ""; // Default to empty if no min date is provided
+  const minValue = type === "number" && properities.isPos ? 0 : dateFilter.min || ""; // Default to empty if no min val is provided
   const maxDate = dateFilter.max || ""; // Default to empty if no max date is provided
 
   const handleDateChange = (e) => {
