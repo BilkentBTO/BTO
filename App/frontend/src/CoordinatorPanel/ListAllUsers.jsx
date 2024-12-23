@@ -7,6 +7,7 @@ import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import FormInputGlobal from "../GlobalClasses/FormInputGlobal";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
+import FormDropDownGlobal from "../GlobalClasses/FormDropDownGlobal";
 
 function ListAllUsers() {
   const headers = ["ID", "Name", "Surname", "EMail", "User Type"];
@@ -43,9 +44,26 @@ function ListAllUsers() {
     min: today, // Disable past dates
   };
 
-  const handleRowClick = (userData) => {
-    console.log("USER DATA: ", userData);
-    setSelectedUser(userData);
+  const handleRowClick = async (userData) => {
+    console.log("Selected User ID: ", userData[0]); // Assuming the first column contains the user ID
+
+    try {
+      // Fetch additional user details from the API
+      const response = await fetch(`/api/user/${userData[0]}`); // Replace with your API endpoint
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user details: ${response.status}`);
+      }
+      const detailedUserData = await response.json();
+
+      console.log("Detailed User Data: ", detailedUserData);
+      setSelectedUser({
+        ...userData, // Preserve basic row data
+        ...detailedUserData, // Merge with additional user details
+      });
+    } catch (error) {
+      console.error("Error fetching user details: ", error.message);
+      alert("Failed to fetch user details. Please try again.");
+    }
   };
 
   const handleClosePopup = () => {
@@ -59,11 +77,6 @@ function ListAllUsers() {
 
   const handleCloseManageAdvisorPopup = () => {
     setShowManageAdvisorPopup(false);
-  };
-
-  const handleAssignDateClick = () => {
-    alert(`Task assigned to ${selectedUser[2]} on ${formData.taskDate}`);
-    handleCloseManageAdvisorPopup();
   };
 
   const handlePromoteUser = async (id) => {
@@ -152,6 +165,46 @@ function ListAllUsers() {
     }
   };
 
+  const assignTaskToAdvisor = async (advisorId, taskDate) => {
+    const dayMapping = {
+      Monday: 0,
+      Tuesday: 1,
+      Wednesday: 2,
+      Thursday: 3,
+      Friday: 4,
+    };
+
+    const dayValue = dayMapping[taskDate];
+
+    console.log("ADVISOR ID: ", advisorId);
+    console.log("TASK DATE ID: ", dayValue);
+    try {
+      console.log(
+        `Assigning advisor ${advisorId} to ${taskDate} (Day: ${dayValue})`
+      );
+      const response = await fetch(
+        `/api/user/${advisorId}/responsibleday/${dayValue}`,
+        {
+          method: "PUT",
+        }
+      );
+
+      if (response.ok) {
+        alert(
+          `Successfully assigned ${taskDate} as the responsible day for Advisor ${advisorId}.`
+        );
+      } else {
+        console.error("Failed to assign task:", response.statusText);
+        alert("Failed to assign the task. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error assigning task:", error);
+      alert("An error occurred while assigning the task.");
+    } finally {
+      handleCloseManageAdvisorPopup(); // Close the popup
+    }
+  };
+
   return (
     <div className="listAllUsersPage">
       <GlobalSidebar />
@@ -181,22 +234,35 @@ function ListAllUsers() {
         </div>
 
         {/* Main User Info Popup */}
+        {/* Main User Info Popup */}
         {selectedUser && !showManageAdvisorPopup && (
           <div className="popupOverlay">
             <div className="popupContent">
               <h2>User Information</h2>
               <p>
-                <strong>Name:</strong> {selectedUser[0]}
+                <strong>ID:</strong> {selectedUser.id || "N/A"}
               </p>
               <p>
-                <strong>Surname:</strong> {selectedUser[1]}
+                <strong>Name:</strong> {selectedUser.name || "N/A"}
               </p>
               <p>
-                <strong>Username:</strong> {selectedUser[2]}
+                <strong>Surname:</strong> {selectedUser.surname || "N/A"}
               </p>
               <p>
-                <strong>User Type:</strong> {selectedUser[3]}
+                <strong>Email:</strong> {selectedUser.email || "N/A"}
               </p>
+              <p>
+                <strong>Work Hours:</strong> {selectedUser.workHours || "N/A"}
+              </p>
+              {["Admin", "Coordinator", "Advisor"].includes(
+                selectedUser[4]
+              ) && (
+                <p>
+                  <strong>Responsible Day:</strong>{" "}
+                  {selectedUser.responsibleDay || "Not Assigned"}
+                </p>
+              )}
+
               <div className="popupActions">
                 {(selectedUser[4] === "Guide" ||
                   selectedUser[4] === "Advisor" ||
@@ -238,11 +304,12 @@ function ListAllUsers() {
                       transition:
                         "background-color 0.3s ease, transform 0.2s ease",
                     }}
-                    onClick={() => handleManageAdvisor}
+                    onClick={handleManageAdvisor}
                   >
                     Manage Advisor
                   </button>
                 )}
+
                 {selectedUser[4] === "Candidate Guide" && (
                   <button
                     style={{
@@ -264,6 +331,7 @@ function ListAllUsers() {
                     Promote
                   </button>
                 )}
+
                 <button
                   style={{
                     padding: "8px 16px",
@@ -289,27 +357,34 @@ function ListAllUsers() {
         )}
 
         {/* Manage Advisor Popup */}
+        {/* Manage Advisor Popup */}
+        {/* Manage Advisor Popup */}
         {showManageAdvisorPopup && (
           <div className="popupOverlay">
             <div className="popupContent">
               <h2>Manage Advisor</h2>
               <p>
-                <strong>Name:</strong> {selectedUser[0]}
+                <strong>Name:</strong> {selectedUser[0]} {/* Advisor Name */}
               </p>
               <p>
-                <strong>Surname:</strong> {selectedUser[1]}
+                <strong>Surname:</strong> {selectedUser[1]}{" "}
+                {/* Advisor Surname */}
               </p>
               <p>
-                <strong>Username:</strong> {selectedUser[2]}
+                <strong>Username:</strong> {selectedUser[2]}{" "}
+                {/* Advisor Username */}
               </p>
 
-              {/* Date Input for Task Assignment */}
-              <FormInputGlobal
-                question="Task Date*"
-                type="date"
-                value={formData.taskDate}
-                onChange={handleDateChange}
-                dateFilter={dateFilter}
+              {/* Dropdown for Date Selection */}
+              <FormDropDownGlobal
+                arr={["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]} // Directly use day names
+                question="Select a Task Date"
+                onChange={(selectedValue) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    taskDate: selectedValue, // Update formData with selected day
+                  }))
+                }
               />
 
               <div className="popupActions">
@@ -319,17 +394,17 @@ function ListAllUsers() {
                     backgroundColor: "green",
                     color: "white",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "5px",
                     cursor: "pointer",
                     fontSize: "14px",
                     width: "100%",
                     maxWidth: "120px",
                     textAlign: "center",
-                    transition:
-                      "background-color 0.3s ease, transform 0.2s ease",
                   }}
-                  onClick={handleAssignDateClick}
-                  disabled={!formData.taskDate}
+                  onClick={() =>
+                    assignTaskToAdvisor(selectedUser[0], formData.taskDate)
+                  } // Call the modular method
+                  disabled={!formData.taskDate} // Disable if no date is selected
                 >
                   Assign
                 </button>
@@ -339,14 +414,12 @@ function ListAllUsers() {
                     backgroundColor: "grey",
                     color: "white",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "5px",
                     cursor: "pointer",
                     fontSize: "14px",
                     width: "100%",
                     maxWidth: "120px",
                     textAlign: "center",
-                    transition:
-                      "background-color 0.3s ease, transform 0.2s ease",
                   }}
                   onClick={handleCloseManageAdvisorPopup}
                 >
