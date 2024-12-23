@@ -109,6 +109,7 @@ namespace backend.Models
         public int? CurrentYear { get; set; }
         public int WorkHours { get; set; } = 0;
         public UserType UserType { get; set; }
+        public DayOfWeek ResponsibleDay { get; set; }
     }
 
     /// <summary>

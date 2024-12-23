@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./AssignedToursPage.css";
 import HeaderPanelGlobal from "../GlobalClasses/HeaderPanelGlobal";
-import profileImage from "../assets/profile_image.png";
 import TableWithButtons from "../GlobalClasses/TableWithButtons";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 
 function AssignedToursPage() {
-  const [guideUID, setGuideUID] = useState("");
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
@@ -28,34 +26,15 @@ function AssignedToursPage() {
     "Notes",
   ];
 
-  const buttonStyle = {
-    padding: "8px 16px",
-    backgroundColor: "red",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    fontSize: "14px",
-    width: "100%",
-    maxWidth: "120px",
-    textAlign: "center",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-  };
-
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    console.log(token);
     if (token) {
       try {
-        const decodedToken = jwtDecode(token); // Decode the token
-
-        // Extract the name claim
+        const decodedToken = jwtDecode(token);
         const UID = decodedToken["UID"];
-        setGuideUID(UID || "Unknown");
 
-        // Extract the role claim (adjust based on your JWT structure)
-
-        console.log("Decoded Token:", decodedToken);
+        // Fetch data directly after setting the UID
+        fetchData(UID);
       } catch (error) {
         console.error("Error decoding token:", error);
         navigate("/login"); // Redirect to login if token is invalid
@@ -66,36 +45,71 @@ function AssignedToursPage() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/user/${guideUID}/tour`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const apiData = await response.json();
-        setData(apiData);
-      } catch (error) {
-        console.error("Error fetching tours data:", error.message);
-      } finally {
-        setIsLoading(false);
+  const fetchData = async (UID) => {
+    try {
+      const response = await fetch(`/api/user/${UID}/tour`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+      const apiData = await response.json();
+      console.log("API DATA: ", apiData);
 
-    fetchData();
-  }, []);
+      const toursArray = Array.isArray(apiData) ? apiData : [apiData];
 
-  const buttonName = "Remove";
+      const transformedData = toursArray.map((item) => [
+        item.tourRegistrationCode || "N/A", // Tour ID
+        item.tourRegistirationInfo?.school?.schoolName || "N/A", // School Name
+        item.tourRegistirationInfo?.cityName || "N/A", // City
+        new Date(item.tourRegistirationInfo?.time).toLocaleDateString() ||
+          "N/A", // Date
+        new Date(item.tourRegistirationInfo?.time).toLocaleTimeString() ||
+          "N/A", // Time
+        item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
+        item.tourRegistirationInfo?.superVisorName || "N/A", // Supervisor Name
+        item.tourRegistirationInfo?.superVisorDuty || "N/A", // Supervisor Duty
+        item.tourRegistirationInfo?.superVisorPhoneNumber || "N/A", // Supervisor Phone
+        item.tourRegistirationInfo?.superVisorMailAddress || "N/A", // Supervisor Email
+        item.tourRegistirationInfo?.notes || "N/A", // Notes
+      ]);
 
-  const handleRemoveClick = (rowIndex) => {
-    setSelectedTour(data[rowIndex]); // Track the selected row
+      setData(transformedData);
+    } catch (error) {
+      console.error("Error fetching tours data:", error.message);
+    }
+  };
+
+  const handleRowClick = () => {
+    setSelectedTour(data); // Track the selected row
     setShowPopup(true); // Show confirmation popup
   };
 
-  const confirmRemove = () => {
-    console.log("Removed:", selectedTour); // Perform removal action here
-    setShowPopup(false); // Close the popup
+  const confirmRemove = async () => {
+    if (!selectedTour || !selectedTour[0]) {
+      console.error("No tour selected or invalid tour data.");
+      return;
+    }
+    const tourCode = selectedTour[0][0]; // Assuming the first column is the Tour ID
+    console.log("TOUR CODE: ", tourCode);
+    try {
+      const response = await fetch(`/api/schedule/tour/${tourCode}/guide`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert(`Successfully canceled assignment for tour ${tourCode}.`);
+        // Remove the canceled tour from the table
+        setData((prevData) => prevData.filter((row) => row[0] !== tourCode));
+        setShowPopup(false); // Close the popup
+      } else {
+        console.error(`Failed to cancel assignment: ${response.statusText}`);
+        alert("Failed to cancel assignment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error canceling assignment:", error);
+      alert("An error occurred while canceling the assignment.");
+    }
   };
+
   const cancelRemove = () => {
     setShowPopup(false); // Close the popup
     setSelectedTour(null); // Clear the selected tour
@@ -111,18 +125,25 @@ function AssignedToursPage() {
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}
-              data={data.map((item) => [
-                item.tourRegistrationCode || "N/A", // Tour ID
-                new Date(item.time).toLocaleDateString() || "N/A", // Date
-                item.tourRegistirationInfo?.school?.schoolName || "N/A", // School
-                item.tourRegistirationInfo?.numberOfVisitors || "N/A", // Number of Visitors
-              ])}
-              onButtonClick={handleRemoveClick} // Pass row index to the handler
-              buttonStyle={buttonStyle}
-              buttonName={buttonName}
+              data={data}
+              onButtonClick={handleRowClick}
+              buttonStyle={{
+                padding: "8px 16px",
+                backgroundColor: "gray",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "14px",
+                width: "100%",
+                maxWidth: "120px",
+                textAlign: "center",
+                transition: "background-color 0.3s ease, transform 0.2s ease",
+              }}
+              buttonName="Decide"
             />
           ) : (
-            <p className="noDataText">No Users</p>
+            <p className="noDataText">No Tours Assigned</p>
           )}
         </div>
         {/* Confirmation Popup */}
@@ -149,7 +170,26 @@ function AssignedToursPage() {
                       "background-color 0.3s ease, transform 0.2s ease",
                   }}
                 >
-                  Remove
+                  Cancel Assignment
+                </button>
+                <button
+                  onClick={cancelRemove}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    width: "100%",
+                    maxWidth: "120px",
+                    textAlign: "center",
+                    transition:
+                      "background-color 0.3s ease, transform 0.2s ease",
+                  }}
+                >
+                  Tour Done
                 </button>
                 <button
                   onClick={cancelRemove}
