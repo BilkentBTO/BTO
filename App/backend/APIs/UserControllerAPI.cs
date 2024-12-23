@@ -232,5 +232,18 @@ namespace backend.Server.Controllers
 
             return ErrorHandler.HandleError(result);
         }
+
+        [HttpPut("{userID}/workhours/{amount}")]
+        public async Task<ActionResult> AddWorkHoursToUser(int userID, int amount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.AddWorkHoursToUser(userID, amount);
+
+            return ErrorHandler.HandleError(result);
+        }
     }
 }
