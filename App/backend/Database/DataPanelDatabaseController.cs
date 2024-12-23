@@ -82,8 +82,18 @@ namespace backend.Database
         {
             // Retrieves the user (guide) associated with the UID and attaches it to the guide data
             var guideData = await _SystemContext.GuideData.ToListAsync();
-
-            return guideData;
+            List<GuideData> result = new List<GuideData>();
+            foreach (var data in guideData)
+            {
+                var guide = await _SystemContext.Users.FirstOrDefaultAsync(u => u.ID == data.UID);
+                if (guide == null)
+                {
+                    continue;
+                }
+                data.Guide = guide;
+                result.Add(data);
+            }
+            return result;
         }
 
         /// <summary>
