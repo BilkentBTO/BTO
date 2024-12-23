@@ -1452,6 +1452,16 @@ namespace backend.Database
                     UserType = userCreate.UserType,
                 };
             }
+            else if (userCreate.UserType == UserType.CandidateGuide)
+            {
+                newUser = new Guide(userCreate.Name, userCreate.Surname, userCreate.Mail)
+                {
+                    BilkentID = userCreate.BilkentID,
+                    MajorCode = userCreate.MajorCode,
+                    CurrentYear = userCreate.CurrentYear,
+                    UserType = userCreate.UserType,
+                };
+            }
             else
             {
                 newUser = new User(userCreate.Name, userCreate.Surname, userCreate.Mail)
