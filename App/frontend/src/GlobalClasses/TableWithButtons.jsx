@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./Table.css";
 
 const TableWithButtons = ({
@@ -10,6 +10,16 @@ const TableWithButtons = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(data);
+
+  // Update filteredData whenever data or searchTerm changes
+  useEffect(() => {
+    const filtered = data.filter((row) =>
+      row.some((cell) =>
+        cell.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+    setFilteredData(filtered);
+  }, [data, searchTerm]);
 
   // Handle search input change
   const handleSearch = (event) => {
