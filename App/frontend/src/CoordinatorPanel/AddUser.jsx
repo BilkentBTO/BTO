@@ -93,7 +93,7 @@ function AddUser() {
     };
 
     fetchMajors();
-  });
+  }, []);
   const roleMapping = {
     Admin: 1,
     Coordinator: 2,
