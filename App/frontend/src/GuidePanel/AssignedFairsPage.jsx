@@ -116,9 +116,9 @@ function AssignedFairsPage() {
     <div className="assignedFairsPage">
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
-        <HeaderPanelGlobal name={"GUIDE PANEL"} />
+        <HeaderPanelGlobal name={"Assigned Fairs"} />
         <div>
-          <h1 className="assignedFairsHeading">Assigned Fairs</h1>
+          <h1 className="assignedFairsHeading">Your Fairs</h1>
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}

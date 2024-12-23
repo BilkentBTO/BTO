@@ -179,9 +179,9 @@ function AssignGuideToFairs() {
     <div className="assignGuideToFairs">
       <GlobalSidebar />
       <div className="rightSideCoorFunction">
-        <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
+        <HeaderPanelGlobal name={"Assign Guide To Fairs"} />
         <div>
-          <h1 className="assignGuideToFairsHeading">Assign Guide to Fairs</h1>
+          <h1 className="assignGuideToFairsHeading">Assign Guides</h1>
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}

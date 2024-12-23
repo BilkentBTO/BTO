@@ -58,9 +58,9 @@ function DataPanel() {
     <div className="dataPanel">
       <GlobalSidebar />
       <div className="rightSideAdminFunction">
-        <HeaderPanelGlobal name={"DATA PANEL"} />
+        <HeaderPanelGlobal name={"Data Panel"} />
         <div>
-          <h1 className="dataPanelHeading">School Data</h1>
+          <h1 className="dataPanelHeading">Data</h1>
           <TableWithButtons
             headers={headers}
             data={data}

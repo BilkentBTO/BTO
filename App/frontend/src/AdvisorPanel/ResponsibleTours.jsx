@@ -73,9 +73,9 @@ function ResponsibleTours() {
     <div className="responsibleToursPage">
       <GlobalSidebar />
       <div className="rightSideAdvisorFunction">
-        <HeaderPanelGlobal name={"ADVISOR PANEL"} />
+        <HeaderPanelGlobal name={"Responsible Tours"} />
         <div>
-          <h1 className="responsibleToursHeading">Responsible Tours</h1>
+          <h1 className="responsibleToursHeading">Your Tours</h1>
           <Table headers={headers} data={data} />
         </div>
       </div>

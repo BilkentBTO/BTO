@@ -130,7 +130,7 @@ function AddCoordinator() {
     <div className="addCoordinator">
       <GlobalSidebar />
       <div className="rightSideAdminFunction">
-        <HeaderPanelGlobal name="ADMIN PANEL" />
+        <HeaderPanelGlobal name="Add Coordinator" />
         <div className="addCoordinatorPage">
           <div className="innerAddCoordinatorPage">
             <div className="coordinatorForm">

@@ -119,9 +119,9 @@ function AssignedToursPage() {
     <div className="assignedToursPage">
       <GlobalSidebar />
       <div className="rightSideGuideFunction">
-        <HeaderPanelGlobal name={"GUIDE PANEL"} />
+        <HeaderPanelGlobal name={"Assigned Tours"} />
         <div>
-          <h1 className="assignedToursHeading">Assigned Tours</h1>
+          <h1 className="assignedToursHeading">Your Tours</h1>
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}

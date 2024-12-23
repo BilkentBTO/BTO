@@ -394,7 +394,7 @@ function EvaluateTourRequests() {
     <div className="evaluateTourRequestPage">
       <GlobalSidebar />
       <div className="rightSideAdvisorFunction">
-        <HeaderPanelGlobal name={"EVALUATE TOUR REQUESTS"} />
+        <HeaderPanelGlobal name={"Evaluate Tour Requests"} />
         <div className="toggleButtons">
           <button
             className={`toggleButton ${

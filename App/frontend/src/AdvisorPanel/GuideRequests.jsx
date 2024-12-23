@@ -161,7 +161,7 @@ function GuideRequests() {
     <div className="guideRequestsPage">
       <GlobalSidebar />
       <div className="rightSideAdvisorFunction">
-        <HeaderPanelGlobal name={"ADVISOR PANEL"} />
+        <HeaderPanelGlobal name={"Guide Requests"} />
         <h1 className="guideRequestsHeading">Guide Tour Requests</h1>
 
         {data.length > 0 ? (

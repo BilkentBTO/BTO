@@ -143,7 +143,7 @@ function ManageFairRequests() {
     <div className="assignGuideToFairsPage">
       <GlobalSidebar />
       <div className="rightSideCoorFunction">
-        <HeaderPanelGlobal name={"COORDINATOR PANEL"} />
+        <HeaderPanelGlobal name={"Manage Fair Requests"} />
 
         <div>
           <h1 className="assignGuideToFairsHeading">Pending Fair Requests</h1>

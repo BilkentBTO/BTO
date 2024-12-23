@@ -80,9 +80,9 @@ function ListCoordinatorsPage() {
     <div className="listAllUsers">
       <GlobalSidebar />
       <div className="rightSideAdminFunction">
-        <HeaderPanelGlobal name={"ADMIN PANEL"} />
+        <HeaderPanelGlobal name={"List All Coordinators"} />
         <div>
-          <h1 className="listAllUsersHeading">List All Coordinators</h1>
+          <h1 className="listAllUsersHeading">Coordinators</h1>
           {data.length > 0 ? (
             <TableWithButtons
               headers={headers}
