@@ -8,6 +8,139 @@ import { jwtDecode } from "jwt-decode";
 import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 import TableWithButtonConflict from "../GlobalClasses/TableWithButtonConflict";
 
+function IndividualPopup({
+  selectedRow,
+  onClose,
+  onAccept,
+  onReject,
+  onDelete,
+}) {
+  const individualHeaders = [
+    "Individual ID",
+    "Name",
+    "Surname",
+    "City",
+    "Date of Visit",
+    "Number of Visitors",
+    "Supervisor Name",
+    "Supervisor Duty",
+    "Supervisor Phone Number",
+    "Supervisor Email",
+    "Notes",
+    "Preferred Visit Time",
+    "Major",
+  ];
+
+  const individualKeyMap = {
+    "Individual ID": "code",
+    Name: "individualName",
+    Surname: "individualSurname",
+    City: "cityName", // Adjust if this exists
+    "Date of Visit": "time",
+    "Number of Visitors": "numberOfVisitors", // Adjust if individual-specific
+    "Supervisor Name": "superVisorName", // Adjust if individual-specific
+    "Supervisor Duty": "superVisorDuty", // Adjust if individual-specific
+    "Supervisor Phone Number": "individualPhoneNumber",
+    "Supervisor Email": "individualMailAddress",
+    Notes: "notes",
+    "Preferred Visit Time": "preferredVisitTime",
+    Major: "individualMajor.name",
+  };
+
+  return (
+    <div className="popupOverlay">
+      <div className="popupContent">
+        <h2>Individual Tour Details</h2>
+        <table className="popupTable">
+          <tbody>
+            {individualHeaders.map((header, index) => {
+              const keyPath = individualKeyMap[header];
+              const value = keyPath
+                .split(".")
+                .reduce(
+                  (acc, key) =>
+                    acc && acc[key] !== undefined ? acc[key] : "N/A",
+                  selectedRow
+                );
+
+              return (
+                <tr key={index}>
+                  <td>
+                    <strong>{header}:</strong>
+                  </td>
+                  <td>{value}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div className="popupActions">
+          {selectedRow.state === 0 && (
+            <>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "green",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  margin: "4px",
+                }}
+                onClick={onAccept}
+              >
+                Approve
+              </button>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  margin: "4px",
+                }}
+                onClick={onReject}
+              >
+                Reject
+              </button>
+            </>
+          )}
+          <button
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "grey",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              margin: "4px",
+            }}
+            onClick={onDelete}
+          >
+            Delete
+          </button>
+          <button
+            style={{
+              padding: "8px 16px",
+              backgroundColor: "blue",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              margin: "4px",
+            }}
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EvaluateTourRequests() {
   const [headers] = useState(["Tour ID", "School", "State"]);
   const [headersIndv] = useState([
@@ -165,11 +298,41 @@ function EvaluateTourRequests() {
       }
     }
   };
+  const handleIndvRowClick = (rowData, isConflict, conflictId) => {
+    const tourId = String(rowData[0]);
+    const completeRow = pendingIndvData.find(
+      (row) => String(row.code) === tourId
+    );
+
+    if (completeRow) {
+      setSelectedRow(completeRow);
+      setPopupVisible(true);
+    } else {
+      console.error("No matching row found for tour ID:", tourId);
+    }
+  };
   const handleAcceptedRowClick = (rowData) => {
     const tourId = String(rowData[0]);
     console.log("ACCEPTED DATA: ", acceptedData);
 
     const completeRow = acceptedData.find((row) => String(row.code) === tourId);
+    console.log("TOUR ID: ", tourId);
+    console.log("COMPLETE ROW: ", completeRow);
+
+    if (completeRow) {
+      setSelectedRow(completeRow);
+      setPopupVisible(true);
+    } else {
+      console.error("No matching row found for tour ID:", tourId);
+    }
+  };
+  const handleAcceptedIndvRowClick = (rowData) => {
+    const tourId = String(rowData[0]);
+    console.log("ACCEPTED DATA: ", acceptedData);
+
+    const completeRow = acceptedIndvData.find(
+      (row) => String(row.code) === tourId
+    );
     console.log("TOUR ID: ", tourId);
     console.log("COMPLETE ROW: ", completeRow);
 
@@ -703,7 +866,7 @@ function EvaluateTourRequests() {
                       item.individualMajor?.name || "N/A",
                       "Pending",
                     ])}
-                    onButtonClick={handleRowClick}
+                    onButtonClick={handleIndvRowClick}
                     buttonStyle={buttonStyle}
                     buttonName="Decide"
                   />
@@ -726,7 +889,7 @@ function EvaluateTourRequests() {
                       item.individualMajor?.name || "N/A",
                       "Accepted",
                     ])}
-                    onButtonClick={handleAcceptedRowClick}
+                    onButtonClick={handleAcceptedIndvRowClick}
                     buttonStyle={buttonStyle}
                     buttonName="View"
                   />
@@ -763,6 +926,24 @@ function EvaluateTourRequests() {
           )}
         </div>
       </div>
+      {popupVisible && selectedRow && selectedType === "individual" && (
+        <IndividualPopup
+          selectedRow={selectedRow}
+          onClose={closePopup}
+          onAccept={() => {
+            // Handle accept action
+            closePopup();
+          }}
+          onReject={() => {
+            // Handle reject action
+            closePopup();
+          }}
+          onDelete={() => {
+            // Handle delete action
+            closePopup();
+          }}
+        />
+      )}
     </div>
   );
 }
