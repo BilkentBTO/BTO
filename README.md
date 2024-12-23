@@ -30,39 +30,56 @@ frontend-1  |
 frontend-1  |   ➜  Local:   http://localhost:5173/
 frontend-1  |   ➜  Network: http://172.18.0.3:5173/
 ```
-You can view the project via the link given in Local
+You can view the project via the link given in Local. Defaults to http://localhost:5173/
 
 ## Overview
 
-Bilkent Tanıtım Ofisi (BTO) is a website for uses in guidance. It helps the user and the customer as it makes accessing the guide tools easier. These guide tools are mainly campus tours, exhibitions and communications between the guide and the student. This app creates two user types. One of them is public which is for students and teachers. The other one is for private usage which is for the guides and coordinators in Bilkent. This website provides an interaction and a connection between the public and private users.
+BTO System is an internal tool designed for Bilkent University Information Ofice. The main purpose of the system is to make it easy for High Schools to come and visit Bilkent University. The System manages upcoming tour requests made by high schools, individual tour requests made by individuals and fair requests made by High School.
  
 
 ## Features
 
-### Public Section
+### Public Features
 
 - **Campus Tour Registration**: 
-  - Provides a register system for institutions and individuals for the campus tour.
-  - There will be a form that will collect the data of the individuals and the institutions by taking their educational place, city, preferred visit date, preferred visit time, number of participants and the contact info that will be used for arranging the guide times.
+  - Schools can request a tour. On registration a custom code is given which can be used to track the progress of the registration. 
+  - Individuals can request a private tour. Similar code is assigned on successful registration.
+  - Schools can invite Bilkent to come and participate in a fair. Similar custom code is again generated to make it easy to keep track of the application.
 
-- **Transportation and Expectations**:
-  - Providing the required transportation info for coming to the campus and showing what visitors should expect during the tour.
+- **Surveys**: 
+  - Each tour has a custom survey assigned to it. Via the custom link provided face-to-face from the guide of the tour, attendants can fill in the survey and show their interest in Bilkent.
 
-- **General Communication**:
-  - Makes the communication easier between users as it provides the phone and email
- 
+- **Apply to Join BTO**: 
+  - Students of Bilkent can apply to be a part of the Information Office. They can fill in a registration form to notify the coordinators of the Office.
 
-- **Exhibition Invitations**:
-  - Allows exhibitions to invite the university.
+- **General Contact Information**:
+  - General contact information is shown on main page.
 
-### Private Section
+### Internal Features
 
-- **Guides and Other Superior Users**:
-  - Register as a guide for the upcoming exhibitions and tours.
-  - Taking the data of the working hours and making the contact easier between the daily advisor by using communication panels.
+- **Guides**:
+  - Guides can list out all available tours which are not assigned to any other guides. 
+  - They can apply to be the Guide of that tour and send application request to the Advisors.
+  - They can see the tours & fairs they are assigned to. 
+  - They can edit their available hours to make them available for assignments.
+  - They can view the Advisors of the system for emergency contact.
 
-- **Advisors and Other Superior Users**:
-  - An algorithm will be created to automatically flag a tour as approved or rejected, which will be determined later on.
+- **Advisors**:
+  - Advisors can Accept/Reject the tour registration requests made by High School Managers. 
+  - Accepted tours are made open for Guides to apply. 
+  - Guide-Tour applications can be Viewed, Accepted and Rejected. Accepted Guide-Tour applications are added as a confirmed tour to the system. 
+  - Advisors can view the tours they are responsible for. 
+  - They can also apply to tours just like a Guide in case of an emergency.
 
-- **Coordinator Features**:
-  - Analysing the data, managing the guides, and approving the exhibitions.
+- **Coordinator**:
+  - Coordinators can list all users and delete an user from the system.
+  - They can assign a day of week to the advisors for them to be responsible of. Responsible advisors see the tours that occur on the day they are assigned to.
+  - Fair invitation requests can be viewed, accepted and rejected. 
+  - Accepted Fairs are made available for Guide assignment. Since it is an important issue, Coordinator manually assigns Guides to the fair. The fair can be seen from the Guide's Dashboard.
+  - Work Hours of Users can be viewed to make the necessary payments.
+  - User registration requests can be accepted or new users can be added.
+  - A Data panel can be accessed which displays the results of the surveys and the average scores of the Guides
+
+- **Admin**:
+  - Admin can list all coordinators and add a coordinator to the system. This is the main supervisor of the BTO System.
+  - They have all the functionality of the other users.
