@@ -171,6 +171,17 @@ namespace backend.Server.Controllers
             return Ok(tours);
         }
 
+        [HttpGet("individualtours")]
+        public async Task<ActionResult> GetAllIndividualTours()
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            List<IndividualTour> tours = await _controller.GetAllIndividualTours();
+
+            return Ok(tours);
+        }
+
         /// <summary>
         /// Retrieves a list of all available tours in the system.
         /// If the model state is invalid, it returns a BadRequest status.
