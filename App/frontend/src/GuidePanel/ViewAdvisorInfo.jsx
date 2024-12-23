@@ -23,11 +23,11 @@ function ViewAdvisorInfo() {
         }
         const apiData = await response.json();
         console.log("Api Data", apiData);
-        setMonday(apiData[0] || []);
-        setTuesday(apiData[1] || []);
-        setWednesday(apiData[2] || []);
-        setThursday(apiData[3] || []);
-        setFriday(apiData[4] || []);
+        setMonday(apiData[1] || []);
+        setTuesday(apiData[2] || []);
+        setWednesday(apiData[3] || []);
+        setThursday(apiData[4] || []);
+        setFriday(apiData[5] || []);
       } catch (error) {
         console.error("Error fetching advisor data:", error.message);
       } finally {
