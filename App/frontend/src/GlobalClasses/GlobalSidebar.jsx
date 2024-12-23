@@ -172,6 +172,7 @@ function GlobalSidebar() {
           <input
             type="number"
             value={incrementValue}
+            min={0}
             onChange={(e) => setIncrementValue(parseInt(e.target.value, 10))}
             placeholder="Enter hours to increment"
             style={{

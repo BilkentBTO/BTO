@@ -99,7 +99,7 @@ function DataPanel() {
       <GlobalSidebar />
       <div className="rightSideAdminFunction">
         <HeaderPanelGlobal name={"Data Panel"} />
-        <div>
+        <div className="scrollContainer">
           <h1 className="dataPanelHeading">School Data</h1>
           <TableWithButtons
             headers={headersSchool}
