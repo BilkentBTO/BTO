@@ -1,20 +1,74 @@
+/// <summary>
+/// This class provides various user management functionalities within the system.
+/// It includes operations for creating, updating, deleting, and managing users,
+/// as well as handling specific user-related tasks such as assigning responsible days, 
+/// managing available hours, and updating work hours.
+/// </summary>
+///
+/// <remarks>
+/// The class interacts with the system's data context (_SystemContext) to access and modify user-related data.
+/// It includes methods for user registration, user detail updates, and managing the responsibilities of users
+/// such as assigning specific days of the week for responsibility, tracking the user's work hours, and managing
+/// their available hours for tour guiding duties.
+/// 
+/// Key Features:
+/// - Add, update, and delete users based on unique user IDs.
+/// - Assign and update a user's responsible day (for tour or advisory duties).
+/// - Add and remove available hours for tour guides.
+/// - Create user registration requests and handle user removal requests.
+/// - Retrieve information about the user's concurrent tour limits, available majors, and specific tours a user is responsible for.
+/// - Manage system-wide settings such as the number of concurrent tours allowed.
+/// 
+/// Methods:
+/// - `UpdateUserAsync`: Updates the details of an existing user (e.g., major, current year, user type).
+/// - `ChangeResponsibleDayOfUser`: Changes the responsible day for a user based on their ID.
+/// - `GetResponsibleToursOfUser`: Retrieves the tours a specific user is responsible for, based on their responsible day.
+/// - `GetResponsibleAdvisors`: Retrieves a list of advisors who are responsible for each day of the week.
+/// - `AddWorkHoursToUser`: Adds a specified number of work hours to a user's record.
+/// - `DeleteUserAsync`: Deletes a user from the system by their ID.
+/// - `AddAvailableHoursToGuide`: Adds available hours to a guide's schedule, ensuring no duplicates.
+/// - `RemoveAvailableHoursFromGuide`: Removes specific available hours from a guide's schedule.
+/// - `MakeUserRegistrationRequest`: Handles the creation of a user registration request with pending status.
+/// - `DeleteUserRegisterRequestAsync`: Deletes a pending user registration request based on their ID.
+/// - `GetAllMajors`: Retrieves a list of all majors available in the system.
+/// - `GetAllowedConcurrentTourCount`: Retrieves the number of concurrent tours allowed for a user based on system settings.
+/// - `GenerateRandomPassword`: Generates a random password with a specified length for user accounts.
+/// - `GetTour`: Retrieves a specific tour by its code, including relevant registration and time block details.
+/// - `GenerateSurveyCode`: Generates a random survey code for a user's survey registration.
+/// </remarks>
 using System.Drawing;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
+    /// <summary>
+    /// The SystemDatabaseController class provides methods for managing tours, guides, and guide applications. 
+    /// It handles the operations related to adding guides to tours, processing guide tour applications, and retrieving application data.
+    /// </summary>
     public class SystemDatabaseController
     {
         private readonly SystemDbContext _SystemContext;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Initializes the SystemDatabaseController with a given database context and logger.
+        /// </summary>
+        /// <param name="SystemContext">The database context for interacting with the system data.</param>
+        /// <param name="loggerFactory">The factory used for creating loggers.</param>
         public SystemDatabaseController(SystemDbContext SystemContext, ILoggerFactory loggerFactory)
         {
             _SystemContext = SystemContext;
             _logger = loggerFactory.CreateLogger("SystemDatabaseController");
         }
 
+        /// <summary>
+        /// Adds a new guide tour application to the database.
+        /// Verifies the validity of the provided tour code and guide user ID, checks for existing applications,
+        /// and ensures that the guide and tour exist before creating the application.
+        /// </summary>
+        /// <param name="request">The request containing the tour code and guide user ID.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AddGuideTourApplication(GuideTourApplicationRequest request)
         {
             string? tourCode = request.TourCode;
@@ -64,6 +118,13 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Adds a guide to a specific tour by assigning the guide to the tour and updating the guide's assigned tour code.
+        /// Verifies the existence of the tour and guide before making the assignment.
+        /// </summary>
+        /// <param name="TourCode">The registration code of the tour to assign the guide to.</param>
+        /// <param name="GuideUID">The ID of the guide to be assigned to the tour.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AddGuideToTour(string TourCode, int GuideUID)
         {
             if (string.IsNullOrEmpty(TourCode))
@@ -108,6 +169,10 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Retrieves a list of all guide tour applications, including details about the associated tour and guide.
+        /// </summary>
+        /// <returns>A list of GuideTourApplication objects that include the tour and guide details.</returns>
         public async Task<List<GuideTourApplication>> GetAllGuideTourApplications()
         {
             var applications = await _SystemContext
@@ -140,6 +205,12 @@ namespace backend.Database
             return result;
         }
 
+        /// <summary>
+        /// Accepts a guide's tour application and assigns them to the associated tour. 
+        /// The application is removed after successful assignment.
+        /// </summary>
+        /// <param name="guideUID">The ID of the guide whose application is to be accepted.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AcceptGuideTourApplication(int guideUID)
         {
             if (guideUID < 0)
@@ -175,6 +246,11 @@ namespace backend.Database
             return result;
         }
 
+        /// <summary>
+        /// Rejects a guide's tour application and removes it from the database.
+        /// </summary>
+        /// <param name="guideUID">The ID of the guide whose application is to be rejected.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> RejectGuideTourApplication(int guideUID)
         {
             if (guideUID < 0)
@@ -197,6 +273,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Retrieves a general registration (tour, fair, or individual) by its unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the registration.</param>
+        /// <returns>Returns the registration details if found, or null if the code is invalid.</returns>
         public async Task<Registration?> GetGeneralRegistration(string Code)
         {
             if (string.IsNullOrEmpty(Code))
@@ -225,6 +306,11 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Cancels a general registration (tour, fair, or individual) by its unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the registration.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> CancelGeneralRegistration(string Code)
         {
             if (string.IsNullOrEmpty(Code))
@@ -246,6 +332,12 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Adds a new tour registration to the database.
+        /// It validates the school, time block, and other registration details before creating the registration.
+        /// </summary>
+        /// <param name="request">The request containing the tour registration details.</param>
+        /// <returns>Returns the generated registration code if successful, or an empty string if unsuccessful.</returns>
         public async Task<string> AddTourRegistration(TourRegistrationRequest request)
         {
             try
@@ -332,6 +424,11 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves a tour registration by its unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the tour registration.</param>
+        /// <returns>Returns the tour registration details if found, or null if the code is invalid.</returns>
         public async Task<TourRegistration?> GetTourRegistration(string Code)
         {
             return await _SystemContext
@@ -340,6 +437,11 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
+        /// <summary>
+        /// Cancels a tour registration by its unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the tour registration to cancel.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> CancelTourRegistration(string Code)
         {
             if (string.IsNullOrEmpty(Code))
@@ -378,6 +480,10 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Retrieves a list of all tour registrations, sorted by school priority.
+        /// </summary>
+        /// <returns>A list of all tour registrations.</returns>
         public async Task<List<TourRegistration>> GetAllTourRegistrations()
         {
             return await _SystemContext
@@ -387,6 +493,11 @@ namespace backend.Database
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a filtered list of tour registrations based on their state.
+        /// </summary>
+        /// <param name="state">The state of the tour registrations to filter by.</param>
+        /// <returns>A list of tour registrations with the specified state.</returns>
         public async Task<List<TourRegistration>> GetAllTourRegistrationsFiltered(
             RegistrationState state
         )
@@ -397,8 +508,13 @@ namespace backend.Database
                 .Include(r => r.School)
                 .Include(r => r.TimeBlock)
                 .ToListAsync();
-        }
+        }   
 
+        /// <summary>
+        /// Accepts a tour registration and creates a corresponding tour, marking the registration as accepted.
+        /// </summary>
+        /// <param name="Code">The unique code representing the tour registration to accept.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AcceptTourRegistration(string Code)
         {
             if (await _SystemContext.Tours.AnyAsync(t => t.TourRegistrationCode == Code))
@@ -443,6 +559,12 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Marks a conflict related to a specific tour as solved. This is done by setting the ConflictSolved flag
+        /// in the associated TimeBlock to true.
+        /// </summary>
+        /// <param name="tourCode">The unique code of the tour whose conflict needs to be resolved.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> MarkConflictAsSolved(string tourCode)
         {
             if (string.IsNullOrEmpty(tourCode))
@@ -472,6 +594,12 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Rejects a tour registration by changing its state to 'Rejected'. This action signifies that the registration
+        /// is no longer accepted.
+        /// </summary>
+        /// <param name="Code">The unique code representing the tour registration to reject.</param>
+        /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
         public async Task<bool> RejectTourRegistration(string Code)
         {
             var registration = await _SystemContext.TourRegistrations.SingleOrDefaultAsync(r =>
@@ -487,6 +615,13 @@ namespace backend.Database
             return true;
         }
 
+        /// <summary>
+        /// Adds a new fair registration to the system. The registration is associated with a specific school and includes
+        /// details such as the city name, supervisor information, and visit date. The registration is marked as pending until
+        /// it is processed.
+        /// </summary>
+        /// <param name="request">The request containing the fair registration details.</param>
+        /// <returns>Returns the generated registration code if successful, or an empty string if the registration fails.</returns>
         public async Task<string> AddFairRegistration(FairRegistrationRequest request)
         {
             try
@@ -534,6 +669,10 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of all fair registrations, ordered by school priority.
+        /// </summary>
+        /// <returns>Returns a list of all fair registrations.</returns>
         public async Task<List<FairRegistration>> GetAllFairRegistrations()
         {
             return await _SystemContext
@@ -542,6 +681,11 @@ namespace backend.Database
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a list of fair registrations filtered by their state, ordered by school priority.
+        /// </summary>
+        /// <param name="state">The state of the fair registrations to filter by.</param>
+        /// <returns>Returns a list of fair registrations matching the specified state.</returns>
         public async Task<List<FairRegistration>> GetAllFairRegistrationsFiltered(
             RegistrationState state
         )
@@ -553,6 +697,11 @@ namespace backend.Database
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves the fair registration details associated with the provided unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the fair registration.</param>
+        /// <returns>Returns the fair registration details if found, or null if the code is invalid.</returns>
         public async Task<FairRegistration?> GetFairRegistration(string Code)
         {
             return await _SystemContext
@@ -560,6 +709,11 @@ namespace backend.Database
                 .SingleOrDefaultAsync(r => r.Code == Code);
         }
 
+        /// <summary>
+        /// Cancels a fair registration by its unique code, removing both the registration and the associated fair if present.
+        /// </summary>
+        /// <param name="Code">The unique code representing the fair registration to cancel.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> CancelFairRegistration(string Code)
         {
             if (string.IsNullOrEmpty(Code))
@@ -589,6 +743,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Accepts a fair registration by changing its state to 'Accepted' and creates a new Fair entry.
+        /// </summary>
+        /// <param name="Code">The unique code representing the fair registration to accept.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AcceptFairRegistration(string Code)
         {
             if (await _SystemContext.Fairs.AnyAsync(t => t.FairRegistrationCode == Code))
@@ -624,6 +783,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Rejects a fair registration by changing its state to 'Rejected'.
+        /// </summary>
+        /// <param name="Code">The unique code representing the fair registration to reject.</param>
+        /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
         public async Task<bool> RejectFairRegistration(string Code)
         {
             var registration = await _SystemContext.FairRegistrations.SingleOrDefaultAsync(r =>
@@ -639,6 +803,12 @@ namespace backend.Database
             return true;
         }
 
+        /// <summary>
+        /// Adds a new individual registration based on the provided request details. The registration is marked as pending until
+        /// it is processed.
+        /// </summary>
+        /// <param name="request">The request containing the individual registration details.</param>
+        /// <returns>Returns the generated registration code if successful, or an empty string if the registration fails.</returns>
         public async Task<string> AddIndividualRegistration(IndividualRegistrationRequest request)
         {
             try
@@ -673,6 +843,10 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of all individual registrations, ordered by individual name.
+        /// </summary>
+        /// <returns>Returns a list of all individual registrations.</returns>
         public async Task<List<IndividualRegistration>> GetAllIndividualRegistrations()
         {
             return await _SystemContext
@@ -680,6 +854,11 @@ namespace backend.Database
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a list of individual registrations filtered by their state, ordered by individual name.
+        /// </summary>
+        /// <param name="state">The state of the individual registrations to filter by.</param>
+        /// <returns>Returns a list of individual registrations matching the specified state.</returns>
         public async Task<List<IndividualRegistration>> GetAllIndividualRegistrationsFiltered(
             RegistrationState state
         )
@@ -690,6 +869,11 @@ namespace backend.Database
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves the individual registration details associated with the provided unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the individual registration.</param>
+        /// <returns>Returns the individual registration details if found, or null if the code is invalid.</returns>
         public async Task<IndividualRegistration?> GetIndividualRegistration(string Code)
         {
             return await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(r =>
@@ -697,6 +881,11 @@ namespace backend.Database
             );
         }
 
+        /// <summary>
+        /// Cancels an individual registration by its unique code.
+        /// </summary>
+        /// <param name="Code">The unique code representing the individual registration to cancel.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> CancelIndividualRegistration(string Code)
         {
             if (string.IsNullOrEmpty(Code))
@@ -719,7 +908,12 @@ namespace backend.Database
 
             return ErrorTypes.Success;
         }
-
+        
+        /// <summary>
+        /// Accepts an individual registration by changing its state to 'Accepted'.
+        /// </summary>
+        /// <param name="Code">The unique code representing the individual registration to accept.</param>
+        /// <returns>Returns a boolean indicating the success or failure of the acceptance operation.</returns>
         public async Task<bool> AcceptIndividualRegistration(string Code)
         {
             var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
@@ -735,6 +929,11 @@ namespace backend.Database
             return true;
         }
 
+        /// <summary>
+        /// Rejects an individual registration by changing its state to 'Rejected'.
+        /// </summary>
+        /// <param name="Code">The unique code representing the individual registration to reject.</param>
+        /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
         public async Task<bool> RejectIndividualRegistration(string Code)
         {
             var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
@@ -750,6 +949,10 @@ namespace backend.Database
             return true;
         }
 
+        /// <summary>
+        /// Retrieves a list of all city names from the CityData.
+        /// </summary>
+        /// <returns>Returns a list of city names.</returns>
         public List<string> GetAllCityNames()
         {
             List<string> cityNames = new List<string>();
@@ -760,6 +963,13 @@ namespace backend.Database
             return cityNames;
         }
 
+        /// <summary>
+        /// Retrieves a list of school suggestions based on the provided query and city name. Filters the schools
+        /// by the specified query and city code.
+        /// </summary>
+        /// <param name="query">The search query used to filter the schools by name.</param>
+        /// <param name="cityName">The name of the city to filter the schools by.</param>
+        /// <returns>Returns a list of school suggestions that match the query and city name.</returns>
         public async Task<List<SchoolSuggestion>> GetSchoolSuggestionsWithFilterAsync(
             string query,
             string cityName
@@ -798,6 +1008,12 @@ namespace backend.Database
                 .ToList();
         }
 
+        /// <summary>
+        /// Retrieves a list of school suggestions based on the provided search query. The schools are filtered by name,
+        /// and only the first 10 matches are returned.
+        /// </summary>
+        /// <param name="query">The search query to filter schools by name.</param>
+        /// <returns>Returns a list of distinct school names that match the query.</returns>
         public async Task<List<string?>> GetSchoolSuggestionsAsync(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
@@ -816,16 +1032,30 @@ namespace backend.Database
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a list of all users, ordered by their name.
+        /// </summary>
+        /// <returns>Returns a list of all users.</returns>
         public async Task<List<User>> GetUsersAsync()
         {
             return await _SystemContext.Users.OrderBy(c => c.Name).ToListAsync();
         }
 
+        /// <summary>
+        /// Retrieves a specific user by their unique ID.
+        /// </summary>
+        /// <param name="id">The ID of the user to retrieve.</param>
+        /// <returns>Returns the user if found, or null if no user exists with the given ID.</returns>
         public async Task<User?> GetUserAsync(int id)
         {
             return await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
         }
 
+        /// <summary>
+        /// Retrieves the tour associated with a specific user by their ID.
+        /// </summary>
+        /// <param name="id">The ID of the user whose tour is being requested.</param>
+        /// <returns>Returns the user's tour if found, or null if the user has no assigned tour.</returns>
         public async Task<Tour?> GetTourOfUser(int id)
         {
             var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
@@ -859,6 +1089,11 @@ namespace backend.Database
             return Tour;
         }
 
+        /// <summary>
+        /// Retrieves the fair associated with a specific user by their ID.
+        /// </summary>
+        /// <param name="id">The ID of the user whose fair is being requested.</param>
+        /// <returns>Returns the user's fair if found, or null if the user has no assigned fair.</returns>
         public async Task<Fair?> GetFairOfUser(int id)
         {
             var User = await _SystemContext.Users.SingleOrDefaultAsync(c => c.ID == id);
@@ -889,11 +1124,22 @@ namespace backend.Database
             return Fair;
         }
 
+        /// <summary>
+        /// Retrieves a list of users filtered by their user type.
+        /// </summary>
+        /// <param name="id">The user type to filter by.</param>
+        /// <returns>Returns a list of users that match the specified user type.</returns>
         public async Task<List<User>> GetUserFilteredAsync(UserType id)
         {
             return await _SystemContext.Users.Where(u => u.UserType == id).ToListAsync();
         }
 
+
+        /// <summary>
+        /// Adds a new user to the system based on the provided user creation details.
+        /// </summary>
+        /// <param name="userCreate">The details for the new user to be created.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the user creation operation.</returns>
         public async Task<ErrorTypes> AddUserAsync(UserCreate userCreate)
         {
             if (string.IsNullOrEmpty(userCreate.Name) || string.IsNullOrEmpty(userCreate.Username))
@@ -988,6 +1234,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Updates the details of a specific user based on the provided user edit information.
+        /// </summary>
+        /// <param name="userEdit">The details to update for the user.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the update operation.</returns>
         public async Task<ErrorTypes> UpdateUserAsync(UserEdit userEdit)
         {
             if (userEdit.ID < 0)
@@ -1015,7 +1266,13 @@ namespace backend.Database
             await _SystemContext.SaveChangesAsync();
             return ErrorTypes.Success;
         }
-
+        
+        /// <summary>
+        /// Changes the responsible day for a user. This is the day the user is assigned to be responsible for.
+        /// </summary>
+        /// <param name="UID">The ID of the user to update.</param>
+        /// <param name="day">The new responsible day for the user.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> ChangeResponsibleDayOfUser(int UID, DayOfWeek day)
         {
             if (UID < 0)
@@ -1033,6 +1290,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Retrieves all tours for a specific user that they are responsible for, based on the user's responsible day.
+        /// </summary>
+        /// <param name="UID">The ID of the user whose responsible tours are to be fetched.</param>
+        /// <returns>Returns a list of tours the user is responsible for, or an empty list if none are found.</returns>
         public async Task<List<Tour>> GetResponsibleToursOfUser(int UID)
         {
             if (UID < 0)
@@ -1073,6 +1335,10 @@ namespace backend.Database
             return responsibleTours;
         }
 
+        /// <summary>
+        /// Retrieves a list of advisors who are responsible for each day of the week.
+        /// </summary>
+        /// <returns>Returns a list of lists of users, where each sublist contains the advisors responsible for a particular day.</returns>
         public async Task<List<List<User>>> GetResponsibleAdvisors()
         {
             List<List<User>> responsibles = new List<List<User>>();
@@ -1089,6 +1355,12 @@ namespace backend.Database
             return responsibles;
         }
 
+        /// <summary>
+        /// Adds work hours to a specific user's record.
+        /// </summary>
+        /// <param name="UID">The ID of the user to update.</param>
+        /// <param name="hours">The number of work hours to add to the user's total.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AddWorkHoursToUser(int UID, int hours)
         {
             if (UID < 0)
@@ -1111,6 +1383,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Deletes a user from the system based on their unique ID.
+        /// </summary>
+        /// <param name="id">The ID of the user to delete.</param>
+        /// <returns>Returns true if the user was successfully deleted, false otherwise.</returns>
         public async Task<bool> DeleteUserAsync(int id)
         {
             bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == id);
@@ -1138,6 +1415,12 @@ namespace backend.Database
             return false;
         }
 
+        /// <summary>
+        /// Adds available hours for a guide user, preventing duplicates.
+        /// </summary>
+        /// <param name="UID">The ID of the guide user to update.</param>
+        /// <param name="availability">The available hours to add to the guide's schedule.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> AddAvailableHoursToGuide(
             int UID,
             UserAvailableHours availability
@@ -1161,6 +1444,12 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Removes specific available hours from a guide user's schedule.
+        /// </summary>
+        /// <param name="UID">The ID of the guide user to update.</param>
+        /// <param name="availability">The available hours to remove from the guide's schedule.</param>
+        /// <returns>Returns an ErrorTypes value indicating the success or failure of the operation.</returns>
         public async Task<ErrorTypes> RemoveAvailableHoursFromGuide(
             int UID,
             UserAvailableHours availability
@@ -1180,6 +1469,11 @@ namespace backend.Database
             return ErrorTypes.Success;
         }
 
+        /// <summary>
+        /// Handles a user registration request, adding the user as pending until approved.
+        /// </summary>
+        /// <param name="request">The user registration request details.</param>
+        /// <returns>Returns true if the registration was successfully added, false otherwise.</returns>
         public async Task<bool> MakeUserRegistrationRequest(UserCreateRequest request)
         {
             try
@@ -1209,6 +1503,11 @@ namespace backend.Database
             }
         }
 
+        /// <summary>
+        /// Deletes a user registration request if the user is still pending.
+        /// </summary>
+        /// <param name="UID">The ID of the pending user to delete.</param>
+        /// <returns>Returns true if the registration request was successfully deleted, false otherwise.</returns>
         public async Task<bool> DeleteUserRegisterRequestAsync(int UID)
         {
             bool userExists = await _SystemContext.Users.AnyAsync(u => u.ID == UID);
@@ -1241,11 +1540,19 @@ namespace backend.Database
             return false;
         }
 
+        /// <summary>
+        /// Retrieves all majors from a predefined list of majors.
+        /// </summary>
+        /// <returns>Returns a list of all majors.</returns>
         public List<Major> GetAllMajors()
         {
             return Major.AllMajors;
         }
 
+        /// <summary>
+        /// Retrieves the number of concurrent tours allowed based on system settings.
+        /// </summary>
+        /// <returns>Returns the allowed concurrent tour count, or 2 if the setting is not found.</returns>
         public async Task<int> GetAllowedConcurrentTourCount()
         {
             var setting = await _SystemContext.Setting.FirstOrDefaultAsync();
@@ -1256,6 +1563,11 @@ namespace backend.Database
             return 2;
         }
 
+        /// <summary>
+        /// Generates a random password of a specified length.
+        /// </summary>
+        /// <param name="length">The desired length of the password.</param>
+        /// <returns>Returns a randomly generated password.</returns>
         private string GenerateRandomPassword(int length = 12)
         {
             const string validChars =
@@ -1269,6 +1581,11 @@ namespace backend.Database
             );
         }
 
+        /// <summary>
+        /// Retrieves a tour by its tour code, including the associated registration and time block information.
+        /// </summary>
+        /// <param name="tourCode">The code of the tour to retrieve.</param>
+        /// <returns>Returns the tour if found, otherwise null.</returns>
         private async Task<Tour?> GetTour(string tourCode)
         {
             Tour? foundTour = await _SystemContext.Tours.FirstOrDefaultAsync(t =>
@@ -1290,6 +1607,10 @@ namespace backend.Database
             return foundTour;
         }
 
+        /// <summary>
+        /// Generates a random survey code in the format Q-xxxx, where xxxx is a random number.
+        /// </summary>
+        /// <returns>Returns the generated survey code.</returns>
         private string GenerateSurveyCode()
         {
             var randomSuffix = new Random().Next(1000, 9999);
