@@ -45,6 +45,7 @@ import SuccessAddUser from "./CoordinatorPanel/SuccessAddUser";
 import SurveyCodePage from "./SurveyCodePage/SurveyCodePage";
 import ViewSurvey from "./ViewSurvey/ViewSurvey";
 import SuccessViewSurvey from "./ViewSurvey/SuccessViewSurvey";
+import ViewWorkHours from "./CoordinatorPanel/ViewWorkHours";
 
 function App() {
   return (
@@ -253,6 +254,14 @@ function App() {
         element={
           <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
             <SuccessAddUser />
+          </RoleProtectedRoute>
+        }
+      />
+      <Route
+        path="/coordinatorPanel/viewWorkHours"
+        element={
+          <RoleProtectedRoute allowedRoles={["Admin", "Coordinator"]}>
+            <ViewWorkHours />
           </RoleProtectedRoute>
         }
       />

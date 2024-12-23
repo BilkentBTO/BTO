@@ -29,6 +29,11 @@ function CoordinatorPanel() {
     navigate("/coordinatorPanel/addUser");
   };
 
+  const handleWorkHoursClick = () => {
+    console.log("Work Hours button clicked");
+    navigate("/coordinatorPanel/viewWorkHours");
+  };
+
   return (
     <div className="coordinatorPanel">
       <div className="innerCoordinator">
@@ -45,6 +50,8 @@ function CoordinatorPanel() {
           </button>
 
           <button onClick={handleAddUserClick}>Add User</button>
+
+          <button onClick={handleWorkHoursClick}>View Work Hours</button>
         </div>
       </div>
       <Outlet />
