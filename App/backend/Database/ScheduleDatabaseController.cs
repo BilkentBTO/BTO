@@ -317,6 +317,37 @@ namespace backend.Database
             }
         }
 
+        public async Task<List<IndividualTour>> GetAllIndividualTours()
+        {
+            try
+            {
+                var allTours = await _SystemContext.IndividualTours.ToListAsync();
+                for (int i = allTours.Count - 1; i >= 0; i--)
+                {
+                    var tour = allTours[i];
+
+                    var tourRegistration = await _SystemContext
+                        .IndividualRegistrations.Include(r => r.TimeBlock)
+                        .FirstOrDefaultAsync(r => r.Code == tour.IndividualTourRegistrationCode);
+
+                    if (tourRegistration == null)
+                    {
+                        allTours.RemoveAt(i);
+                    }
+                    else
+                    {
+                        tour.FillTourRegistrationInfo(tourRegistration);
+                    }
+                }
+                return allTours;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetAllTours: {ex.Message}");
+                return [];
+            }
+        }
+
         public async Task<List<IndividualTour>> GetAllAvailableIndividualTours()
         {
             try
