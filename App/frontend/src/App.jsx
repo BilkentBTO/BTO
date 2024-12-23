@@ -111,7 +111,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <GuidePanel />
@@ -145,7 +145,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <AssignedFairsPage />
@@ -161,7 +161,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <AssignedToursPage />
@@ -177,7 +177,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <AvailableToursPage />
@@ -193,7 +193,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <EditAvailableHoursPage />
@@ -209,7 +209,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <ViewAdvisorInfo />
@@ -345,7 +345,7 @@ function App() {
               "Coordinator",
               "Guide",
               "Advisor",
-              "Candidate Guide",
+              "CandidateGuide",
             ]}
           >
             <UserPage />
