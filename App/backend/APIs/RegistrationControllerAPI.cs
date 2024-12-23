@@ -194,11 +194,8 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.RejectTourRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+
+            return ErrorHandler.HandleError(result);
         }
 
         /// <summary>
@@ -423,11 +420,8 @@ namespace backend.Server.Controllers
             }
 
             var result = await _controller.RejectIndividualRegistration(Code);
-            if (!result)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+
+            return ErrorHandler.HandleError(result);
         }
 
         /// <summary>

@@ -792,7 +792,7 @@ namespace backend.Database
         /// </summary>
         /// <param name="Code">The unique code representing the tour registration to reject.</param>
         /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
-        public async Task<bool> RejectTourRegistration(string Code)
+        public async Task<ErrorTypes> RejectTourRegistration(string Code)
         {
             var registration = await _SystemContext.TourRegistrations.SingleOrDefaultAsync(r =>
                 r.Code == Code
@@ -800,11 +800,11 @@ namespace backend.Database
 
             if (registration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
             registration.State = RegistrationState.Rejected;
             await _SystemContext.SaveChangesAsync();
-            return true;
+            return ErrorTypes.Success;
         }
 
         /// <summary>
@@ -1143,7 +1143,7 @@ namespace backend.Database
         /// </summary>
         /// <param name="Code">The unique code representing the individual registration to reject.</param>
         /// <returns>Returns a boolean indicating the success or failure of the rejection operation.</returns>
-        public async Task<bool> RejectIndividualRegistration(string Code)
+        public async Task<ErrorTypes> RejectIndividualRegistration(string Code)
         {
             var registration = await _SystemContext.IndividualRegistrations.SingleOrDefaultAsync(
                 r => r.Code == Code
@@ -1151,11 +1151,11 @@ namespace backend.Database
 
             if (registration == null)
             {
-                return false;
+                return ErrorTypes.TourRegistrationNotFound;
             }
             registration.State = RegistrationState.Rejected;
             await _SystemContext.SaveChangesAsync();
-            return true;
+            return ErrorTypes.Success;
         }
 
         /// <summary>
