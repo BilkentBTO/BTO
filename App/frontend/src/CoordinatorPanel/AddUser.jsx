@@ -12,6 +12,7 @@ import TableWithButtons from "../GlobalClasses/TableWithButtons";
 function AddUser() {
   const years = ["1", "2", "3", "4"];
   const [majors, setMajors] = useState([]);
+  const [displayP, setDisplayP] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const [userData, setUserData] = useState([]); // State to store fetched user data
@@ -36,6 +37,7 @@ function AddUser() {
 
   // Popup state
   const [showPopup, setShowPopup] = useState(false);
+  const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [showDecidePopup, setShowDecidePopup] = useState(false);
 
   // Generic handler for form state updates
@@ -135,21 +137,27 @@ function AddUser() {
       .then((data) => {
         console.log("User added successfully:", data);
         alert("User added successfully!");
+        setDisplayP(data);
+        setShowPopup(false);
+        setShowPasswordPopup(true);
       })
       .catch((error) => {
         console.error("Failed to add user:", error);
         alert("Failed to add user. Please try again.");
+        setShowPopup(false);
       });
+  };
 
-    // Navigate or save data (e.g., API call)
-    setShowPopup(false);
-    // IMPLEMENT !!!!!!!!!
+  const handlePasswordBack = () => {
+    // Close the popup and return to the form
+    setShowPasswordPopup(false);
   };
 
   const handleBack = () => {
     // Close the popup and return to the form
     setShowPopup(false);
   };
+
   const handleRowClick = (row) => {
     setSelectedUser(row); // Set the selected user row
     setShowDecidePopup(true); // Show the popup
@@ -245,7 +253,7 @@ function AddUser() {
                     type="text"
                     value={formData.username}
                     onChange={(value) => handleChange("username", value)}
-                    properities={{isNum:true}}
+                    properities={{ isNum: true }}
                   />
 
                   <FormInputGlobal
@@ -253,7 +261,7 @@ function AddUser() {
                     type="number"
                     value={formData.bilkentID}
                     onChange={(value) => handleChange("bilkentID", value)}
-                    properities={{isPos:true}}
+                    properities={{ isPos: true }}
                   />
 
                   <FormInputGlobal
@@ -502,6 +510,35 @@ function AddUser() {
                 }}
                 className="popupButton"
                 onClick={handleBack}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showPasswordPopup && (
+        <div className="popupOverlay">
+          <div className="popupContent">
+            <h2>User password:</h2>
+            <h3>{displayP}</h3>
+            <div className="popupActions">
+              <button
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "grey",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  width: "100%",
+                  maxWidth: "120px",
+                  textAlign: "center",
+                  transition: "background-color 0.3s ease, transform 0.2s ease",
+                }}
+                className="popupButton"
+                onClick={handlePasswordBack}
               >
                 Back
               </button>

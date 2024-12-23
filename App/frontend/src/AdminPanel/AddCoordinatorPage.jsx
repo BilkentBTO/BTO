@@ -9,7 +9,7 @@ import GlobalSidebar from "../GlobalClasses/GlobalSidebar";
 function AddCoordinator() {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [displayP, setDisplayP] = useState([]);
   const [formData, setFormData] = useState(() => {
     return (
       location?.state?.formData || {
@@ -29,6 +29,7 @@ function AddCoordinator() {
   const [showPopup, setShowPopup] = useState(false);
   const [majors, setMajors] = useState([]);
   const [years] = useState(["1", "2", "3", "4"]); // Year options for dropdown
+  const [showPasswordPopup, setShowPasswordPopup] = useState(false);
 
   // Generic handler for form state updates
   const handleChange = (key, value) => {
@@ -116,17 +117,24 @@ function AddCoordinator() {
       .then((data) => {
         console.log("Coordinator added successfully:", data);
         alert("Coordinator added successfully!");
+        setDisplayP(data);
         setShowPopup(false);
-        navigate("/adminPanel"); // Navigate to admin panel
+        setShowPasswordPopup(true);
       })
       .catch((error) => {
         console.error("Error adding coordinator:", error);
         alert("Failed to add coordinator. Please try again.");
+        setShowPopup(false);
       });
   };
 
   const handleBack = () => {
     setShowPopup(false); // Close the popup and return to the form
+  };
+
+  const handlePasswordBack = () => {
+    // Close the popup and return to the form
+    setShowPasswordPopup(false);
   };
 
   useEffect(() => {
@@ -158,7 +166,7 @@ function AddCoordinator() {
                 type="text"
                 value={formData.username}
                 onChange={(value) => handleChange("username", value)}
-                properities={{isNum:true}}
+                properities={{ isNum: true }}
               />
               <FormInputGlobal
                 question="Email*"
@@ -171,7 +179,7 @@ function AddCoordinator() {
                 type="number"
                 value={formData.bilkentID}
                 onChange={(value) => handleChange("bilkentID", value)}
-                properities={{isPos:true}}
+                properities={{ isPos: true }}
               />
               <FormDropDownGlobal
                 arr={majors.map((major) => major.name)}
@@ -301,6 +309,36 @@ function AddCoordinator() {
                       }}
                       className="popupButton"
                       onClick={handleBack}
+                    >
+                      Back
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showPasswordPopup && (
+              <div className="popupOverlay">
+                <div className="popupContent">
+                  <h2>User password:</h2>
+                  <h3>{displayP}</h3>
+                  <div className="popupActions">
+                    <button
+                      style={{
+                        padding: "8px 16px",
+                        backgroundColor: "grey",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        width: "100%",
+                        maxWidth: "120px",
+                        textAlign: "center",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                      className="popupButton"
+                      onClick={handlePasswordBack}
                     >
                       Back
                     </button>
