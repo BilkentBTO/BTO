@@ -35,11 +35,26 @@ namespace backend.Controllers
         [HttpGet("guide/{UID}")]
         public async Task<IActionResult> GetGuideData(int UID)
         {
+            if (UID < 0)
+            {
+                return BadRequest("Wrong User ID");
+            }
             var result = await _controller.GetGuideData(UID);
+            if (result == null)
+            {
+                return BadRequest("User data not found");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("school")]
+        public async Task<IActionResult> GetSchoolData()
+        {
+            var result = await _controller.GetSchoolData();
 
             if (result == null)
             {
-                return BadRequest("User not found");
+                return BadRequest("School data not found");
             }
             return Ok(result);
         }
