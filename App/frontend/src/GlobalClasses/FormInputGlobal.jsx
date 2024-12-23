@@ -10,6 +10,7 @@ function FormInputGlobal({
 }) {
   const minValue = type === "number" && properities.isPos ? 0 : dateFilter.min || ""; // Default to empty if no min val is provided
   const maxDate = dateFilter.max || ""; // Default to empty if no max date is provided
+  const checkStr = properities.isNum || false; // Default to false if the parameter is not set
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -48,8 +49,8 @@ function FormInputGlobal({
     }
 
     if (type === "text") {
-      // Block numeric keys for text inputs
-      if (/^[0-9]$/.test(e.key)) {
+      // Block numeric keys for text inputs if isNum property is not set
+      if (!checkStr && /^[0-9]$/.test(e.key)) {
         e.preventDefault();
         alert("Numbers are not allowed in this field.");
       }

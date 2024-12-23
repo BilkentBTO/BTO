@@ -237,6 +237,7 @@ function AddUser() {
                     type="text"
                     value={formData.username}
                     onChange={(value) => handleChange("username", value)}
+                    properities={{isNum:true}}
                   />
 
                   <FormInputGlobal
@@ -244,6 +245,7 @@ function AddUser() {
                     type="number"
                     value={formData.bilkentID}
                     onChange={(value) => handleChange("bilkentID", value)}
+                    properities={{isPos:true}}
                   />
 
                   <FormInputGlobal
